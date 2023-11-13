@@ -19,6 +19,7 @@ router.post('/', async function (req, res, next) {
   // Retrieve data from the request body
   console.log('HERE -> Received POST request to /customer_request');
   var requestData = req.body;
+  console.log(requestData)
 
 
   // Validate the required fields
@@ -28,7 +29,7 @@ router.post('/', async function (req, res, next) {
 
   // SQL to store data in the 'requests' table
   var insertQuery = `
-  INSERT INTO delivery_requests (pickup_location, dropOff_location, description, preferred_delivery_time, price_offer, status)
+  INSERT INTO delivery_requests (pickup_location, dropoff_location, description, preferred_delivery_time, price_offer, status)
     VALUES ($1, $2, $3, $4, $5, 'Pending')
     RETURNING id
   `;
