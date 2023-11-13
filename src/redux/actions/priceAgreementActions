@@ -1,0 +1,18 @@
+// src/redux/actions/priceAgreementActions.ts
+
+export enum PriceAgreementActionTypes {
+    SUBMIT_PRICE = 'SUBMIT_PRICE',
+  }
+  
+  interface SubmitPriceAction {
+    type: PriceAgreementActionTypes.SUBMIT_PRICE;
+    payload: number; // Replace with your actual payload type
+  }
+  
+  export type PriceAgreementAction = SubmitPriceAction;
+  
+  export const submitPrice = (payload: number): SubmitPriceAction => ({
+    type: PriceAgreementActionTypes.SUBMIT_PRICE,
+    payload,
+  });
+  
