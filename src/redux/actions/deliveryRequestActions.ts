@@ -1,4 +1,9 @@
 // src/redux/actions/deliveryRequestActions.ts
+import axios from 'axios';
+import { ThunkAction } from 'redux-thunk';
+import { RootState } from '../reducers';
+import { AnyAction, Dispatch } from 'redux'; 
+import { useDispatch } from 'react-redux';
 
 interface SubmitDeliveryRequestAction {
     type: 'SUBMIT_DELIVERY_REQUEST';
@@ -11,8 +16,36 @@ interface SubmitDeliveryRequestAction {
     };
   }
   
-  export const submitDeliveryRequest = (formData: SubmitDeliveryRequestAction['payload']): SubmitDeliveryRequestAction => ({
-    type: 'SUBMIT_DELIVERY_REQUEST',
-    payload: formData,
-  });
+  export const submitDeliveryRequest = (
+    formData: SubmitDeliveryRequestAction['payload']
+  ): Promise<any> => {
+      const request = JSON.stringify(formData);
+    return axios.post('http://localhost:4200/customer_request',formData)
+      .then((response) => {
+        // Assuming your backend returns the requestId
+        console.log('Request submitted successfully, checking if we need to populate queue', response.data);
+        return Promise.resolve();
+      })
+      .catch((error) => {
+        console.error('Error submitting request');
+        // Handle any error-related logic here
+        return Promise.reject(error);
+      });
+  };
+
+  export const displayPendingRequests = (data: JSON[]) => {
+    // Displays data in the working_queue
+    axios.get('http://localhost:4200/pending_requests').then((response) => {
+        return response.data;
+    })
+  }
+
+
+  
+  
+  // Action to dispatch when the request is submitted successfully
+//   export const requestSubmitted = (requestId: number): RequestSubmittedAction => ({
+//     type: 'REQUEST_SUBMITTED',
+//     payload: { requestId },
+//   });
   
