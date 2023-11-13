@@ -1,0 +1,51 @@
+/* Profile.css */
+
+.profile-container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .profile-section {
+    margin-top: 20px;
+  }
+  
+  .profile-section h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+  
+  .profile-section table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+  }
+  
+  .profile-section th, .profile-section td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+  
+  .profile-section th {
+    background-color: #f2f2f2;
+  }
+  
+  .profile-section td button {
+    background-color: #4caf50;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .profile-section td button:hover {
+    background-color: #45a049;
+  }
+  
+  /* Add more styles as needed */
+  

@@ -33,19 +33,7 @@ interface SubmitDeliveryRequestAction {
       });
   };
 
-  export const displayPendingRequests = (data: JSON[]) => {
-    // Displays data in the working_queue
-    axios.get('http://localhost:4200/pending_requests').then((response) => {
-        return response.data;
-    })
-  }
 
 
-  
-  
-  // Action to dispatch when the request is submitted successfully
-//   export const requestSubmitted = (requestId: number): RequestSubmittedAction => ({
-//     type: 'REQUEST_SUBMITTED',
-//     payload: { requestId },
-//   });
+
   

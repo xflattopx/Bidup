@@ -25,16 +25,16 @@ const Queue: React.FC = () => {
     try {
       const response = await axios.get('http://localhost:4200/customer_request/pending');
       const newData: DeliveryRequest[] = response.data;
-  
+
       setQueueState((prevState) => {
         const uniqueIdsSet = new Set(prevState.uniqueIds);
-  
+
         // Filter out existing IDs
         const filteredData = newData.filter((item) => !uniqueIdsSet.has(item.id));
-  
+
         // Add unique IDs from filteredData to uniqueIdsSet
         filteredData.forEach((item) => uniqueIdsSet.add(item.id));
-  
+
         return {
           uniqueIds: uniqueIdsSet,
           queue: [...prevState.queue, ...filteredData],
@@ -63,6 +63,11 @@ const Queue: React.FC = () => {
     return () => clearInterval(intervalId);
   }, []);
 
+  const handleBidClick = (id: number) => {
+    // Handle bidding logic, e.g., send bid to backend
+    console.log(`Bid clicked for request ID: ${id}`);
+  };
+
   return (
     <div className="queue-container">
       <h2>Delivery Queue</h2>
@@ -75,6 +80,7 @@ const Queue: React.FC = () => {
             <th>Description</th>
             <th>Preferred Delivery Time</th>
             <th>Price Offer</th>
+            <th>Action</th> {/* New column for the "Bid" button */}
           </tr>
         </thead>
         <tbody>
@@ -86,11 +92,19 @@ const Queue: React.FC = () => {
               <td>{request.description}</td>
               <td>{request.preferred_delivery_time}</td>
               <td>${request.price_offer}</td>
+              <td>
+                <button
+                  className="bid-button"
+                  onClick={() => handleBidClick(request.id)}
+                >
+                  Bid
+                </button>
+              </td>
             </tr>
           ))}
         </tbody>
       </table>
-    </div> 
+    </div>
   );
 };
 
