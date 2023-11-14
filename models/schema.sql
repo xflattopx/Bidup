@@ -20,7 +20,6 @@ CREATE TABLE customers (
 CREATE TABLE drivers (
   id SERIAL PRIMARY KEY,
   user_id INT UNIQUE, -- Foreign key referencing the users table
-  driver_license VARCHAR(20) NOT NULL,
   created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (user_id) REFERENCES users(id)
@@ -35,9 +34,32 @@ CREATE TABLE delivery_requests (
   price_offer NUMERIC DEFAULT 0,
   status VARCHAR(50) DEFAULT 'Pending',
   customer_id INT, -- Foreign key referencing the customers table
-  driver_id INT, -- Foreign key referencing the drivers table
   created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (customer_id) REFERENCES customers(id),
-  FOREIGN KEY (driver_id) REFERENCES drivers(id)
+  FOREIGN KEY (customer_id) REFERENCES customers(id)
 );
+
+CREATE TABLE bids (
+  id SERIAL PRIMARY KEY,
+  driver_id INT, -- Foreign key referencing the drivers table
+  delivery_request_id INT, -- Foreign key referencing the delivery_requests table
+  bid_price NUMERIC NOT NULL,
+  bid_time TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_driver FOREIGN KEY (driver_id) REFERENCES drivers(id),
+  CONSTRAINT fk_delivery_request FOREIGN KEY (delivery_request_id) REFERENCES delivery_requests(id)
+);
+
+CREATE TABLE winning_bids (
+  delivery_request_id INT PRIMARY KEY,
+  bid_id INT, -- Foreign key referencing the bids table
+  FOREIGN KEY (bid_id) REFERENCES bids(id),
+  FOREIGN KEY (delivery_request_id) REFERENCES delivery_requests(id)
+);
+
+-- Add bid_end_time column to track bid expiration time
+ALTER TABLE delivery_requests
+ADD COLUMN bid_end_time TIMESTAMPTZ;
+
+-- Add status column to track bid status (e.g., 'Pending', 'Sold')
+ALTER TABLE bids
+ADD COLUMN status VARCHAR(50) DEFAULT 'Pending';

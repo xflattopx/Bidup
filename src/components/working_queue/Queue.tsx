@@ -3,6 +3,15 @@
 import React, { useState, useEffect } from 'react';
 import './Queue.css';
 import axios from 'axios';
+import { connect } from 'react-redux';
+import { RootState } from '../../redux/reducers/rootReducer';
+import { Dispatch } from 'redux';
+import { setDriverId } from '../../redux/actions/driverActions'
+
+interface QueueProps {
+  driverId: number; 
+  setDriverId: (driverId: number) => void;
+}
 
 interface DeliveryRequest {
   id: number;
@@ -11,6 +20,8 @@ interface DeliveryRequest {
   description: string;
   preferred_delivery_time: string;
   price_offer: number;
+  bid_end_time: string;
+  status: string;
 }
 
 interface QueueState {
@@ -25,7 +36,6 @@ const Queue: React.FC = () => {
     try {
       const response = await axios.get('http://localhost:4200/customer_request/pending');
       const newData: DeliveryRequest[] = response.data;
-
       setQueueState((prevState) => {
         const uniqueIdsSet = new Set(prevState.uniqueIds);
 
@@ -63,12 +73,41 @@ const Queue: React.FC = () => {
     return () => clearInterval(intervalId);
   }, []);
 
-  const handleBidClick = (id: number) => {
-    // Handle bidding logic, e.g., send bid to backend
-    console.log(`Bid clicked for request ID: ${id}`);
+  const handleBidButtonClick = async (requestId: number) => {
+    try {
+      // Step 1: Send a bid request to the backend
+      const bidResponse = await axios.post('http://localhost:4200/bid/record-bid', {
+        deliveryRequestId: requestId,
+        driverId: 1,
+        bidPrice: 100
+      });
+  
+      // Extract the bid ID from the response
+      const bidId = bidResponse.data.requestId;
+  
+      // Step 2: Update the UI to reflect that the bid was placed
+      setQueueState((prevState) => ({
+        uniqueIds: prevState.uniqueIds,
+        queue: prevState.queue.map((request) =>
+          request.id === requestId
+            ? { ...request, status: 'Bidding' } // Update status to 'Bidding' or another appropriate value
+            : request
+        ),
+      }));
+  
+      // Step 3: After a successful bid, record the winning bid
+      await axios.post('http://localhost:4200/bid/record-winning-bid', {
+        bidId: bidId,
+      });
+  
+  
+    } catch (error) {
+      console.error('Error placing bid:', error);
+    }
   };
 
   return (
+  
     <div className="queue-container">
       <h2>Delivery Queue</h2>
       <table className="delivery-queue-table">
@@ -80,10 +119,11 @@ const Queue: React.FC = () => {
             <th>Description</th>
             <th>Preferred Delivery Time</th>
             <th>Price Offer</th>
-            <th>Action</th> {/* New column for the "Bid" button */}
+            <th>Action</th>
+            <th>Status</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody>    
           {queueState.queue.map((request) => (
             <tr key={request.id}>
               <td>{request.id}</td>
@@ -92,13 +132,12 @@ const Queue: React.FC = () => {
               <td>{request.description}</td>
               <td>{request.preferred_delivery_time}</td>
               <td>${request.price_offer}</td>
+              <td>{request.status}</td>
               <td>
-                <button
-                  className="bid-button"
-                  onClick={() => handleBidClick(request.id)}
-                >
-                  Bid
-                </button>
+              {request.status === 'Bidding' && <span>Bidding...</span>}
+                {request.status === 'Pending' && (
+                  <button onClick={() => handleBidButtonClick(request.id)}>Bid</button>
+                )}
               </td>
             </tr>
           ))}
@@ -108,4 +147,8 @@ const Queue: React.FC = () => {
   );
 };
 
-export default Queue;
+const mapStateToProps = (state: RootState) => ({
+  driverId: state.drivers.driverId,
+});
+
+export default connect(mapStateToProps)(Queue);

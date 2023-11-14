@@ -1,7 +1,7 @@
 // src/redux/actions/deliveryRequestActions.ts
 import axios from 'axios';
 import { ThunkAction } from 'redux-thunk';
-import { RootState } from '../reducers';
+import { RootState } from '../reducers/rootReducer';
 import { AnyAction, Dispatch } from 'redux'; 
 import { useDispatch } from 'react-redux';
 
