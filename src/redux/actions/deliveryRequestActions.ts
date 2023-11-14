@@ -1,7 +1,7 @@
 // src/redux/actions/deliveryRequestActions.ts
 import axios from 'axios';
 import { ThunkAction } from 'redux-thunk';
-import { RootState } from '../reducers';
+import { RootState } from '../reducers/rootReducer';
 import { AnyAction, Dispatch } from 'redux'; 
 import { useDispatch } from 'react-redux';
 
@@ -33,19 +33,7 @@ interface SubmitDeliveryRequestAction {
       });
   };
 
-  export const displayPendingRequests = (data: JSON[]) => {
-    // Displays data in the working_queue
-    axios.get('http://localhost:4200/pending_requests').then((response) => {
-        return response.data;
-    })
-  }
 
 
-  
-  
-  // Action to dispatch when the request is submitted successfully
-//   export const requestSubmitted = (requestId: number): RequestSubmittedAction => ({
-//     type: 'REQUEST_SUBMITTED',
-//     payload: { requestId },
-//   });
+
   

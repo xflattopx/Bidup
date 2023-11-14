@@ -1,9 +1,10 @@
 var express = require('express');
 var router = express.Router();
+const cors = require('cors');
 var { Client } = require('pg');
 const bodyParser = require('body-parser');
 
-
+router.use(cors());
 // Connect to PostgreSQL database
 var db = new Client({
   user: 'postgres',
@@ -19,6 +20,7 @@ router.post('/', async function (req, res, next) {
   // Retrieve data from the request body
   console.log('HERE -> Received POST request to /customer_request');
   var requestData = req.body;
+  console.log(requestData)
 
 
   // Validate the required fields
@@ -28,7 +30,7 @@ router.post('/', async function (req, res, next) {
 
   // SQL to store data in the 'requests' table
   var insertQuery = `
-  INSERT INTO delivery_requests (pickup_location, dropOff_location, description, preferred_delivery_time, price_offer, status)
+  INSERT INTO delivery_requests (pickup_location, dropoff_location, description, preferred_delivery_time, price_offer, status)
     VALUES ($1, $2, $3, $4, $5, 'Pending')
     RETURNING id
   `;
@@ -63,7 +65,7 @@ router.post('/', async function (req, res, next) {
 router.get('/pending', async function (req, res, next) {
   try {
     // Query to retrieve all rows where status is "pending"
-    const query = 'SELECT id, pickup_location, dropoff_location, description, preferred_delivery_time, price_offer FROM delivery_requests WHERE status = $1';
+    const query = 'SELECT id, pickup_location, dropoff_location, description, preferred_delivery_time, price_offer, status FROM delivery_requests WHERE status = $1';
     
     // Execute the query
     const result = await db.query(query, ['Pending']);

@@ -1,0 +1,30 @@
+/* Dashboard.css */
+
+.dashboard-container {
+    width: 80%;
+    margin: auto;
+    padding: 20px;
+  }
+  
+  .dashboard-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+  }
+  
+  .dashboard-table th, .dashboard-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+  
+  .dashboard-table th {
+    background-color: #f2f2f2;
+  }
+  
+  .dashboard-section {
+    margin-bottom: 20px;
+  }
+  
+  /* Add more styles as needed */
+  
