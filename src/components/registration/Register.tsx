@@ -1,16 +1,28 @@
 // Register.tsx
 
 import React, { useState } from 'react';
-import './Register.css'; // Import the CSS file for styling
+import { connect } from 'react-redux';
+import './Register.css';
+import { RootState } from '../../redux/reducers/rootReducer';
+import { updateCustomerInfo } from '../../redux/actions/customerActions';
 
-const Register: React.FC = () => {
+interface RegisterProps {
+  // Add any state variables you need here
+  firstName: string;
+  lastName: string;
+  email: string;
+  role: string;
+  updateCustomerInfo: (info: any) => void;
+}
+
+const Register: React.FC<RegisterProps> = ({ firstName, lastName, email, role, updateCustomerInfo }) => {
   const [formState, setFormState] = useState({
     firstName: '',
     lastName: '',
     email: '',
     password: '',
     confirmPassword: '',
-    role: 'customer', // Default role is set to 'customer'
+    role: 'customer',
   });
 
   const [passwordError, setPasswordError] = useState('');
@@ -22,7 +34,7 @@ const Register: React.FC = () => {
       [name]: value,
     }));
 
-    // Clear password error when user types in the password fields
+    // Clear password error when the user types in the password fields
     if (name === 'password' || name === 'confirmPassword') {
       setPasswordError('');
     }
@@ -45,9 +57,16 @@ const Register: React.FC = () => {
       return;
     }
 
-    // Add logic to handle form submission
+    // Perform any other logic you need with the form state
     console.log('Form State:', formState);
-    // You can dispatch an action, send a request to the server, etc.
+
+    // Update customer information in the Redux store
+    updateCustomerInfo({
+      firstName: formState.firstName,
+      lastName: formState.lastName,
+      email: formState.email,
+      role: formState.role,
+    });
   };
 
   return (
@@ -125,4 +144,16 @@ const Register: React.FC = () => {
   );
 };
 
-export default Register;
+const mapStateToProps = (state: RootState) => ({
+  // Map any state variables you need from the Redux store
+  firstName: state.customers.customerInfo.firstName,
+  lastName: state.customers.customerInfo.lastName,
+  email: state.customers.customerInfo.email,
+  role: state.customers.customerInfo.role,
+});
+
+const mapDispatchToProps = {
+  updateCustomerInfo,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Register);
