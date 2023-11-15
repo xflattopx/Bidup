@@ -18,13 +18,16 @@ function App() {
       <Login onLogin={function (credentials: { username: string; password: string; }): void {
         throw new Error('Function not implemented.');
       } }></Login>
-      <Profile customerInfo={{
-        firstName: 'Chase',
-        lastName: 'Moore',
-        email: 'moorew13@students.ecu.edu'
-      }} requestHistory={[]} onCancelRequest={function (requestId: number): void {
-        throw new Error('Function not implemented.');
-      } }></Profile>
+       <Profile
+          customerInfo={{
+            firstName: 'Chase',
+            lastName: 'Moore',
+            email: 'moorew13@students.ecu.edu'
+          }}
+          requestHistory={[]}
+          onCancelRequest={(requestId: number) => {
+            // Handle onCancelRequest
+          }}/>
       <Dashboard driverId={0}></Dashboard>
       <DeliveryRequestForm></DeliveryRequestForm>
       <Queue></Queue>
