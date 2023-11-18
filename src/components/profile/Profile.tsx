@@ -1,7 +1,16 @@
-// Profile.tsx
-
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import './Profile.css';
+
+interface RequestHistory {
+  id: number;
+  pickupLocation: string;
+  dropoffLocation: string;
+  description: string;
+  preferredDeliveryTime: string;
+  priceOffer: number;
+  status: string;
+}
 
 interface ProfileProps {
   customerInfo: {
@@ -10,19 +19,37 @@ interface ProfileProps {
     email: string;
     // Add more customer profile information as needed
   };
-  requestHistory: {
-    id: number;
-    pickupLocation: string;
-    dropoffLocation: string;
-    description: string;
-    preferredDeliveryTime: string;
-    priceOffer: number;
-    status: string; // Assuming status can be 'pending', 'accepted', etc.
-  }[];
-  onCancelRequest: (requestId: number) => void;
+  onCancelRequest: (requestId: number, callback: (success: boolean) => void) => void;
 }
 
-const Profile: React.FC<ProfileProps> = ({ customerInfo, requestHistory, onCancelRequest }) => {
+const Profile: React.FC<ProfileProps> = ({ customerInfo, onCancelRequest }) => {
+  const [requestHistory, setRequestHistory] = useState<RequestHistory[]>([]);
+  const [cancelSuccess, setCancelSuccess] = useState<number | null>(null);
+
+  useEffect(() => {
+    // Assuming you have access to the customerId in your component
+    const customerId = 2; // Implement getCustomerId() based on your component's logic
+
+    // Fetch request history details
+    axios
+      .get(`http://localhost:4200/profile/profile-request-details?customerId=${customerId}`)
+      .then((response) => {
+        // Assuming response.data is an array of objects with properties like 'id', 'pickupLocation', etc.
+        setRequestHistory(response.data);
+        console.log('Request history retrieved:', response.data);
+      })
+      .catch((error) => {
+        console.error('Error fetching request history:', error);
+        // Handle any error-related logic here
+      });
+  }, []); // Empty dependency array to run the effect once on mount
+
+  const handleCancelRequest = (requestId: number) => {
+    onCancelRequest(requestId, (success) => {
+      setCancelSuccess(success ? requestId : null);
+    });
+  };
+
   return (
     <div className="profile-container">
       <h2>Customer Profile</h2>
@@ -52,7 +79,7 @@ const Profile: React.FC<ProfileProps> = ({ customerInfo, requestHistory, onCance
               <th>Preferred Delivery Time</th>
               <th>Price Offer</th>
               <th>Status</th>
-              <th>Action</th>
+              <th>Options</th>
             </tr>
           </thead>
           <tbody>
@@ -66,8 +93,15 @@ const Profile: React.FC<ProfileProps> = ({ customerInfo, requestHistory, onCance
                 <td>${request.priceOffer}</td>
                 <td>{request.status}</td>
                 <td>
-                  {request.status === 'pending' && (
-                    <button onClick={() => onCancelRequest(request.id)}>Cancel</button>
+                  {request.status === 'Pending' && (
+                    <>
+                      <button onClick={() => handleCancelRequest(request.id)}>Cancel</button>
+                      {cancelSuccess !== null && request.id === cancelSuccess && (
+                        <span>
+                          {cancelSuccess ? 'Request canceled successfully!' : 'Failed to cancel request.'}
+                        </span>
+                      )}
+                    </>
                   )}
                 </td>
               </tr>

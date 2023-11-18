@@ -24,7 +24,6 @@ function App() {
             lastName: 'Moore',
             email: 'moorew13@students.ecu.edu'
           }}
-          requestHistory={[]}
           onCancelRequest={(requestId: number) => {
             // Handle onCancelRequest
           }}/>

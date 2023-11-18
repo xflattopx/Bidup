@@ -23,7 +23,7 @@ router.post('/record-bid', async (req,res,next) => {
       // Step 1: Update bid_end_time in delivery_requests
       const bidEndTimeUpdateQuery = `
         UPDATE delivery_requests
-        SET bid_end_time = CURRENT_TIMESTAMP + INTERVAL '5 minutes'
+        SET bid_end_time = CURRENT_TIMESTAMP + INTERVAL '5 minutes', status = 'Bidding'
         WHERE id = $1
         RETURNING id;
       `;
@@ -40,12 +40,11 @@ router.post('/record-bid', async (req,res,next) => {
       // Step 2: Insert the bid into the bids table
       const insertBidQuery = `
         INSERT INTO bids (driver_id, delivery_request_id, bid_price, status)
-        VALUES ($1, $2, $3, 'Pending')
+        VALUES ($1, $2, $3, 'Bidding')
         RETURNING id;
       `;
   
       const insertBidResult = await pool.query(insertBidQuery, [driverId, deliveryRequestId, bidPrice]);
-      console.log(insertBidQuery);
       // Check if the bid was inserted successfully
       if (insertBidResult.rowCount === 0) {
         return res.status(500).json({ success: false, message: 'Error recording bid.' });
@@ -59,16 +58,67 @@ router.post('/record-bid', async (req,res,next) => {
     }
   });
 
+ // API endpoint to update a bid
+router.post('/update-bid', async (req, res) => {
+  const { bidId, newBidPrice, driverId } = req.body;
+  console.log(bidId)
+  try {
+    // Fetch the bid details including the current bid_price
+    const getBidDetailsQuery = `
+      SELECT bid_price, delivery_request_id, driver_id
+      FROM bids
+      WHERE delivery_request_id = $1;
+    `;
+
+    const bidDetailsResult = await pool.query(getBidDetailsQuery, [bidId]);
+    console.log(bidDetailsResult);
+    if (bidDetailsResult.rowCount === 0) {
+      return res.status(404).json({ success: false, message: 'Bid not found.' });
+    }
+
+    const { bid_price, delivery_request_id, driver_id } = bidDetailsResult.rows[0];
+
+    // Check if the provided driverId matches the driver who placed the original bid
+    if (driverId !== driver_id) {
+      return res.status(403).json({ success: false, message: 'Unauthorized. You cannot update bids placed by other drivers.' });
+    }
+
+    // Update the bid_price in the bids table
+    const updateBidPriceQuery = `
+      UPDATE bids
+      SET bid_price = $1
+      WHERE delivery_request_id = $2;
+    `;
+
+    await pool.query(updateBidPriceQuery, [newBidPrice, bidId]);
+  
+    // Update the bid_price in the delivery_requests table
+    const updateDeliveryRequestPriceQuery = `
+      UPDATE delivery_requests
+      SET price_offer = $1
+      WHERE id = $2;
+    `;
+
+    await pool.query(updateDeliveryRequestPriceQuery, [newBidPrice, delivery_request_id]);
+
+    // Respond with success
+    res.json({ success: true, message: 'Bid updated successfully.' });
+  } catch (error) {
+    console.error('Error updating bid:', error);
+    res.status(500).json({ success: false, message: 'Internal server error.' });
+  }
+});
+
   // API endpoint to record the winning bid
 router.post('/record-winning-bid', async (req, res) => {
     const { bidId } = req.body;
-  
+   // console.log(bidId)
     try {
       // Update the status in the bids table to "Sold"
       const updateBidStatusQuery = `
         UPDATE bids
-        SET status = 'Sold'
-        WHERE id = $1
+        SET status = 'Bidding'
+        WHERE delivery_request_id = $1
         RETURNING delivery_request_id;
       `;
   
@@ -76,6 +126,7 @@ router.post('/record-winning-bid', async (req, res) => {
   
       // Check if the bid status was updated successfully
       if (updateBidStatusResult.rowCount === 0) {
+        console.log(updateBidStatusQuery)
         return res.status(404).json({ success: false, message: 'Bid not found.' });
       }
   
@@ -84,7 +135,7 @@ router.post('/record-winning-bid', async (req, res) => {
       // Update the status in the delivery_requests table to "Sold"
       const updateDeliveryRequestStatusQuery = `
         UPDATE delivery_requests
-        SET status = 'Sold'
+        SET status = 'Bidding'
         WHERE id = $1;
       `;
   
@@ -98,7 +149,7 @@ router.post('/record-winning-bid', async (req, res) => {
     }
   });
 
-  // Schedule a task to check bids every minute
+// Schedule a task to check bids every minute
 cron.schedule('* * * * *', async () => {
   try {
     // Get the bids that are still pending and their bid end times are in the past
@@ -106,20 +157,50 @@ cron.schedule('* * * * *', async () => {
       UPDATE bids
       SET status = 'Sold'
       FROM delivery_requests
-      WHERE bids.status = 'Pending'
+      WHERE bids.status = 'Bidding'
         AND bids.bid_time + interval '5 minutes' <= CURRENT_TIMESTAMP
         AND bids.delivery_request_id = delivery_requests.id
-        AND delivery_requests.status = 'Pending';
+        AND delivery_requests.status = 'Bidding'
+      RETURNING bids.id as bid_id, bids.driver_id, delivery_requests.id as delivery_request_id;
     `;
-    console.log(checkBidsQuery);
+
     const result = await pool.query(checkBidsQuery);
+    //console.log(result);
 
     if (result.rowCount > 0) {
       console.log('Updated bids with status "Sold"');
+
+      // Store delivery_request_ids from the checkBidsQuery result
+      const processedDeliveryRequests = result.rows.map((row) => row.delivery_request_id);
+
+      // Iterate through the updated bids and insert them into winning_bids table
+      for (const row of result.rows) {
+        const { bid_id, driver_id, delivery_request_id } = row;
+
+        const insertWinningBidQuery = `
+          INSERT INTO winning_bids (bid_id, delivery_request_id)
+          VALUES ($1, $2);
+        `;
+
+        // Insert winning bid into winning_bids table
+        await pool.query(insertWinningBidQuery, [bid_id, delivery_request_id]);
+
+        console.log(`Inserted winning bid with bid_id ${bid_id} into winning_bids`);
+      }
+
+      // Update the status of delivery_requests to 'Sold' for the processed bids
+      const updateDeliveryRequestsQuery = `
+        UPDATE delivery_requests
+        SET status = 'Sold'
+        WHERE id IN (${processedDeliveryRequests.join(',')});
+      `;
+      await pool.query(updateDeliveryRequestsQuery);
     }
   } catch (error) {
-    console.error('Error checking bids:', error);
+    console.error('Error checking and inserting winning bids:', error);
   }
 });
+
+
 
   module.exports = router;
