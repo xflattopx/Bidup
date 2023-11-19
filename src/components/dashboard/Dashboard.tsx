@@ -1,52 +1,47 @@
-// Dashboard.tsx
-
-import React from 'react';
-import './Dashboard.css'
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import './Dashboard.css';
 
 interface DashboardProps {
   driverId: number; // Assuming you have a unique identifier for the driver
 }
 
+interface Bid {
+  delivery_request_id: number;
+  pickup_location: string;
+  dropoff_location: string;
+  price_offer: number;
+}
+
 const Dashboard: React.FC<DashboardProps> = ({ driverId }) => {
-  // You can fetch driver-specific data from the backend using driverId
+  const [acceptedBids, setAcceptedBids] = useState<Bid[]>([]);
 
-  // Placeholder data (replace with actual API calls)
-  const currentBids = [
-    { requestId: 1, pickupLocation: 'A', dropoffLocation: 'B', priceOffer: 20 },
-    { requestId: 2, pickupLocation: 'C', dropoffLocation: 'D', priceOffer: 25 },
-  ];
+  useEffect(() => {
+    const fetchAcceptedBids = async () => {
+      try {
+        const response = await axios.get(`http://localhost:4200/dashboard/accepted-bids`);
+        setAcceptedBids(response.data);
+        console.log(response.data);
+      } catch (error) {
+        console.error('Error fetching accepted bids:', error);
+      }
+    };
 
-  const acceptedRequests = [
-    { requestId: 3, pickupLocation: 'E', dropoffLocation: 'F', priceOffer: 30 },
-  ];
+    // Fetch accepted bids initially
+    fetchAcceptedBids();
+
+    // Set up a timer to fetch accepted bids every 10 seconds
+    const timer = setInterval(() => {
+      fetchAcceptedBids();
+    }, 10000);
+
+    // Cleanup function to clear the interval when the component unmounts
+    return () => clearInterval(timer);
+  }, []); // Empty dependency array to run effect only once on mount
 
   return (
     <div className="dashboard-container">
       <h2>Driver Dashboard</h2>
-
-      <div className="dashboard-section">
-        <h3>Current Bids</h3>
-        <table className="dashboard-table">
-          <thead>
-            <tr>
-              <th>Request ID</th>
-              <th>Pickup Location</th>
-              <th>Drop-off Location</th>
-              <th>Price Offer</th>
-            </tr>
-          </thead>
-          <tbody>
-            {currentBids.map((bid) => (
-              <tr key={bid.requestId}>
-                <td>{bid.requestId}</td>
-                <td>{bid.pickupLocation}</td>
-                <td>{bid.dropoffLocation}</td>
-                <td>${bid.priceOffer}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
 
       <div className="dashboard-section">
         <h3>Accepted Requests</h3>
@@ -60,19 +55,17 @@ const Dashboard: React.FC<DashboardProps> = ({ driverId }) => {
             </tr>
           </thead>
           <tbody>
-            {acceptedRequests.map((request) => (
-              <tr key={request.requestId}>
-                <td>{request.requestId}</td>
-                <td>{request.pickupLocation}</td>
-                <td>{request.dropoffLocation}</td>
-                <td>${request.priceOffer}</td>
+            {acceptedBids.map((bid) => (
+              <tr key={bid.delivery_request_id}>
+                <td>{bid.delivery_request_id}</td>
+                <td>{bid.pickup_location}</td>
+                <td>{bid.dropoff_location}</td>
+                <td>${bid.price_offer}</td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-
-      {/* Add more sections for other relevant information */}
     </div>
   );
 };

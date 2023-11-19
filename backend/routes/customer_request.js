@@ -30,12 +30,10 @@ router.post('/', async function (req, res, next) {
 
   // SQL to store data in the 'requests' table
   var insertQuery = `
-  INSERT INTO delivery_requests (pickup_location, dropoff_location, description, preferred_delivery_time, price_offer, status)
-    VALUES ($1, $2, $3, $4, $5, 'Pending')
+  INSERT INTO delivery_requests (pickup_location, dropoff_location, description, preferred_delivery_time, price_offer, status, customer_id)
+    VALUES ($1, $2, $3, $4, $5, 'Pending', $6)
     RETURNING id
   `;
-
-  console.log(insertQuery);
 
   try {
       // Execute the SQL query
@@ -45,12 +43,13 @@ router.post('/', async function (req, res, next) {
           requestData.description,
           requestData.preferredDeliveryTime,
           requestData.priceOffer,
+          requestData.customerId
       ]);
 
 
       // Get the ID of the inserted row
       const requestId = result.rows[0].id;
-      console.log('Data stored successfully. Request ID:', requestId);
+      //console.log('Data stored successfully. Request ID:', requestId);
 
       // Respond with the inserted data
       return req.body;
@@ -61,19 +60,19 @@ router.post('/', async function (req, res, next) {
 });
 
 
-// Route to retrieve all pending rows
-router.get('/pending', async function (req, res, next) {
+// Route to retrieve all pending rows excluding 'Canceled'
+router.get('/all', async function (req, res, next) {
   try {
-    // Query to retrieve all rows where status is "pending"
-    const query = 'SELECT id, pickup_location, dropoff_location, description, preferred_delivery_time, price_offer, status FROM delivery_requests WHERE status = $1';
-    
+    // Query to retrieve all rows except those with status "Sold" and "Canceled"
+    const query = 'SELECT id, pickup_location, dropoff_location, description, preferred_delivery_time, price_offer, status FROM delivery_requests WHERE status NOT IN ($1, $2)';
+
     // Execute the query
-    const result = await db.query(query, ['Pending']);
+    const result = await db.query(query, ['Sold', 'Canceled']);
 
     // Send the result as a JSON response
     res.json(result.rows);
   } catch (error) {
-    console.error('Error retrieving pending rows:', error);
+    console.error('Error retrieving rows:', error);
     res.status(500).json({ success: false, error: 'Internal Server Error' });
   }
 });

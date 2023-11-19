@@ -14,6 +14,7 @@ const DeliveryRequestForm: React.FC = () => {
     description: '',
     preferredDeliveryTime: '',
     priceOffer: 0,
+    customerId: 2
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -42,6 +43,7 @@ const DeliveryRequestForm: React.FC = () => {
         description: '',
         preferredDeliveryTime: '',
         priceOffer: 0,
+        customerId: 2
       });
     } catch (error) {
       console.error('Error submitting request:', error);

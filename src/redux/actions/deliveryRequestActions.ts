@@ -13,6 +13,7 @@ interface SubmitDeliveryRequestAction {
       description: string;
       preferredDeliveryTime: string;
       priceOffer: number;
+      customerId: number;
     };
   }
   
