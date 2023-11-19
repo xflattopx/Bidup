@@ -178,8 +178,9 @@ cron.schedule('* * * * *', async () => {
         const { bid_id, driver_id, delivery_request_id } = row;
 
         const insertWinningBidQuery = `
-          INSERT INTO winning_bids (bid_id, delivery_request_id)
-          VALUES ($1, $2);
+        INSERT INTO winning_bids (bid_id, delivery_request_id)
+        VALUES ($1, $2)
+        ON CONFLICT (delivery_request_id) DO NOTHING;        
         `;
 
         // Insert winning bid into winning_bids table

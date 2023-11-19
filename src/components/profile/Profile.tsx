@@ -45,9 +45,25 @@ const Profile: React.FC<ProfileProps> = ({ customerInfo, onCancelRequest }) => {
   }, []); // Empty dependency array to run the effect once on mount
 
   const handleCancelRequest = (requestId: number) => {
-    onCancelRequest(requestId, (success) => {
-      setCancelSuccess(success ? requestId : null);
-    });
+    console.log('Cancelling request with ID:', requestId);
+
+    // Make an axios call to update the request status on the server
+    axios
+      .post('http://localhost:4200/profile/cancel-request', { requestId })
+      .then((response) => {
+        console.log('Cancel request success:', response.data);
+        setCancelSuccess(requestId);
+
+        // Optionally, you can update the request history to reflect the cancellation
+        setRequestHistory((prevHistory) =>
+          prevHistory.map((request) =>
+            request.id === requestId ? { ...request, status: 'Cancelled' } : request
+          )
+        );
+      })
+      .catch((error) => {
+        console.error('Error updating request status:', error);
+      });
   };
 
   return (

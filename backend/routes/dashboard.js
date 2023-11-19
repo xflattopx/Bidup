@@ -34,7 +34,7 @@ router.get('/accepted-bids', async (req, res) => {
         WHERE
           b.status = 'Sold' AND d.id = 1;
       `);
-      console.log(rows)
+    
       res.json(rows);
     } catch (error) {
       console.error('Error executing query', error);

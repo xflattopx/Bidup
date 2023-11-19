@@ -35,8 +35,6 @@ router.post('/', async function (req, res, next) {
     RETURNING id
   `;
 
-  console.log(insertQuery);
-
   try {
       // Execute the SQL query
       const result = await db.query(insertQuery, [
@@ -51,7 +49,7 @@ router.post('/', async function (req, res, next) {
 
       // Get the ID of the inserted row
       const requestId = result.rows[0].id;
-      console.log('Data stored successfully. Request ID:', requestId);
+      //console.log('Data stored successfully. Request ID:', requestId);
 
       // Respond with the inserted data
       return req.body;
@@ -62,14 +60,14 @@ router.post('/', async function (req, res, next) {
 });
 
 
-// Route to retrieve all pending rows
+// Route to retrieve all pending rows excluding 'Canceled'
 router.get('/all', async function (req, res, next) {
   try {
-    // Query to retrieve all rows except those with status "Sold"
-    const query = 'SELECT id, pickup_location, dropoff_location, description, preferred_delivery_time, price_offer, status FROM delivery_requests WHERE status <> $1';
+    // Query to retrieve all rows except those with status "Sold" and "Canceled"
+    const query = 'SELECT id, pickup_location, dropoff_location, description, preferred_delivery_time, price_offer, status FROM delivery_requests WHERE status NOT IN ($1, $2)';
 
     // Execute the query
-    const result = await db.query(query, ['Sold']);
+    const result = await db.query(query, ['Sold', 'Canceled']);
 
     // Send the result as a JSON response
     res.json(result.rows);

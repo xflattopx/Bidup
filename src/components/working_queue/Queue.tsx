@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 import { RootState } from '../../redux/reducers/rootReducer';
 import { Dispatch } from 'redux';
 import { setDriverId } from '../../redux/actions/driverActions'
+import io from 'socket.io-client';
 
 interface QueueProps {
   driverId: number; 
@@ -31,6 +32,9 @@ interface QueueState {
 
 const Queue: React.FC = () => {
   const [queueState, setQueueState] = useState<QueueState>({ uniqueIds: new Set(), queue: [] });
+
+  // Create a Socket.IO client instance
+  const socket = io('http://localhost:3000'); // Use your server URL
 
   const fetchDataAndEnqueue = async () => {
     try {

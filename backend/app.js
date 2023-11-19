@@ -5,6 +5,8 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const http = require('http');
+const socketIo = require('socket.io');
 
 
 
@@ -15,6 +17,21 @@ var bidRouter = require('./routes/bid.js');
 var dashboardRouter = require('./routes/dashboard.js');
 var profileRouter = require('./routes/profile.js');
 var app = express();
+
+
+const server = http.createServer(app);
+const io = socketIo(server);
+
+// Socket.IO connection handling
+io.on('connection', (socket) => {
+  console.log('A user connected');
+
+  // Additional Socket.IO event handling can be added here
+
+  socket.on('disconnect', () => {
+    console.log('User disconnected');
+  });
+});
 
 app.use(cors());
 app.use(bodyParser.json());
