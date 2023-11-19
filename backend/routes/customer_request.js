@@ -1,20 +1,30 @@
 var express = require('express');
 var router = express.Router();
 const cors = require('cors');
-var { Client } = require('pg');
+var { Pool } = require('pg');
 const bodyParser = require('body-parser');
 
 router.use(cors());
 // Connect to PostgreSQL database
-var db = new Client({
+let pool;
+if (process.env.NODE_ENV !== 'development') {
+// Connect to PostgreSQL database
+pool = new Pool({
   user: 'postgres',
   host: 'localhost',
   database: 'postgres',
   password: '1234',
   port: 5432,
 });
+} else {
+  pool = new Pool({
+    host: `/cloudsql/${process.env.CLOUD_SQL_CONNECTION_NAME}`,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+  
+  });
 
-db.connect();
 
 router.post('/', async function (req, res, next) {
   // Retrieve data from the request body

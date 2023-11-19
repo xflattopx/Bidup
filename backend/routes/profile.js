@@ -5,17 +5,27 @@ const { Pool } = require('pg');
 const cron = require('node-cron');
 const { REPL_MODE_SLOPPY } = require('repl');
 
+
+
+router.use(cors)
+let pool;
+if (process.env.NODE_ENV !== 'development') {
 // Connect to PostgreSQL database
-const pool = new Pool({
+pool = new Pool({
   user: 'postgres',
   host: 'localhost',
   database: 'postgres',
   password: '1234',
   port: 5432,
 });
-
-router.use(cors());
-
+} else {
+  pool = new Pool({
+    host: `/cloudsql/${process.env.CLOUD_SQL_CONNECTION_NAME}`,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+  
+  });
 
 router.get('/profile-request-details', async (req, res) => {
     try {
