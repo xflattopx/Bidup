@@ -1,0 +1,33 @@
+name: Deploy to GCP
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '14'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Deploy to GCP
+        run: |
+          gcloud auth activate-service-account --key-file=<(echo "$GCLOUD_SERVICE_KEY")
+          gcloud config set project $GCLOUD_PROJECT
+          gcloud app deploy $GCLOUD_APP --quiet
+        env:
+          GCLOUD_PROJECT: ${{ secrets.GCLOUD_PROJECT }}
+          GCLOUD_REGION: ${{ secrets.GCLOUD_REGION }}
+          GCLOUD_APP: ${{ secrets.GCLOUD_APP }}
+          GCLOUD_SERVICE_KEY: ${{ secrets.GCLOUD_SERVICE_KEY }}

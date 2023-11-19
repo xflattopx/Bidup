@@ -9,9 +9,21 @@ import HomePage from './components/landing_page/HomePage';
 import Profile from './components/profile/Profile';
 import Dashboard from './components/dashboard/Dashboard';
 import Login from './components/login/Login';
+// app.ts
+import { frontEndConfig } from './config/credentials';  
+
+// Use the configuration as needed
+
+
 function App() {
+
+
   return (
     <div className="App">
+      <p>creds path: {frontEndConfig.credentials_path}</p>
+      <p>region: {frontEndConfig.region}</p>
+      <p>projectId: {frontEndConfig.project_id}</p>
+      <p>app: {frontEndConfig.app}</p>
       <h1>Bid Up</h1>
       <HomePage></HomePage>
       <Registration></Registration>
