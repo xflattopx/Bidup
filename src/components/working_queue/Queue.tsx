@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 import { RootState } from '../../redux/reducers/rootReducer';
 import { Dispatch } from 'redux';
 import { setDriverId } from '../../redux/actions/driverActions'
+import io from 'socket.io-client';
 
 interface QueueProps {
   driverId: number; 
@@ -32,9 +33,12 @@ interface QueueState {
 const Queue: React.FC = () => {
   const [queueState, setQueueState] = useState<QueueState>({ uniqueIds: new Set(), queue: [] });
 
+  // Create a Socket.IO client instance
+  const socket = io('http://localhost:3000'); // Use your server URL
+
   const fetchDataAndEnqueue = async () => {
     try {
-      const response = await axios.get('http://localhost:4200/customer_request/pending');
+      const response = await axios.get('http://localhost:4200/customer_request/all');
       const newData: DeliveryRequest[] = response.data;
       setQueueState((prevState) => {
         const uniqueIdsSet = new Set(prevState.uniqueIds);
@@ -75,37 +79,52 @@ const Queue: React.FC = () => {
 
   const handleBidButtonClick = async (requestId: number) => {
     try {
-      // Step 1: Send a bid request to the backend
-      const bidResponse = await axios.post('http://localhost:4200/bid/record-bid', {
-        deliveryRequestId: requestId,
-        driverId: 1,
-        bidPrice: 100
-      });
+      // Prompt the user for bid amount
+      const bidAmount = prompt('Enter your bid amount:');
+      if (bidAmount !== null) {
+        const parsedBidAmount = parseFloat(bidAmount);
+        if (!isNaN(parsedBidAmount)) {
+          // Send a bid request to the backend
+          const bidResponse = await axios.post('http://localhost:4200/bid/record-bid', {
+            deliveryRequestId: requestId,
+            driverId: 1, // Replace with your driverId logic
+            bidPrice: parsedBidAmount,
+          });
   
-      // Extract the bid ID from the response
-      const bidId = bidResponse.data.requestId;
+          // Extract the bid ID from the response
+          const bidId = bidResponse.data.requestId;
   
-      // Step 2: Update the UI to reflect that the bid was placed
-      setQueueState((prevState) => ({
-        uniqueIds: prevState.uniqueIds,
-        queue: prevState.queue.map((request) =>
-          request.id === requestId
-            ? { ...request, status: 'Bidding' } // Update status to 'Bidding' or another appropriate value
-            : request
-        ),
-      }));
+          // Update the bid with the driver who placed it
+          await axios.post('http://localhost:4200/bid/update-bid', {
+            bidId: bidId,
+            newBidPrice: parsedBidAmount,
+            driverId: 1, // Replace with your driverId logic
+          });
   
-      // Step 3: After a successful bid, record the winning bid
-      await axios.post('http://localhost:4200/bid/record-winning-bid', {
-        bidId: bidId,
-      });
+          // Update the UI to reflect that the bid was placed
+          setQueueState((prevState) => ({
+            uniqueIds: prevState.uniqueIds,
+            queue: prevState.queue.map((request) =>
+              request.id === requestId
+                ? { ...request, status: 'Bidding', price_offer: parsedBidAmount }
+                : request
+            ),
+          }));
   
-  
+          // Record the winning bid
+          await axios.post('http://localhost:4200/bid/record-winning-bid', {
+            bidId: bidId,
+          });
+        } else {
+          alert('Invalid bid amount. Please enter a valid number.');
+        }
+      }
     } catch (error) {
       console.error('Error placing bid:', error);
+      alert('Error placing bid. Please try again later.');
     }
   };
-
+  
   return (
   
     <div className="queue-container">
@@ -134,7 +153,9 @@ const Queue: React.FC = () => {
               <td>${request.price_offer}</td>
               <td>{request.status}</td>
               <td>
-              {request.status === 'Bidding' && <span>Bidding...</span>}
+              {request.status === 'Bidding' && (
+                  <button onClick={() => handleBidButtonClick(request.id)}>Bid</button>
+                )}
                 {request.status === 'Pending' && (
                   <button onClick={() => handleBidButtonClick(request.id)}>Bid</button>
                 )}

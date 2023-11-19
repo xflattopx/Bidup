@@ -5,14 +5,33 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const http = require('http');
+const socketIo = require('socket.io');
 
 
 
 
-var indexRouter = require('./routes/index');
-var customerRequestRouter = require('./routes/customer_request');
+var indexRouter = require('./routes/index.js');
+var customerRequestRouter = require('./routes/customer_request.js');
 var bidRouter = require('./routes/bid.js');
+var dashboardRouter = require('./routes/dashboard.js');
+var profileRouter = require('./routes/profile.js');
 var app = express();
+
+
+const server = http.createServer(app);
+const io = socketIo(server);
+
+// Socket.IO connection handling
+io.on('connection', (socket) => {
+  console.log('A user connected');
+
+  // Additional Socket.IO event handling can be added here
+
+  socket.on('disconnect', () => {
+    console.log('User disconnected');
+  });
+});
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -32,6 +51,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/customer_request', customerRequestRouter);
 app.use('/bid', bidRouter);
+app.use('/dashboard',dashboardRouter);
+app.use('/profile',profileRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
