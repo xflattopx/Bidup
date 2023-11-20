@@ -25,17 +25,35 @@ interface ProfileProps {
 const Profile: React.FC<ProfileProps> = ({ customerInfo, onCancelRequest }) => {
   const [requestHistory, setRequestHistory] = useState<RequestHistory[]>([]);
   const [cancelSuccess, setCancelSuccess] = useState<number | null>(null);
+  const [customerProfile, setCustomerProfile] = useState<{
+    firstName: string;
+    lastName: string;
+    email: string;
+  }>({ firstName: '', lastName: '', email: '' });
 
   useEffect(() => {
     // Assuming you have access to the customerId in your component
     const customerId = 2; // Implement getCustomerId() based on your component's logic
+
+    // Fetch customer personal details
+    axios
+      .get(`http://localhost:4200/profile/profile-personal-details?customerId=${customerId}`)
+      .then((response) => {
+        // Assuming response.data is an object with properties like 'firstName', 'lastName', 'email'
+        setCustomerProfile(response.data.data);
+        console.log('Customer profile retrieved:', response.data);
+      })
+      .catch((error) => {
+        console.error('Error fetching customer profile:', error);
+        // Handle any error-related logic here
+      });
 
     // Fetch request history details
     axios
       .get(`http://localhost:4200/profile/profile-request-details?customerId=${customerId}`)
       .then((response) => {
         // Assuming response.data is an array of objects with properties like 'id', 'pickupLocation', etc.
-        setRequestHistory(response.data);
+        setRequestHistory(response.data.data); // Assuming the data is inside a 'data' property
         console.log('Request history retrieved:', response.data);
       })
       .catch((error) => {
@@ -72,13 +90,13 @@ const Profile: React.FC<ProfileProps> = ({ customerInfo, onCancelRequest }) => {
       <div className="profile-section">
         <h3>Personal Information</h3>
         <p>
-          <strong>First Name:</strong> {customerInfo.firstName || 'Chase'}
+          <strong>First Name:</strong> {customerProfile.firstName || 'Chase'}
         </p>
         <p>
-          <strong>Last Name:</strong> {customerInfo.lastName || 'Moore'}
+          <strong>Last Name:</strong> {customerProfile.lastName || 'Moore'}
         </p>
         <p>
-          <strong>Email:</strong> {customerInfo.email || 'email@email.com'}
+          <strong>Email:</strong> {customerProfile.email || 'email@email.com'}
         </p>
         {/* Add more customer profile information as needed */}
       </div>
