@@ -3,9 +3,61 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { submitDeliveryRequest } from '../../redux/actions/deliveryRequestActions';
-import './DeliveryRequestForm.css'; // Import the CSS file for styling
+import styled from 'styled-components';
 import axios from 'axios';
 
+// Styled Components
+const Container = styled.div`
+  max-width: 600px;
+  margin: auto;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  background-color: #f4f4f4;
+`;
+
+const Title = styled.h2`
+  font-size: 2em;
+  color: #1a1a1a;
+  margin-bottom: 20px;
+`;
+
+const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+`;
+
+const Label = styled.label`
+  display: flex;
+  flex-direction: column;
+  color: #333;
+`;
+
+const Input = styled.input`
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+`;
+
+const TextArea = styled.textarea`
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+`;
+
+const Button = styled.button`
+  background-color: #1a1a1a;
+  color: white;
+  cursor: pointer;
+  border: none;
+  border-radius: 4px;
+  padding: 10px;
+`;
+
+// Component
 const DeliveryRequestForm: React.FC = () => {
   const dispatch = useDispatch();
   const [formState, setFormState] = useState({
@@ -52,64 +104,64 @@ const DeliveryRequestForm: React.FC = () => {
   };
 
   return (
-    <div className="delivery-request-form-container">
-      <h2>Delivery Request Form</h2>
-      <form onSubmit={handleSubmit} className="delivery-request-form">
-        <label>
+    <Container>
+      <Title>Delivery Request Form</Title>
+      <Form onSubmit={handleSubmit}>
+        <Label>
           Pickup Location:
-          <input
+          <Input
             type="text"
             name="pickupLocation"
             value={formState.pickupLocation}
             onChange={handleInputChange}
             required
           />
-        </label>
+        </Label>
 
-        <label>
+        <Label>
           Drop-off Location:
-          <input
+          <Input
             type="text"
             name="dropOffLocation"
             value={formState.dropOffLocation}
             onChange={handleInputChange}
             required
           />
-        </label>
+        </Label>
 
-        <label>
+        <Label>
           Description:
-          <textarea
+          <TextArea
             name="description"
             value={formState.description}
             onChange={handleInputChange}
             required
           />
-        </label>
+        </Label>
 
-        <label>
+        <Label>
           Preferred Delivery Time:
-          <input
+          <Input
             type="datetime-local"
             name="preferredDeliveryTime"
             value={formState.preferredDeliveryTime}
             onChange={handleInputChange}
             required
           />
-        </label>
+        </Label>
 
-        <label>
+        <Label>
           Price Offer (if applicable):
-          <input
+          <Input
             type="number"
             name="priceOffer"
             value={formState.priceOffer}
             onChange={handleInputChange}
           />
-        </label>
-        <button type="submit">Submit Request</button>
-      </form>
-    </div>
+        </Label>
+        <Button type="submit">Submit Request</Button>
+      </Form>
+    </Container>
   );
 };
 

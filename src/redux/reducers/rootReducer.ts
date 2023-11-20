@@ -7,7 +7,7 @@ import customerReducer from './customerReducer';
 const rootReducer = combineReducers({
   deliveryForm: deliveryFormReducer,
   drivers: driversReducer,
-  customers: customerReducer
+  customers: customerReducer  
   // Add other reducers as needed
 });
 
