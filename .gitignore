@@ -21,3 +21,10 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# .gitignore
+credentials.json
+# .gitignore
+/node_modules
+/dist
+
