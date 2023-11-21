@@ -1,24 +1,25 @@
-// styles.ts
-
 import styled from 'styled-components';
 
 export const QueueContainer = styled.div`
   text-align: center;
   padding: 20px;
   font-family: 'Arial', sans-serif;
+  max-width: 80%;
+  margin: 20px auto;
 `;
 
 export const DeliveryQueueTable = styled.table`
-  width: 80%;
-  margin: auto;
+  width: 100%;
   border-collapse: collapse;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  margin: 0 auto; /* Center the table */
+  margin-top: 20px; /* Adjust the top margin to move it down a bit */
 `;
 
 export const DeliveryQueueTableHeader = styled.th`
   border: 1px solid #333;
   padding: 12px;
-  background-color: #1a1a1a; /* Updated color */
+  background-color: #333;
   color: white;
 `;
 
@@ -63,4 +64,8 @@ export const StatusCell = styled.td`
 
 export const ActionCell = styled.td`
   /* Additional styles for ActionCell if needed */
+`;
+
+export const QueueTitle = styled.h2`
+  color: black; /* Set the desired color for the title */
 `;

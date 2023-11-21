@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import './Profile.css';
+import * as Styles from './styles';
 
 interface RequestHistory {
   id: number;
@@ -85,9 +85,9 @@ const Profile: React.FC<ProfileProps> = ({ customerInfo, onCancelRequest }) => {
   };
 
   return (
-    <div className="profile-container">
+    <Styles.ProfileContainer>
       <h2>Customer Profile</h2>
-      <div className="profile-section">
+      <Styles.ProfileSection>
         <h3>Personal Information</h3>
         <p>
           <strong>First Name:</strong> {customerProfile.firstName || 'Chase'}
@@ -99,51 +99,53 @@ const Profile: React.FC<ProfileProps> = ({ customerInfo, onCancelRequest }) => {
           <strong>Email:</strong> {customerProfile.email || 'email@email.com'}
         </p>
         {/* Add more customer profile information as needed */}
-      </div>
+      </Styles.ProfileSection>
 
-      <div className="profile-section">
+      <Styles.ProfileSection>
         <h3>Request History</h3>
-        <table>
+        <Styles.ProfileTable>
           <thead>
             <tr>
-              <th>ID</th>
-              <th>Pickup Location</th>
-              <th>Drop-off Location</th>
-              <th>Description</th>
-              <th>Preferred Delivery Time</th>
-              <th>Price Offer</th>
-              <th>Status</th>
-              <th>Options</th>
+              <Styles.ProfileTableHeader>ID</Styles.ProfileTableHeader>
+              <Styles.ProfileTableHeader>Pickup Location</Styles.ProfileTableHeader>
+              <Styles.ProfileTableHeader>Drop-off Location</Styles.ProfileTableHeader>
+              <Styles.ProfileTableHeader>Description</Styles.ProfileTableHeader>
+              <Styles.ProfileTableHeader>Preferred Delivery Time</Styles.ProfileTableHeader>
+              <Styles.ProfileTableHeader>Price Offer</Styles.ProfileTableHeader>
+              <Styles.ProfileTableHeader>Status</Styles.ProfileTableHeader>
+              <Styles.ProfileTableHeader>Options</Styles.ProfileTableHeader>
             </tr>
           </thead>
           <tbody>
             {requestHistory.map((request) => (
               <tr key={request.id}>
-                <td>{request.id}</td>
-                <td>{request.pickupLocation}</td>
-                <td>{request.dropoffLocation}</td>
-                <td>{request.description}</td>
-                <td>{request.preferredDeliveryTime}</td>
-                <td>${request.priceOffer}</td>
-                <td>{request.status}</td>
-                <td>
+                <Styles.ProfileTableCell>{request.id}</Styles.ProfileTableCell>
+                <Styles.ProfileTableCell>{request.pickupLocation}</Styles.ProfileTableCell>
+                <Styles.ProfileTableCell>{request.dropoffLocation}</Styles.ProfileTableCell>
+                <Styles.ProfileTableCell>{request.description}</Styles.ProfileTableCell>
+                <Styles.ProfileTableCell>{request.preferredDeliveryTime}</Styles.ProfileTableCell>
+                <Styles.ProfileTableCell>${request.priceOffer}</Styles.ProfileTableCell>
+                <Styles.ProfileTableCell>{request.status}</Styles.ProfileTableCell>
+                <Styles.ProfileTableCell>
                   {request.status === 'Pending' && (
                     <>
-                      <button onClick={() => handleCancelRequest(request.id)}>Cancel</button>
+                      <Styles.CancelButton onClick={() => handleCancelRequest(request.id)}>
+                        Cancel
+                      </Styles.CancelButton>
                       {cancelSuccess !== null && request.id === cancelSuccess && (
-                        <span>
+                        <Styles.CancelSuccessMessage>
                           {cancelSuccess ? 'Request canceled successfully!' : 'Failed to cancel request.'}
-                        </span>
+                        </Styles.CancelSuccessMessage>
                       )}
                     </>
                   )}
-                </td>
+                </Styles.ProfileTableCell>
               </tr>
             ))}
           </tbody>
-        </table>
-      </div>
-    </div>
+        </Styles.ProfileTable>
+      </Styles.ProfileSection>
+    </Styles.ProfileContainer>
   );
 };
 

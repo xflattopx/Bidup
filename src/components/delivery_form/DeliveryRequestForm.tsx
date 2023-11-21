@@ -3,59 +3,8 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { submitDeliveryRequest } from '../../redux/actions/deliveryRequestActions';
-import styled from 'styled-components';
-import axios from 'axios';
-
-// Styled Components
-const Container = styled.div`
-  max-width: 600px;
-  margin: auto;
-  padding: 20px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
-  background-color: #f4f4f4;
-`;
-
-const Title = styled.h2`
-  font-size: 2em;
-  color: #1a1a1a;
-  margin-bottom: 20px;
-`;
-
-const Form = styled.form`
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-`;
-
-const Label = styled.label`
-  display: flex;
-  flex-direction: column;
-  color: #333;
-`;
-
-const Input = styled.input`
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 14px;
-`;
-
-const TextArea = styled.textarea`
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 14px;
-`;
-
-const Button = styled.button`
-  background-color: #1a1a1a;
-  color: white;
-  cursor: pointer;
-  border: none;
-  border-radius: 4px;
-  padding: 10px;
-`;
+import { Link, Outlet, redirect } from 'react-router-dom'; // Import Link and useHistory
+import * as Styled from './styles';
 
 // Component
 const DeliveryRequestForm: React.FC = () => {
@@ -71,7 +20,7 @@ const DeliveryRequestForm: React.FC = () => {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormState((prevFormState) => ({
+    setFormState((prevFormState: any) => ({
       ...prevFormState,
       [name]: value,
     }));
@@ -80,11 +29,7 @@ const DeliveryRequestForm: React.FC = () => {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     try {
-      // Print the form state to the console
-      //console.log('Form State:', formState);
-
       // Dispatch the submitDeliveryRequest action with the form data
-      //await axios.post('http://localhost:4200/customer_request',formState);
       dispatch(await submitDeliveryRequest(formState));
       console.log('Request submitted successfully!');
 
@@ -97,6 +42,9 @@ const DeliveryRequestForm: React.FC = () => {
         priceOffer: 0,
         customerId: 13
       });
+
+      // Redirect to home after successful submission
+      redirect('/');
     } catch (error) {
       console.error('Error submitting request:', error);
       // Handle any error-related logic here
@@ -104,64 +52,67 @@ const DeliveryRequestForm: React.FC = () => {
   };
 
   return (
-    <Container>
-      <Title>Delivery Request Form</Title>
-      <Form onSubmit={handleSubmit}>
-        <Label>
+    <Styled.Container>
+      <Styled.Title>Delivery Request Form</Styled.Title>
+      <Styled.Form onSubmit={handleSubmit}>
+        <Styled.Label>
           Pickup Location:
-          <Input
+          <Styled.Input
             type="text"
             name="pickupLocation"
             value={formState.pickupLocation}
             onChange={handleInputChange}
             required
           />
-        </Label>
+        </Styled.Label>
 
-        <Label>
+        <Styled.Label>
           Drop-off Location:
-          <Input
+          <Styled.Input
             type="text"
             name="dropOffLocation"
             value={formState.dropOffLocation}
             onChange={handleInputChange}
             required
           />
-        </Label>
+        </Styled.Label>
 
-        <Label>
+        <Styled.Label>
           Description:
-          <TextArea
+          <Styled.TextArea
             name="description"
             value={formState.description}
             onChange={handleInputChange}
             required
           />
-        </Label>
+        </Styled.Label>
 
-        <Label>
+        <Styled.Label>
           Preferred Delivery Time:
-          <Input
+          <Styled.Input
             type="datetime-local"
             name="preferredDeliveryTime"
             value={formState.preferredDeliveryTime}
             onChange={handleInputChange}
             required
           />
-        </Label>
+        </Styled.Label>
 
-        <Label>
+        <Styled.Label>
           Price Offer (if applicable):
-          <Input
+          <Styled.Input
             type="number"
             name="priceOffer"
             value={formState.priceOffer}
             onChange={handleInputChange}
           />
-        </Label>
-        <Button type="submit">Submit Request</Button>
-      </Form>
-    </Container>
+        </Styled.Label>
+        <Styled.Button type="submit">Submit Request</Styled.Button>
+      </Styled.Form>
+      
+      {/* Link to go back to home */}
+      <Styled.BackToHomeLink to="/">Go Back to Home</Styled.BackToHomeLink>
+    </Styled.Container>
   );
 };
 

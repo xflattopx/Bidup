@@ -18,6 +18,7 @@ import {
   BiddingBidButton,
   StatusCell,
   ActionCell,
+  QueueTitle,
 } from './styles';
 
 interface QueueProps {
@@ -138,7 +139,7 @@ const Queue: React.FC = () => {
 
   return (
     <QueueContainer>
-      <h2>Delivery Queue</h2>
+      <QueueTitle>Delivery Queue</QueueTitle>
       <DeliveryQueueTable>
         <thead>
           <tr>
