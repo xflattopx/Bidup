@@ -1,11 +1,13 @@
 // Register.tsx
 
 import React, { useState, useEffect } from 'react';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { RootState } from '../../redux/reducers/rootReducer';
-import {insertCustomerInformationAsync , insertCustomerInformation, updateCustomerInfo } from '../../redux/actions/customerActions';
+import { insertCustomerInformationAsync, INSERT_CUSTOMER_INFO, REGISTRATION_MESSAGE, updateCustomerInfo } from '../../redux/actions/customerActions';
+import axios from 'axios';
+
 
 const Container = styled.div`
   text-align: center;
@@ -41,15 +43,6 @@ const Label = styled.label`
   text-align: left;
   color: #333;
   width: 100%;
-`;
-
-const Input = styled.input`
-  padding: 10px;
-  margin-top: 5px;
-  margin-bottom: 15px;
-  width: 100%;
-  border: 1px solid #ccc;
-  border-radius: 4px;
 `;
 
 const Select = styled.select`
@@ -97,8 +90,23 @@ const InputRow = styled.div`
   flex-wrap: wrap;
 `;
 
-const InputHalf = styled(Input)`
-  width: 48%; /* Adjust the width as needed */
+export const Input = styled.input`
+  padding: 10px;
+  margin-top: 5px;
+  margin-bottom: 15px;
+  width: 100%; /* Make the input span the entire width of the container */
+  border: 1px solid #ccc;
+  border-radius: 4px;
+`;
+
+export const InputHalf = styled(Input)`
+  padding: 12px;
+  margin-top: 8px;
+  margin-bottom: 16px;
+  width: 95%; /* Adjust the width as needed */
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box; /* Include padding and border in the element's total width and height */
 `;
 
 interface RegistrationProps {
@@ -106,14 +114,13 @@ interface RegistrationProps {
   lastName: string;
   email: string;
   role: string;
-  updateCustomerInfo: (info: any) => void;
-  insertCustomerInformation: (formData: any) => void;
-  insertCustomerInformationAsync: (formData: any) => any;
   isRegistered: boolean;
 }
 
+
+
 const Register: React.FC<RegistrationProps> = function ({
-  firstName, lastName, email, role, updateCustomerInfo, insertCustomerInformation, insertCustomerInformationAsync, isRegistered,
+  firstName, lastName, email, role, isRegistered, 
 }) {
   const [formState, setFormState] = useState({
     firstName: '',
@@ -124,17 +131,20 @@ const Register: React.FC<RegistrationProps> = function ({
     role: 'Customer',
   });
 
+  const dispatch = useDispatch();
   const [passwordError, setPasswordError] = useState('');
   let navigate = useNavigate();
 
-  useEffect(() => {
-    if (isRegistered) {
-      const timer = setTimeout(() => {
-        navigate('/registration-success');
-      }, 5000);
-      return () => clearTimeout(timer);
-    }
-  }, [isRegistered, formState]);
+  // useEffect(() => {
+
+  //   if (isRegistered) {
+  //     console.log('in useeffect');
+  //     const timer = setTimeout(() => {
+  //       navigate('/registration-success');
+  //     }, 5000);
+  //     return () => clearTimeout(timer);
+  //   }
+  // }, [isRegistered, formState]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -165,23 +175,41 @@ const Register: React.FC<RegistrationProps> = function ({
     }
 
     try {
-      await insertCustomerInformationAsync({
-        firstName: formState.firstName,
-        lastName: formState.lastName,
-        email: formState.email,
-        password: formState.password,
-        role: formState.role,
-      });
 
+      console.log('hit handleSubmit ');
+      // Dispatch the thunk action
+      const response = await axios.post('http://localhost:4200/register/sign-up',
+       {first_name: formState.firstName, last_name:formState.lastName, email:formState.email, password:formState.password, role:formState.role} ).then(() => {
+        dispatch({
+          type: INSERT_CUSTOMER_INFO,
+          payload: {
+            firstName: formState.firstName,
+            lastName: formState.lastName,
+            email: formState.email,
+            password: formState.password,
+            role: formState.role,
+          }
+        });
+  
+        // Dispatch an action with the registration message to the /registration-success component
+        const registrationMessage = `Thank you for registering, ${formState.firstName}!`;
+        dispatch({
+          type: REGISTRATION_MESSAGE,
+          payload: {
+            registrationMessage: registrationMessage,
+          },
+        });
+       });
 
-      await setFormState({
-        firstName: '',
-        lastName: '',
-        email: '',
-        password: '',
-        confirmPassword: '',
-        role: 'Customer',
-      });
+  
+      // setFormState({
+      //   firstName: '',
+      //   lastName: '',
+      //   email: '',
+      //   password: '',
+      //   confirmPassword: '',
+      //   role: 'Customer',
+      // });
     } catch (error) {
       console.error('Error during registration:', error);
     }
@@ -192,73 +220,86 @@ const Register: React.FC<RegistrationProps> = function ({
       <RegistrationContainer>
         <Title>Registration</Title>
         <Form onSubmit={handleSubmit}>
-          <Label>
-            First Name:
-            <Input
-              type="text"
-              name="firstName"
-              value={formState.firstName}
-              onChange={handleInputChange}
-              required />
-          </Label>
-
-          <Label>
-            Last Name:
-            <Input
-              type="text"
-              name="lastName"
-              value={formState.lastName}
-              onChange={handleInputChange}
-              required />
-          </Label>
-
-          <Label>
-            Email:
-            <Input
-              type="email"
-              name="email"
-              value={formState.email}
-              onChange={handleInputChange}
-              required />
-          </Label>
-
-          <Label>
-            Password:
-            <Input
-              type="password"
-              name="password"
-              value={formState.password}
-              onChange={handleInputChange}
-              required />
-          </Label>
-
-          <Label>
-            Re-enter Password:
-            <Input
-              type="password"
-              name="confirmPassword"
-              value={formState.confirmPassword}
-              onChange={handleInputChange}
-              required />
-          </Label>
-
+          <InputRow>
+            <Label>
+              First Name:
+              <InputHalf
+                type="text"
+                name="firstName"
+                value={formState.firstName}
+                onChange={handleInputChange}
+                required
+              />
+            </Label>
+  
+            <Label>
+              Last Name:
+              <InputHalf
+                type="text"
+                name="lastName"
+                value={formState.lastName}
+                onChange={handleInputChange}
+                required
+              />
+            </Label>
+          </InputRow>
+  
+          <InputRow>
+            <Label>
+              Email:
+              <InputHalf
+                type="email"
+                name="email"
+                value={formState.email}
+                onChange={handleInputChange}
+                required
+              />
+            </Label>
+          </InputRow>
+  
+          <InputRow>
+            <Label>
+              Password:
+              <InputHalf
+                type="password"
+                name="password"
+                value={formState.password}
+                onChange={handleInputChange}
+                required
+              />
+            </Label>
+  
+            <Label>
+              Re-enter Password:
+              <InputHalf
+                type="password"
+                name="confirmPassword"
+                value={formState.confirmPassword}
+                onChange={handleInputChange}
+                required
+              />
+            </Label>
+          </InputRow>
+  
           {passwordError && <ErrorMessage>{passwordError}</ErrorMessage>}
-
-          <Label>
-            Role:
-            <Select name="role" value={formState.role} onChange={handleRoleChange}>
-              <option value="customer">Customer</option>
-              <option value="driver">Driver</option>
-            </Select>
-          </Label>
-
+  
+          <InputRow>
+            <Label>
+              Role:
+              <Select name="role" value={formState.role} onChange={handleRoleChange}>
+                <option value="Customer">Customer</option>
+                <option value="Driver">Driver</option>
+              </Select>
+            </Label>
+          </InputRow>
+  
           <Button type="submit">Register</Button>
         </Form>
-        {isRegistered && <SuccessMessage>Registration successful! Redirecting...</SuccessMessage>}
+        {isRegistered === true && <SuccessMessage>{REGISTRATION_MESSAGE}</SuccessMessage>}
       </RegistrationContainer>
     </Container>
-  );
-};
+  )};
+  
 
 const mapStateToProps = (state: RootState) => ({
   firstName: state.customers.customerInfo.firstName,
@@ -266,11 +307,11 @@ const mapStateToProps = (state: RootState) => ({
   email: state.customers.customerInfo.email,
   role: state.customers.customerInfo.role,
   isRegistered: state.customers.customerInfo.isRegistered,
+  registrationMessage: state.customers.customerInfo.registrationMessage
 });
 
 const mapDispatchToProps = {
-  updateCustomerInfo,
-  insertCustomerInformation,
+  updateCustomerInfo
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Register);

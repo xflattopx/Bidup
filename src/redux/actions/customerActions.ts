@@ -116,13 +116,10 @@ export const insertCustomerInformation = (insertCustomerInfo:InsertCustomerInfoA
 
   // customerActions.ts
 
-  export const insertCustomerInformationAsync = (
-    formData: any
-  ): ThunkAction<void, RootState, unknown, InsertCustomerInfoAction> => async (dispatch: Dispatch) => {
-    try {
+  export const insertCustomerInformationAsync = (formData:any) => async (dispatch: Dispatch) =>{
+        console.log('here')
       // Make API call to insert customer information
-      const response = await axios.post('http://localhost:4200/register/sign-up', formData);
-  
+
       // Dispatch the action with the response data
       dispatch({
         type: INSERT_CUSTOMER_INFO,
@@ -132,9 +129,9 @@ export const insertCustomerInformation = (insertCustomerInfo:InsertCustomerInfoA
           email: formData.email,
           password: formData.password,
           role: formData.role,
-        },
+        }
       });
-  
+
       // Dispatch an action with the registration message to the /registration-success component
       const registrationMessage = `Thank you for registering, ${formData.firstname}!`;
       dispatch({
@@ -143,15 +140,9 @@ export const insertCustomerInformation = (insertCustomerInfo:InsertCustomerInfoA
           message: registrationMessage,
         },
       });
+
+    };
   
-      // Return the response for potential further use in the component
-      return response;
-    } catch (error) {
-      // Handle errors
-      console.error('Error inserting details into our system:', error);
-      // You may dispatch a failure action here if needed
-    }
-  };
 
 // Similarly, update other action creators as needed
 

@@ -33,7 +33,7 @@ const Profile: React.FC<ProfileProps> = ({ customerInfo, onCancelRequest }) => {
 
   useEffect(() => {
     // Assuming you have access to the customerId in your component
-    const customerId = 2; // Implement getCustomerId() based on your component's logic
+    const customerId = 13; // Implement getCustomerId() based on your component's logic
 
     // Fetch customer personal details
     axios

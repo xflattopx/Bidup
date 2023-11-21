@@ -1,16 +1,27 @@
 // Queue.tsx
 
 import React, { useState, useEffect } from 'react';
-import './Queue.css';
 import axios from 'axios';
 import { connect } from 'react-redux';
 import { RootState } from '../../redux/reducers/rootReducer';
-import { Dispatch } from 'redux';
-import { setDriverId } from '../../redux/actions/driverActions'
+import { setDriverId } from '../../redux/actions/driverActions';
 import io from 'socket.io-client';
+import {
+  QueueContainer,
+  DeliveryQueueTable,
+  DeliveryQueueTableHeader,
+  DeliveryQueueTableCell,
+  EvenTableRow,
+  HoverTableRow,
+  BidButton,
+  PendingBidButton,
+  BiddingBidButton,
+  StatusCell,
+  ActionCell,
+} from './styles';
 
 interface QueueProps {
-  driverId: number; 
+  driverId: number;
   setDriverId: (driverId: number) => void;
 }
 
@@ -87,20 +98,20 @@ const Queue: React.FC = () => {
           // Send a bid request to the backend
           const bidResponse = await axios.post('http://localhost:4200/bid/record-bid', {
             deliveryRequestId: requestId,
-            driverId: 1, // Replace with your driverId logic
+            driverId: 14, // Replace with your driverId logic
             bidPrice: parsedBidAmount,
           });
-  
+
           // Extract the bid ID from the response
           const bidId = bidResponse.data.requestId;
-  
+
           // Update the bid with the driver who placed it
           await axios.post('http://localhost:4200/bid/update-bid', {
             bidId: bidId,
             newBidPrice: parsedBidAmount,
-            driverId: 1, // Replace with your driverId logic
+            driverId: 14, // Replace with your driverId logic
           });
-  
+
           // Update the UI to reflect that the bid was placed
           setQueueState((prevState) => ({
             uniqueIds: prevState.uniqueIds,
@@ -110,7 +121,7 @@ const Queue: React.FC = () => {
                 : request
             ),
           }));
-  
+
           // Record the winning bid
           await axios.post('http://localhost:4200/bid/record-winning-bid', {
             bidId: bidId,
@@ -124,47 +135,46 @@ const Queue: React.FC = () => {
       alert('Error placing bid. Please try again later.');
     }
   };
-  
+
   return (
-  
-    <div className="queue-container">
+    <QueueContainer>
       <h2>Delivery Queue</h2>
-      <table className="delivery-queue-table">
+      <DeliveryQueueTable>
         <thead>
           <tr>
-            <th>ID</th>
-            <th>Pickup Location</th>
-            <th>Drop-off Location</th>
-            <th>Description</th>
-            <th>Preferred Delivery Time</th>
-            <th>Price Offer</th>
-            <th>Action</th>
-            <th>Status</th>
+            <DeliveryQueueTableHeader>ID</DeliveryQueueTableHeader>
+            <DeliveryQueueTableHeader>Pickup Location</DeliveryQueueTableHeader>
+            <DeliveryQueueTableHeader>Drop-off Location</DeliveryQueueTableHeader>
+            <DeliveryQueueTableHeader>Description</DeliveryQueueTableHeader>
+            <DeliveryQueueTableHeader>Preferred Delivery Time</DeliveryQueueTableHeader>
+            <DeliveryQueueTableHeader>Price Offer</DeliveryQueueTableHeader>
+            <DeliveryQueueTableHeader>Action</DeliveryQueueTableHeader>
+            <DeliveryQueueTableHeader>Status</DeliveryQueueTableHeader>
           </tr>
         </thead>
-        <tbody>    
+        <tbody>
           {queueState.queue.map((request) => (
-            <tr key={request.id}>
-              <td>{request.id}</td>
-              <td>{request.pickup_location}</td>
-              <td>{request.dropoff_location}</td>
-              <td>{request.description}</td>
-              <td>{request.preferred_delivery_time}</td>
-              <td>${request.price_offer}</td>
-              <td>{request.status}</td>
-              <td>
-              {request.status === 'Bidding' && (
-                  <button onClick={() => handleBidButtonClick(request.id)}>Bid</button>
+            <tr key={request.id} className={queueState.uniqueIds.has(request.id) ? 'new-request' : ''}>
+              <DeliveryQueueTableCell>{request.id}</DeliveryQueueTableCell>
+              <DeliveryQueueTableCell>{request.pickup_location}</DeliveryQueueTableCell>
+              <DeliveryQueueTableCell>{request.dropoff_location}</DeliveryQueueTableCell>
+              <DeliveryQueueTableCell>{request.description}</DeliveryQueueTableCell>
+              <DeliveryQueueTableCell>{request.preferred_delivery_time}</DeliveryQueueTableCell>
+              <DeliveryQueueTableCell>${request.price_offer}</DeliveryQueueTableCell>
+              <ActionCell>
+                {request.status === 'Bidding' && (
+                  <BiddingBidButton onClick={() => handleBidButtonClick(request.id)}>Bid</BiddingBidButton>
                 )}
                 {request.status === 'Pending' && (
-                  <button onClick={() => handleBidButtonClick(request.id)}>Bid</button>
+                  <PendingBidButton onClick={() => handleBidButtonClick(request.id)}>Bid</PendingBidButton>
                 )}
-              </td>
+              </ActionCell>
+              <StatusCell>{request.status}</StatusCell>
             </tr>
           ))}
         </tbody>
-      </table>
-    </div>
+      </DeliveryQueueTable>
+    </QueueContainer>
   );
 };
 
@@ -172,4 +182,4 @@ const mapStateToProps = (state: RootState) => ({
   driverId: state.drivers.driverId,
 });
 
-export default connect(mapStateToProps)(Queue);
+export default connect(mapStateToProps, { setDriverId })(Queue);
