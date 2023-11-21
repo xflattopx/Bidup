@@ -46,7 +46,6 @@ const Dashboard: React.FC<DashboardProps> = ({ driverId }) => {
       <S.DashboardTitle>Driver Dashboard</S.DashboardTitle>
 
       <S.DashboardSection>
-        <h3>Accepted Requests</h3>
         <S.DashboardTable>
           <thead>
             <tr>

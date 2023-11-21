@@ -1,7 +1,7 @@
 // Login.tsx
 
 import React, { useState } from 'react';
-import { Container, LoginFormContainer, Form, Label, Input, Button, ErrorMessage } from './styles';
+import { Container, LoginFormContainer, Form, Label, Input, Button, ErrorMessage, Title } from './styles';
 
 interface LoginProps {
   onLogin: (credentials: { username: string; password: string }) => void;
@@ -28,7 +28,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
   return (
     <Container>
       <LoginFormContainer>
-        <h2>Login</h2>
+        <Title>Login</Title>
         <Form onSubmit={handleSubmit} className="login-form">
           <Label>
             Username:

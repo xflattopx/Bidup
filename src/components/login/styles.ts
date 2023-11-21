@@ -16,10 +16,11 @@ export const LoginFormContainer = styled.div`
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center; /* Center the content horizontally */
 `;
 
 export const Title = styled.h2`
-  font-size: 2em;
+  font-size: 2.5em; /* Increase the font size for the title */
   margin-bottom: 20px;
   color: #1a1a1a;
 `;
@@ -43,7 +44,7 @@ export const Input = styled.input`
   padding: 10px;
   margin-top: 5px;
   margin-bottom: 15px;
-  width: 100%;
+  width: 80%;
   border: 1px solid #ccc;
   border-radius: 4px;
 `;

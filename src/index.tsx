@@ -6,8 +6,6 @@ import { createStore } from 'redux';
 import rootReducer from './redux/reducers/rootReducer'; // Import your root reducer
 import { createRoot } from 'react-dom/client';
 import './index.css';
-import { toContainElement } from '@testing-library/jest-dom/matchers';
-//import './App.css';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import DeliveryRequestForm from './components/delivery_form/DeliveryRequestForm';
 import Queue from './components/working_queue/Queue';
@@ -40,11 +38,11 @@ ReactDOM.render(
             firstName: '',
             lastName: '',
             email: ''
-          }} onCancelRequest={function (requestId: number, callback: (success: boolean) => void): void {
+          }} onCancelRequest={function (requestId: number): void {
             throw new Error('Function not implemented.');
           } }/>}/>
         </Route>
-        <Route path="request-form" element={<DeliveryRequestForm/>}/>
+        <Route path="delivery-request-form" element={<DeliveryRequestForm/>}/>
         <Route path="registration-complete" element={<RegistrationSuccess/>}/>
      
       </Routes>
