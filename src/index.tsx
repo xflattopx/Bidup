@@ -30,7 +30,7 @@ ReactDOM.render(
       <Routes>
         <Route path="/" element={<HomePage/>}>
           <Route path="home" element={<HomePage/>} />
-          <Route path="register" element={<Register insertCustomerInformationAsync={()=>{return this}} />} />
+          <Route path="register" element={<Register />} />
           <Route path="login" element={<Login onLogin={function (credentials: { username: string; password: string; }): void {
             throw new Error('Function not implemented.');
           } }/>} />

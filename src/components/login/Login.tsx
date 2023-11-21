@@ -1,7 +1,7 @@
 // Login.tsx
 
 import React, { useState } from 'react';
-import './Login.css';
+import { Container, LoginFormContainer, Form, Label, Input, Button, ErrorMessage } from './styles';
 
 interface LoginProps {
   onLogin: (credentials: { username: string; password: string }) => void;
@@ -26,34 +26,36 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
   };
 
   return (
-    <div className="login-container">
-      <h2>Login</h2>
-      <form onSubmit={handleSubmit} className="login-form">
-        <label>
-          Username:
-          <input
-            type="text"
-            name="username"
-            value={loginData.username}
-            onChange={handleInputChange}
-            required
-          />
-        </label>
+    <Container>
+      <LoginFormContainer>
+        <h2>Login</h2>
+        <Form onSubmit={handleSubmit} className="login-form">
+          <Label>
+            Username:
+            <Input
+              type="text"
+              name="username"
+              value={loginData.username}
+              onChange={handleInputChange}
+              required
+            />
+          </Label>
 
-        <label>
-          Password:
-          <input
-            type="password"
-            name="password"
-            value={loginData.password}
-            onChange={handleInputChange}
-            required
-          />
-        </label>
+          <Label>
+            Password:
+            <Input
+              type="password"
+              name="password"
+              value={loginData.password}
+              onChange={handleInputChange}
+              required
+            />
+          </Label>
 
-        <button type="submit">Login</button>
-      </form>
-    </div>
+          <Button type="submit">Login</Button>
+        </Form>
+      </LoginFormContainer>
+    </Container>
   );
 };
 

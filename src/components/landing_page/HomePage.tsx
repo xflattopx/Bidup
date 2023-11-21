@@ -204,10 +204,10 @@ const HomePage: React.FC<HomePageProps> = ({ userRole }) => {
         )}
 
         <CenterContent>
-          {/* Content Goes Here */}
-          <Outlet />
+          
         </CenterContent>
       </PageContent>
+      <Outlet />
     </Container>
   );
 };
