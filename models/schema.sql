@@ -33,10 +33,10 @@ CREATE TABLE delivery_requests (
   preferred_delivery_time TIMESTAMPTZ NOT NULL,
   price_offer NUMERIC DEFAULT 0,
   status VARCHAR(50) DEFAULT 'Pending',
-  customer_id INT, -- Foreign key referencing the customers table
+  user_id INT, -- Updated foreign key referencing the users table via customers
   created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (customer_id) REFERENCES customers(id)
+  FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
 CREATE TABLE bids (
@@ -45,15 +45,16 @@ CREATE TABLE bids (
   delivery_request_id INT, -- Foreign key referencing the delivery_requests table
   bid_price NUMERIC NOT NULL,
   bid_time TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-  CONSTRAINT fk_driver FOREIGN KEY (driver_id) REFERENCES drivers(id),
-  CONSTRAINT fk_delivery_request FOREIGN KEY (delivery_request_id) REFERENCES delivery_requests(id)
+  CONSTRAINT fk_driver FOREIGN KEY (driver_id) REFERENCES drivers(user_id)
+,
+  CONSTRAINT fk_delivery_request FOREIGN KEY (delivery_request_id) REFERENCES delivery_requests(id) -- Updated foreign key
 );
 
 CREATE TABLE winning_bids (
   delivery_request_id INT PRIMARY KEY,
   bid_id INT, -- Foreign key referencing the bids table
   FOREIGN KEY (bid_id) REFERENCES bids(id),
-  FOREIGN KEY (delivery_request_id) REFERENCES delivery_requests(id)
+  FOREIGN KEY (delivery_request_id) REFERENCES delivery_requests(id) -- Updated foreign key
 );
 
 -- Add bid_end_time column to track bid expiration time
