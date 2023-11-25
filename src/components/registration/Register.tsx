@@ -5,7 +5,6 @@ import { connect, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { RootState } from '../../redux/reducers/rootReducer';
-import { insertCustomerInformationAsync, INSERT_CUSTOMER_INFO, REGISTRATION_MESSAGE, updateCustomerInfo } from '../../redux/actions/customerActions';
 import axios from 'axios';
 
 
@@ -110,17 +109,18 @@ export const InputHalf = styled(Input)`
 `;
 
 interface RegistrationProps {
-  firstName: string;
-  lastName: string;
-  email: string;
-  role: string;
+  // firstName: string;
+  // lastName: string;
+  // email: string;
+  // role: string;
   isRegistered: boolean;
+  registrationMessage: string;
 }
 
 
 
 const Register: React.FC<RegistrationProps> = function ({
-  firstName, lastName, email, role, isRegistered, 
+  isRegistered, registrationMessage
 }) {
   const [formState, setFormState] = useState({
     firstName: '',
@@ -135,16 +135,16 @@ const Register: React.FC<RegistrationProps> = function ({
   const [passwordError, setPasswordError] = useState('');
   let navigate = useNavigate();
 
-  // useEffect(() => {
+  useEffect(() => {
 
-  //   if (isRegistered) {
-  //     console.log('in useeffect');
-  //     const timer = setTimeout(() => {
-  //       navigate('/registration-success');
-  //     }, 5000);
-  //     return () => clearTimeout(timer);
-  //   }
-  // }, [isRegistered, formState]);
+    if (isRegistered) {
+      console.log('in useeffect');
+      const timer = setTimeout(() => {
+        navigate('/registration-complete');
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [isRegistered, navigate]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -175,41 +175,41 @@ const Register: React.FC<RegistrationProps> = function ({
     }
 
     try {
-
-      console.log('hit handleSubmit ');
-      // Dispatch the thunk action
-      const response = await axios.post('http://localhost:4200/register/sign-up',
-       {first_name: formState.firstName, last_name:formState.lastName, email:formState.email, password:formState.password, role:formState.role} ).then(() => {
-        dispatch({
-          type: INSERT_CUSTOMER_INFO,
-          payload: {
-            firstName: formState.firstName,
-            lastName: formState.lastName,
-            email: formState.email,
-            password: formState.password,
-            role: formState.role,
-          }
+      // Simulate the asynchronous registration process
+      // Replace this with your actual registration logic
+      setTimeout(async () => {
+        // Dispatch the thunk action
+        await axios.post('http://localhost:4200/register/sign-up', {
+          first_name: formState.firstName,
+          last_name: formState.lastName,
+          email: formState.email,
+          password: formState.password,
+          role: formState.role,
         });
-  
+
         // Dispatch an action with the registration message to the /registration-success component
-        const registrationMessage = `Thank you for registering, ${formState.firstName}!`;
+        registrationMessage = `Thank you for registering, ${formState.firstName}!`;
+        isRegistered = true;
+       
         dispatch({
-          type: REGISTRATION_MESSAGE,
+          type: 'SUCCESSFUL_REQUEST_MESSAGE',
           payload: {
-            registrationMessage: registrationMessage,
+            successfulRequest : isRegistered,
+            successMessage: registrationMessage,
           },
-        });
-       });
+        })
 
-  
-      // setFormState({
-      //   firstName: '',
-      //   lastName: '',
-      //   email: '',
-      //   password: '',
-      //   confirmPassword: '',
-      //   role: 'Customer',
-      // });
+        // Reset the form
+        setFormState({
+          firstName: '',
+          lastName: '',
+          email: '',
+          password: '',
+          confirmPassword: '',
+          role: 'Customer',
+        });
+      }, 500); // Simulated delay
+
     } catch (error) {
       console.error('Error during registration:', error);
     }
@@ -295,23 +295,19 @@ const Register: React.FC<RegistrationProps> = function ({
   
           <Button type="submit">Register</Button>
         </Form>
-        {isRegistered === true && <SuccessMessage>{REGISTRATION_MESSAGE}</SuccessMessage>}
+        <SuccessMessage>{registrationMessage}</SuccessMessage>
       </RegistrationContainer>
     </Container>
   )};
   
 
-const mapStateToProps = (state: RootState) => ({
-  firstName: state.customers.customerInfo.firstName,
-  lastName: state.customers.customerInfo.lastName,
-  email: state.customers.customerInfo.email,
-  role: state.customers.customerInfo.role,
-  isRegistered: state.customers.customerInfo.isRegistered,
-  registrationMessage: state.customers.customerInfo.registrationMessage
-});
-
-const mapDispatchToProps = {
-  updateCustomerInfo
+function mapStateToProps(state: RootState)  {
+  console.log(state.deliveryForm)
+  return {
+  isRegistered: state.deliveryForm.successfulRequest,
+  registrationMessage: state.deliveryForm.successMessage
+  };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Register);
+
+export default connect(mapStateToProps)(Register);

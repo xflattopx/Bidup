@@ -1,13 +1,13 @@
 import { combineReducers } from 'redux';
 import deliveryFormReducer from './deliveryFormReducer';
 import driversReducer from './driversReducer';
-import customerReducer from './customerReducer';
+import userReducer from './userReducer';
 
 // Combine reducers
 const rootReducer = combineReducers({
   deliveryForm: deliveryFormReducer,
   drivers: driversReducer,
-  customers: customerReducer  
+  users: userReducer  
   // Add other reducers as needed
 });
 

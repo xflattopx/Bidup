@@ -8,8 +8,8 @@ import { RootState } from '../reducers/rootReducer';
 export const SUBMIT_CUSTOMER_REQUEST = 'SUBMIT_CUSTOMER_REQUEST';
 export const CANCEL_CUSTOMER_REQUEST = 'CANCEL_CUSTOMER_REQUEST';
 export const UPDATE_CUSTOMER_INFO = 'UPDATE_CUSTOMER_INFO';
-export const INSERT_CUSTOMER_INFO = 'INSERT_CUSTOMER_INFO';
-export const SUCCESSFUL_CUSTOMER_REGISTRATION = 'SUCCESSFUL_CUSTOMER_REGISTRATION';
+export const INSERT_USER_INFO = 'INSERT_USER_INFO';
+export const SUCCESSFUL_USER_REGISTRATION = 'SUCCESSFUL_USER_REGISTRATION';
 export const REGISTRATION_MESSAGE = 'REGISTRATION_MESSAGE';
 
 // Action Creators
@@ -33,19 +33,21 @@ interface UpdateCustomerInfoAction{
     firstname: string;
     lastname: string;
     email: string;
-  }
+  };
 }
 
+
 interface InsertCustomerInfoAction{
-  type: typeof INSERT_CUSTOMER_INFO
+  type: typeof INSERT_USER_INFO
   payload: {
     firstname: string;
     lastname: string;
     email: string;
     password: string;
     role: string;
-  }
+  };
 }
+
 
 // Async Action Creator using Thunk
 export const submitCustomerRequest = (
@@ -69,60 +71,54 @@ export const submitCustomerRequest = (
 };
 
 export const setRegistrationSuccess = 
-  (isRegistered : boolean) => async (dispatch: Dispatch) =>{
-  try{
+  (isRegistered : boolean, registrationMessage: string) => async (dispatch: Dispatch) =>{
+  
+  console.log('setting user registration to true and displaying message')
   dispatch({
-    type: SUCCESSFUL_CUSTOMER_REGISTRATION,
+    type: 'SUCCESSFUL_REQUEST_MESSAGE',
     payload: {
-      isRegistered : isRegistered
+      successfulRequest : isRegistered,
+      successMessage: registrationMessage,
     },
   })
+  // Dispatch an action with the registration message to the /registration-success component
+  dispatch({
+    type: REGISTRATION_MESSAGE,
+    payload: {
+      
+    },
+  });
 
-} catch (error){
-  console.error('error registering account:',error);
-}}
 
-export const insertCustomerInformation = (insertCustomerInfo:InsertCustomerInfoAction) => async (dispatch: Dispatch) =>{
-  try{
-    await axios.post('/register', {
-      insertCustomerInfo
-    }).then(( response:any) => {
+  }
+
+
+
+export const insertUserInformation = (userInfo:any) => async (dispatch: Dispatch) =>{
+
       dispatch({
-        type: INSERT_CUSTOMER_INFO,
+        type: INSERT_USER_INFO,
         payload: {
-          firstName: insertCustomerInfo.payload.firstname,
-          lastName: insertCustomerInfo.payload.lastname,
-          email: insertCustomerInfo.payload.email,
-          password: insertCustomerInfo.payload.password,
-          role: insertCustomerInfo.payload.role
+          firstName: userInfo.payload.firstname,
+          lastName: userInfo.payload.lastname,
+          email: userInfo.payload.email,
+          role: userInfo.payload.role
         }
       });
     
-      const registrationMessage = `Thank you for registering, ${insertCustomerInfo.payload.firstname}!`;
+  }
+    
 
-    // Dispatch an action with the registration message to the /registration-success component
-    dispatch({
-      type: 'REGISTRATION_MESSAGE',
-      payload: {
-        message: registrationMessage,
-      },
-    });
-
-    return Promise.resolve(response);
-    });
-  } catch (error){
-    console.error('error inserting details into our system:',error);
-  }};
-
+ 
   // customerActions.ts
 
-  export const insertCustomerInformationAsync = (formData:any) => async (dispatch: Dispatch) =>{
+  export const insertUserInformationAsync = (formData:any) => async (dispatch: Dispatch) =>{
         console.log('here')
       // Make API call to insert customer information
 
       // Dispatch the action with the response data
       dispatch({
-        type: INSERT_CUSTOMER_INFO,
+        type: INSERT_USER_INFO,
         payload: {
           firstName: formData.firstname,
           lastName: formData.lastname,
@@ -145,9 +141,6 @@ export const insertCustomerInformation = (insertCustomerInfo:InsertCustomerInfoA
   
 
 // Similarly, update other action creators as needed
-
-
-
 export const cancelCustomerRequest = (
   requestId: number
 ): CancelCustomerRequestAction => ({
@@ -156,6 +149,7 @@ export const cancelCustomerRequest = (
     requestId,
   },
 });
+
 
 export const updateCustomerInfo = (
   info: UpdateCustomerInfoAction['payload']

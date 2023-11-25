@@ -2,6 +2,9 @@
 
 import styled from 'styled-components';
 
+// Define a common color for the font
+const textColor = '#333'; // Darker font color
+
 export const DashboardContainer = styled.div`
   text-align: center;
   padding: 20px;
@@ -29,6 +32,8 @@ export const DashboardTableHeader = styled.th`
 export const DashboardTableCell = styled.td`
   border: 1px solid #333;
   padding: 12px;
+  color: ${textColor}; /* Set font color */
+  background-color: #f2f2f2; /* Same color as EvenTableRow */
 `;
 
 export const EvenTableRow = styled.tr`

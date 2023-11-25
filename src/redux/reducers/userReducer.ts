@@ -1,0 +1,99 @@
+import { SUCCESSFUL_USER_REGISTRATION, INSERT_USER_INFO, REGISTRATION_MESSAGE } from "../actions/userActions";
+
+interface UserState {
+  userId: number;
+  userInfo: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    role: string;
+    isRegistered: boolean,
+    registrationMessage: string;
+  };
+  requestHistory: {
+    id: number;
+    pickupLocation: string;
+    dropoffLocation: string;
+    description: string;
+    preferredDeliveryTime: string;
+    priceOffer: number;
+    status: string;
+  }[];
+  submittedRequests: any[]; // Add this line
+
+}
+
+// Initial State
+const initialState: UserState = {
+  userId: 0,
+  userInfo: {
+    firstName: '',
+    lastName: '',
+    email: '',
+    role: '',
+    isRegistered: false,
+    registrationMessage: ''
+  },
+  requestHistory: [],
+  submittedRequests: [], // Add this line
+};
+
+const userRegistrationReducer = (state = initialState, action: any): UserState => {
+  switch (action.type) { // Use action.type to check the action type
+    case 'INSERT_USER_INFO':
+      console.log(action.payload);
+      return {
+        ...state,
+        userInfo: {
+          ...state.userInfo,
+          firstName: action.payload.firstName,
+          lastName: action.payload.lastName,
+          email: action.payload.email,
+          role: action.payload.role
+        }
+      };
+    case 'UPDATE_USER_ID':
+      console.log(action.payload);
+      return {
+        ...state,
+        userId: action.payload.userId
+      }
+      case 'RESET_USER_INFO':
+        return {
+         
+          ...state,
+          userInfo: {
+           firstName:'',
+           lastName:'',
+           email:'',
+           role:'',
+           isRegistered:false,
+           registrationMessage:''
+
+          },
+          userId: 0,
+        };
+    case SUCCESSFUL_USER_REGISTRATION:
+      return {
+        ...state,
+          userInfo: {
+            ...state.userInfo,
+            isRegistered: action.payload.isRegistered
+          }
+      };
+    case REGISTRATION_MESSAGE:
+      console.log(action.payload)
+      return {
+        ...state,
+          userInfo: {
+            ...state.userInfo,
+            registrationMessage: action.payload
+          }
+      };
+    default:
+      return state;
+
+  }
+};
+
+export default userRegistrationReducer;

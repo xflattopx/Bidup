@@ -17,6 +17,7 @@ const deliveryFormReducer = (state = initialState, action: any): DeliveryFormSta
   switch (action.type) {
     case 'SUCCESSFUL_REQUEST_MESSAGE':
       return {
+      
         ...state,
         successfulRequest: action.payload.successfulRequest,
         successMessage: action.payload.successMessage,

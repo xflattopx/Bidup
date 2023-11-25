@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { RootState } from '../../redux/reducers/rootReducer';
 import * as Styles from './styles';
+import { useSelector, useDispatch } from 'react-redux';
 
 interface RequestHistory {
   id: number;
@@ -23,25 +25,30 @@ interface ProfileProps {
 }
 
 const Profile: React.FC<ProfileProps> = ({ customerInfo, onCancelRequest }) => {
+  const dispatch = useDispatch();
+  const customerId = useSelector((state: RootState) => state.users.userId);
+  const role = useSelector((state: RootState) => state.users.userInfo.role);
+
   const [requestHistory, setRequestHistory] = useState<RequestHistory[]>([]);
   const [cancelSuccess, setCancelSuccess] = useState<number | null>(null);
   const [customerProfile, setCustomerProfile] = useState<{
-    firstName: string;
-    lastName: string;
+    first_name: string;
+    last_name: string;
     email: string;
-  }>({ firstName: '', lastName: '', email: '' });
+  }>({ first_name: '', last_name: '', email: '' });
 
   useEffect(() => {
     // Assuming you have access to the customerId in your component
-    const customerId = 13; // Implement getCustomerId() based on your component's logic
-
+    //const customerId = 13; // Implement getCustomerId() based on your component's logic
+    console.log(customerId);
     // Fetch customer personal details
     axios
       .get(`http://localhost:4200/profile/profile-personal-details?customerId=${customerId}`)
       .then((response) => {
         // Assuming response.data is an object with properties like 'firstName', 'lastName', 'email'
-        setCustomerProfile(response.data.data);
-        console.log('Customer profile retrieved:', response.data);
+        setCustomerProfile(response.data.customerProfile);
+        console.log('Customer profile retrieved:', response.data.customerProfile);
+    
       })
       .catch((error) => {
         console.error('Error fetching customer profile:', error);
@@ -90,13 +97,13 @@ const Profile: React.FC<ProfileProps> = ({ customerInfo, onCancelRequest }) => {
       <Styles.ProfileSection>
         <h3>Personal Information</h3>
         <p>
-          <strong>First Name:</strong> {customerProfile.firstName || 'Chase'}
+          <strong>First Name:</strong> {customerProfile.first_name || ''}
         </p>
         <p>
-          <strong>Last Name:</strong> {customerProfile.lastName || 'Moore'}
+          <strong>Last Name:</strong> {customerProfile.last_name || ''}
         </p>
         <p>
-          <strong>Email:</strong> {customerProfile.email || 'email@email.com'}
+          <strong>Email:</strong> {customerProfile.email || ''}
         </p>
         {/* Add more customer profile information as needed */}
       </Styles.ProfileSection>

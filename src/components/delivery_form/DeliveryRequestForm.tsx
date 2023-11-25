@@ -1,13 +1,18 @@
 // src/components/DeliveryRequestForm.tsx
 
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { submitDeliveryRequest } from '../../redux/actions/deliveryRequestActions';
-import { Link, Outlet, redirect } from 'react-router-dom'; // Import Link and useHistory
+import { Link, Outlet, redirect, useNavigate } from 'react-router-dom'; // Import Link and useHistory
 import * as Styled from './styles';
+import { RootState } from 'redux/reducers/rootReducer';
+
+
 
 // Component
 const DeliveryRequestForm: React.FC = () => {
+  const userId = useSelector((state: RootState) => state.users.userId);
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const [formState, setFormState] = useState({
     pickupLocation: '',
@@ -15,7 +20,7 @@ const DeliveryRequestForm: React.FC = () => {
     description: '',
     preferredDeliveryTime: '',
     priceOffer: 0,
-    customerId: 13
+    customerId: userId
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -40,11 +45,11 @@ const DeliveryRequestForm: React.FC = () => {
         description: '',
         preferredDeliveryTime: '',
         priceOffer: 0,
-        customerId: 13
+        customerId: userId
       });
 
-      // Redirect to home after successful submission
-      redirect('/');
+      await navigate('/request-success');
+
     } catch (error) {
       console.error('Error submitting request:', error);
       // Handle any error-related logic here
@@ -107,7 +112,7 @@ const DeliveryRequestForm: React.FC = () => {
             onChange={handleInputChange}
           />
         </Styled.Label>
-        <Styled.Button type="submit">Submit Request</Styled.Button>
+        <Styled.Button  type="submit">Submit Request</Styled.Button>
       </Styled.Form>
       
       {/* Link to go back to home */}

@@ -5,21 +5,17 @@ import { connect } from 'react-redux';
 import { RootState } from '../../redux/reducers/rootReducer';
 import {
   Container as SuccessContainer,
-  Title,
-  SuccessMessage,
+  Title
 } from './styles'; // Adjust the path accordingly
 import { useNavigate } from 'react-router-dom';
 
-interface RegistrationSuccessProps {
-  registrationMessage: string;
-}
 
-const RegistrationSuccess: React.FC<RegistrationSuccessProps> = ({ registrationMessage }) => {
+const RequestSuccessful: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      navigate('/login');
+      navigate('/profile');
     }, 5000);
 
     // Clear the timer if the component unmounts
@@ -28,9 +24,8 @@ const RegistrationSuccess: React.FC<RegistrationSuccessProps> = ({ registrationM
 
   return (
     <SuccessContainer>
-      <Title>Registration Successful</Title>
-      <SuccessMessage>{registrationMessage}</SuccessMessage>
-      <div>Redirecting to login in 5 seconds...</div>
+      <Title>Request Successfully Submitted</Title>
+      <div>Redirecting to profile in 5 seconds...</div>
     </SuccessContainer>
   );
 };
@@ -39,4 +34,4 @@ const mapStateToProps = (state: RootState) => ({
   registrationMessage: state.deliveryForm.successMessage
 });
 
-export default connect(mapStateToProps)(RegistrationSuccess);
+export default connect(mapStateToProps)(RequestSuccessful);
