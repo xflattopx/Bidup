@@ -216,9 +216,10 @@ const Register: React.FC<RegistrationProps> = function ({
 
   return (
     <Container>
+      { registered === false ?
       <RegistrationContainer>
         <Title>Registration</Title>
-        { registered === false ?
+        
         <Form onSubmit={handleSubmit}>
           <InputRow>
             <Label>
@@ -294,9 +295,10 @@ const Register: React.FC<RegistrationProps> = function ({
           </InputRow>
   
           <Button type="submit">Register</Button>
-        </Form> : <LoadingSpinner/>}
+        </Form> 
         {/* <SuccessMessage>{registrationMessage}</SuccessMessage> */}
       </RegistrationContainer>
+      : <LoadingSpinner/>}
     </Container>
   )};
   
