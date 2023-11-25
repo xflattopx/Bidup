@@ -1,8 +1,9 @@
 // RegistrationSuccess.tsx
 
 import React, { useEffect } from 'react';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { RootState } from '../../redux/reducers/rootReducer';
+import LoadingSpinner from '../loading_spinner/LoadingSpinner';
 import {
   Container as SuccessContainer,
   Title,
@@ -16,15 +17,23 @@ interface RegistrationSuccessProps {
 
 const RegistrationSuccess: React.FC<RegistrationSuccessProps> = ({ registrationMessage }) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   useEffect(() => {
+    dispatch({
+      type: 'SUCCESSFUL_REQUEST_MESSAGE',
+      payload: {
+        successfulRequest : false,
+        successMessage: '',
+      },
+    })
     const timer = setTimeout(() => {
       navigate('/login');
-    }, 5000);
+    }, 3000);
 
     // Clear the timer if the component unmounts
     return () => clearTimeout(timer);
-  }, [navigate]);
+  }, [LoadingSpinner,navigate]);
 
   return (
     <SuccessContainer>

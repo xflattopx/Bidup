@@ -4,7 +4,7 @@ import styled from 'styled-components';
 const textColor = '#333'; // Darker font color
 
 export const ProfileContainer = styled.div`
-  max-width: 1100px; /* Adjusted width for a bit wider profile container */
+  max-width: 1400px; /* Adjusted width for a bit wider profile container */
   margin: 20px auto;
   padding: 20px;
   border: 1px solid #ccc;

@@ -1,8 +1,6 @@
-// RegistrationSuccess.tsx
+// RequestSuccessful.tsx
 
 import React, { useEffect } from 'react';
-import { connect } from 'react-redux';
-import { RootState } from '../../redux/reducers/rootReducer';
 import {
   Container as SuccessContainer,
   Title
@@ -16,7 +14,7 @@ const RequestSuccessful: React.FC = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       navigate('/profile');
-    }, 5000);
+    }, 3000);
 
     // Clear the timer if the component unmounts
     return () => clearTimeout(timer);
@@ -30,8 +28,4 @@ const RequestSuccessful: React.FC = () => {
   );
 };
 
-const mapStateToProps = (state: RootState) => ({
-  registrationMessage: state.deliveryForm.successMessage
-});
-
-export default connect(mapStateToProps)(RequestSuccessful);
+export default RequestSuccessful;

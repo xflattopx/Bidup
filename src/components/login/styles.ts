@@ -1,6 +1,7 @@
 // styles.ts
 
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 
 export const Container = styled.div`
   display: flex;
@@ -13,7 +14,7 @@ export const LoginFormContainer = styled.div`
   max-width: 400px;
   width: 100%;
   background-color: #f4f4f4;
-  padding: 20px;
+  padding: 15px; /* Adjust the top and bottom padding as needed */
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   text-align: center; /* Center the content horizontally */
@@ -65,4 +66,16 @@ export const Button = styled.button`
 export const ErrorMessage = styled.p`
   color: red;
   margin-top: 5px;
+`;
+
+export const SignupParagraph = styled.p`
+  color: #333; /* Set the color as needed */
+  margin-top: 10px; /* Adjust the top margin as needed */
+
+  /* Style the link within the paragraph */
+  a {
+    color: #1a1a1a; /* Set the link color */
+    text-decoration: underline; /* Add underline to the link */
+    margin-left: 5px; /* Add some spacing to the left of the link */
+  }
 `;

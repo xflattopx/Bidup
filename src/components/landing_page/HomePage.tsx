@@ -1,12 +1,10 @@
-// HomePage.tsx
+// src/components/HomePage.tsx
 
-import React, { useState } from 'react';
-import { Outlet, Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Outlet, Link, useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { RootState } from '../../redux/reducers/rootReducer';
-import Logout from '../login/Logout'; // Import the Logout component
-import DeliveryRequestForm from '../delivery_form/DeliveryRequestForm';
-import Profile from '../profile/Profile';
+import Logout from '../login/Logout';
 import {
   Container,
   PageContent,
@@ -21,7 +19,10 @@ import {
   DropdownContent,
   HamburgerMenu,
   MenuItemLink,
-} from './styles'; // Import the styled components
+} from './styles';
+
+// Import your BidUpLogo.png image
+import bidUpLogo from './BidUpLogo.png';
 
 interface HomePageProps {
   userRole?: string;
@@ -29,25 +30,43 @@ interface HomePageProps {
 
 const HomePage: React.FC<HomePageProps> = ({ userRole }) => {
   const [showMenu, setShowMenu] = useState(false);
+  const navigate = useNavigate();
 
   const toggleMenu = () => {
     setShowMenu(!showMenu);
+  };
+
+  // Add useEffect to check for the presence and validity of the JWT token
+  // useEffect(() => {
+  //   const token = localStorage.getItem('jwtToken'); // Replace with your actual JWT token key
+
+  //   // Check if the user is not logged in
+  //   if (!token || isTokenExpired(token)) {
+  //     // Redirect to the login page
+  //     navigate('/login');
+  //   }
+  // }, [navigate]);
+
+  // Helper function to check if a JWT token is expired
+  const isTokenExpired = (token: string) => {
+    // Implement your logic to check the token expiration here
+    // For example, you can use a library like jwt-decode to decode and check the expiration
+    // Here's a simplified example assuming the token has an 'exp' claim
+    const decodedToken: { exp?: number } = {}; // Decode the token (use your decoding logic)
+    return decodedToken.exp ? Date.now() >= decodedToken.exp * 1000 : false;
   };
 
   return (
     <Container className="home-page-container">
       <PageContent>
         <Navbar className="navbar">
-          <HamburgerIcon onClick={toggleMenu}>☰</HamburgerIcon>
-          <BidupLabel>Bidup</BidupLabel>
+          {userRole && <HamburgerIcon onClick={toggleMenu}>☰</HamburgerIcon>}
+          <BidupLabel>
+            <img src={bidUpLogo} alt="BidUp Logo" height="30" />
+          </BidupLabel>
+          {/* <BidupLabel>Bidup</BidupLabel> */}
           <NavList className="nav-list">
-            {userRole ? (
-              // If the user is logged in, display Logout
-              <NavItem className="nav-item">
-                <Logout />
-              </NavItem>
-            ) : (
-              // If the user is not logged in, display Register and Login
+            {!userRole && (
               <>
                 <NavItem className="nav-item">
                   <NavLink to="/register" className="nav-link">
@@ -61,9 +80,14 @@ const HomePage: React.FC<HomePageProps> = ({ userRole }) => {
                 </NavItem>
               </>
             )}
+            {userRole && (
+              <NavItem className="nav-item">
+                <Logout />
+              </NavItem>
+            )}
           </NavList>
         </Navbar>
-        {showMenu && (
+        {showMenu && userRole && (
           <HamburgerMenu show={showMenu}>
             {userRole === 'Driver' && (
               <>

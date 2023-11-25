@@ -1,71 +1,86 @@
 // styles.ts
 
 import styled from 'styled-components';
-import {Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 export const Container = styled.div`
-  max-width: 600px;
-  margin: auto;
-  padding: 20px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
-  background-color: #f4f4f4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+`;
+
+
+
+export const LogoContainer = styled.div`
+  margin-bottom: 40px; /* Adjust the margin to leave more space at the bottom */
+`;
+
+export const LogoImage = styled.img`
+  max-width: 100%;
+  max-height: 150px; /* Increase the max-height value */
+  height: auto;
 `;
 
 export const Title = styled.h2`
-  font-size: 2em;
-  color: #1a1a1a;
+  font-size: 2.5em;
   margin-bottom: 20px;
+  color: #1a1a1a;
 `;
 
 export const Form = styled.form`
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  align-items: center;
 `;
 
 export const Label = styled.label`
+  margin-bottom: 10px;
   display: flex;
   flex-direction: column;
+  text-align: left;
   color: #333;
+  width: 100%;
 `;
 
 export const Input = styled.input`
   padding: 10px;
+  margin-top: 5px;
+  margin-bottom: 15px;
+  width: 80%;
   border: 1px solid #ccc;
   border-radius: 4px;
-  font-size: 14px;
 `;
 
 export const TextArea = styled.textarea`
   padding: 10px;
+  margin-top: 5px;
+  margin-bottom: 15px;
+  width: 80%;
   border: 1px solid #ccc;
   border-radius: 4px;
-  font-size: 14px;
 `;
 
 export const Button = styled.button`
   background-color: #1a1a1a;
   color: white;
+  padding: 10px;
   cursor: pointer;
   border: none;
   border-radius: 4px;
-  padding: 10px;
-`;
-
-export const BackToHomeLink = styled(Link)`
-  color: #333;
-  text-decoration: none;
-  margin-top: 10px; // Adjust as needed
-  display: inline-block;
-  padding: 8px;
-  border: 1px solid #333;
-  border-radius: 4px;
-  transition: background-color 0.3s ease;
-
+  width: 80%;
   &:hover {
-    background-color: #ddd;
+    background-color: #333;
   }
 `;
 
-// Add additional styled components as needed
+export const BackToHomeLink = styled(Link)`
+  color: #1a1a1a;
+  margin-top: 20px;
+  font-weight: bold;
+  text-decoration: none;
+  &:hover {
+    text-decoration: underline;
+  }
+`;

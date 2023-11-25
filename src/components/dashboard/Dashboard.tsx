@@ -85,7 +85,7 @@ const Dashboard: React.FC<DashboardProps> = ({ driverId }) => {
                 <S.DashboardTableCell>{bid.delivery_request_id}</S.DashboardTableCell>
                 <S.DashboardTableCell>{bid.pickup_location}</S.DashboardTableCell>
                 <S.DashboardTableCell>{bid.dropoff_location}</S.DashboardTableCell>
-                <S.DashboardTableHeader>{bid.description}</S.DashboardTableHeader>
+                <S.DashboardTableCell>{bid.description}</S.DashboardTableCell>
                 <S.DashboardTableCell>${bid.price_offer}</S.DashboardTableCell>
               </S.EvenTableRow>
             ))}

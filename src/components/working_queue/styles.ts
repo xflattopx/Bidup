@@ -12,7 +12,7 @@ export const DeliveryQueueTable = styled.table`
   width: 100%;
   border-collapse: collapse;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  margin: 20px auto 0 -120px; /* Adjust the top margin, horizontal centering, and left offset */
+  margin: 20px auto 0 -170px; /* Adjust the top margin, horizontal centering, and left offset */
 `;
 
 

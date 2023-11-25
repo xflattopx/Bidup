@@ -1,9 +1,8 @@
-// styles.ts
-
 import styled from 'styled-components';
 
 // Define a common color for the font
 const textColor = '#333'; // Darker font color
+const cellBackgroundColor = '#f2f2f2'; // Background color for cells
 
 export const DashboardContainer = styled.div`
   text-align: center;
@@ -32,12 +31,12 @@ export const DashboardTableHeader = styled.th`
 export const DashboardTableCell = styled.td`
   border: 1px solid #333;
   padding: 12px;
-  color: ${textColor}; /* Set font color */
-  background-color: #f2f2f2; /* Same color as EvenTableRow */
+  color: #1a1a1a; /* Set font color */
+  background-color: ${cellBackgroundColor}; /* Set background color */
 `;
 
 export const EvenTableRow = styled.tr`
-  background-color: #f2f2f2;
+  background-color: ${cellBackgroundColor}; /* Set background color */
 `;
 
 export const DashboardTitle = styled.h2`

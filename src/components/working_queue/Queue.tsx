@@ -97,23 +97,30 @@ const Queue: React.FC = () => {
       if (bidAmount !== null) {
         const parsedBidAmount = parseFloat(bidAmount);
         if (!isNaN(parsedBidAmount)) {
+          // Check if the bid amount is less than the current price offer
+          const currentRequest = queueState.queue.find((request) => request.id === requestId);
+          if (currentRequest && parsedBidAmount > currentRequest.price_offer) {
+            alert('Bid amount must be Less than the current price offer.');
+            return;
+          }
+  
           // Send a bid request to the backend
           const bidResponse = await axios.post('http://localhost:4200/bid/record-bid', {
             deliveryRequestId: requestId,
             driverId: userId, // Replace with your driverId logic
             bidPrice: parsedBidAmount,
           });
-
+  
           // Extract the bid ID from the response
           const bidId = bidResponse.data.requestId;
-
+  
           // Update the bid with the driver who placed it
           await axios.post('http://localhost:4200/bid/update-bid', {
             bidId: bidId,
             newBidPrice: parsedBidAmount,
             driverId: userId, // Replace with your driverId logic
           });
-
+  
           // Update the UI to reflect that the bid was placed
           setQueueState((prevState) => ({
             uniqueIds: prevState.uniqueIds,
@@ -123,7 +130,7 @@ const Queue: React.FC = () => {
                 : request
             ),
           }));
-
+  
           // Record the winning bid
           await axios.post('http://localhost:4200/bid/record-winning-bid', {
             bidId: bidId,
@@ -137,6 +144,7 @@ const Queue: React.FC = () => {
       alert('Error placing bid. Please try again later.');
     }
   };
+  
 
   return (
     <QueueContainer>
