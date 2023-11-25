@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { RootState } from '../../redux/reducers/rootReducer';
 import axios from 'axios';
+import LoadingSpinner from '../loading_spinner/LoadingSpinner';
 
 
 const Container = styled.div`
@@ -113,14 +114,14 @@ interface RegistrationProps {
   // lastName: string;
   // email: string;
   // role: string;
-  isRegistered: boolean;
+  registered: boolean;
   registrationMessage: string;
 }
 
 
 
 const Register: React.FC<RegistrationProps> = function ({
-  isRegistered, registrationMessage
+  registered, registrationMessage
 }) {
   const [formState, setFormState] = useState({
     firstName: '',
@@ -130,21 +131,19 @@ const Register: React.FC<RegistrationProps> = function ({
     confirmPassword: '',
     role: 'Customer',
   });
-
   const dispatch = useDispatch();
   const [passwordError, setPasswordError] = useState('');
   let navigate = useNavigate();
-
   useEffect(() => {
 
-    if (isRegistered) {
+    if (registered) {
       console.log('in useeffect');
       const timer = setTimeout(() => {
         navigate('/registration-complete');
-      }, 5000);
+      }, 3000);
       return () => clearTimeout(timer);
     }
-  }, [isRegistered, navigate]);
+  }, [registered, LoadingSpinner, navigate]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -189,12 +188,12 @@ const Register: React.FC<RegistrationProps> = function ({
 
         // Dispatch an action with the registration message to the /registration-success component
         registrationMessage = `Thank you for registering, ${formState.firstName}!`;
-        isRegistered = true;
+        registered = true;
        
         dispatch({
           type: 'SUCCESSFUL_REQUEST_MESSAGE',
           payload: {
-            successfulRequest : isRegistered,
+            successfulRequest : registered,
             successMessage: registrationMessage,
           },
         })
@@ -219,6 +218,7 @@ const Register: React.FC<RegistrationProps> = function ({
     <Container>
       <RegistrationContainer>
         <Title>Registration</Title>
+        { registered === false ?
         <Form onSubmit={handleSubmit}>
           <InputRow>
             <Label>
@@ -294,8 +294,8 @@ const Register: React.FC<RegistrationProps> = function ({
           </InputRow>
   
           <Button type="submit">Register</Button>
-        </Form>
-        <SuccessMessage>{registrationMessage}</SuccessMessage>
+        </Form> : <LoadingSpinner/>}
+        {/* <SuccessMessage>{registrationMessage}</SuccessMessage> */}
       </RegistrationContainer>
     </Container>
   )};
@@ -304,10 +304,14 @@ const Register: React.FC<RegistrationProps> = function ({
 function mapStateToProps(state: RootState)  {
   console.log(state.deliveryForm)
   return {
-  isRegistered: state.deliveryForm.successfulRequest,
+  registered: state.deliveryForm.successfulRequest,
   registrationMessage: state.deliveryForm.successMessage
   };
 };
 
 
 export default connect(mapStateToProps)(Register);
+function useSelector(arg0: (state: RootState) => number) {
+  throw new Error('Function not implemented.');
+}
+
