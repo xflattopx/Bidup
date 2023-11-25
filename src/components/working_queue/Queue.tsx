@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import { RootState } from '../../redux/reducers/rootReducer';
 import { setDriverId } from '../../redux/actions/driverActions';
 import io from 'socket.io-client';
@@ -43,6 +43,7 @@ interface QueueState {
 }
 
 const Queue: React.FC = () => {
+  const userId = useSelector((state: RootState) => state.users.userId);
   const [queueState, setQueueState] = useState<QueueState>({ uniqueIds: new Set(), queue: [] });
 
   // Create a Socket.IO client instance
@@ -99,7 +100,7 @@ const Queue: React.FC = () => {
           // Send a bid request to the backend
           const bidResponse = await axios.post('http://localhost:4200/bid/record-bid', {
             deliveryRequestId: requestId,
-            driverId: 14, // Replace with your driverId logic
+            driverId: userId, // Replace with your driverId logic
             bidPrice: parsedBidAmount,
           });
 
@@ -110,7 +111,7 @@ const Queue: React.FC = () => {
           await axios.post('http://localhost:4200/bid/update-bid', {
             bidId: bidId,
             newBidPrice: parsedBidAmount,
-            driverId: 14, // Replace with your driverId logic
+            driverId: userId, // Replace with your driverId logic
           });
 
           // Update the UI to reflect that the bid was placed
@@ -180,7 +181,7 @@ const Queue: React.FC = () => {
 };
 
 const mapStateToProps = (state: RootState) => ({
-  driverId: state.drivers.driverId,
+  driverId: state.users.userId,
 });
 
 export default connect(mapStateToProps, { setDriverId })(Queue);

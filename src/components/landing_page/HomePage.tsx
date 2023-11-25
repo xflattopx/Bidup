@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { Outlet, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { RootState } from '../../redux/reducers/rootReducer';
+import Logout from '../login/Logout'; // Import the Logout component
 import DeliveryRequestForm from '../delivery_form/DeliveryRequestForm';
 import Profile from '../profile/Profile';
 import {
@@ -40,53 +41,51 @@ const HomePage: React.FC<HomePageProps> = ({ userRole }) => {
           <HamburgerIcon onClick={toggleMenu}>☰</HamburgerIcon>
           <BidupLabel>Bidup</BidupLabel>
           <NavList className="nav-list">
-            <NavItem className="nav-item">
-              <NavLink to="/register" className="nav-link">
-                Register
-              </NavLink>
-            </NavItem>
-            <NavItem className="nav-item">
-              <NavLink to="/login" className="nav-link">
-                Login
-              </NavLink>
-            </NavItem>
-            {userRole === 'Driver' && (
-              <NavItem className="nav-item dropdown">
-                <Dropdown>
-                  <DropdownContent className="dropdown-content" show={showMenu}>
-                    <NavLink to="/queue" className="nav-link">
-                      View Queue
-                    </NavLink>
-                    <NavLink to="/dashboard" className="nav-link">
-                      Driver Dashboard
-                    </NavLink>
-                    <NavLink to="/profile" className="nav-link">
-                      Profile
-                    </NavLink>
-                    <NavLink to="/request-form" className="nav-link">
-                      Request Form
-                    </NavLink>
-                  </DropdownContent>
-                </Dropdown>
+            {userRole ? (
+              // If the user is logged in, display Logout
+              <NavItem className="nav-item">
+                <Logout />
               </NavItem>
+            ) : (
+              // If the user is not logged in, display Register and Login
+              <>
+                <NavItem className="nav-item">
+                  <NavLink to="/register" className="nav-link">
+                    Register
+                  </NavLink>
+                </NavItem>
+                <NavItem className="nav-item">
+                  <NavLink to="/login" className="nav-link">
+                    Login
+                  </NavLink>
+                </NavItem>
+              </>
             )}
           </NavList>
         </Navbar>
-
         {showMenu && (
           <HamburgerMenu show={showMenu}>
-            <MenuItemLink to="/queue" onClick={toggleMenu}>
-              Queue
-            </MenuItemLink>
-            <MenuItemLink to="/delivery-request-form" onClick={toggleMenu}>
-              Request Form
-            </MenuItemLink>
-            <MenuItemLink to="/dashboard" onClick={toggleMenu}>
-              Dashboard
-            </MenuItemLink>
-            <MenuItemLink to="/profile" onClick={toggleMenu}>
-              Profile
-            </MenuItemLink>
+            {userRole === 'Driver' && (
+              <>
+                <MenuItemLink to="/queue" onClick={toggleMenu}>
+                  Queue
+                </MenuItemLink>
+                <MenuItemLink to="/dashboard" onClick={toggleMenu}>
+                  Dashboard
+                </MenuItemLink>
+              </>
+            )}
+
+            {userRole === 'Customer' && (
+              <>
+                <MenuItemLink to="/profile" onClick={toggleMenu}>
+                  Profile
+                </MenuItemLink>
+                <MenuItemLink to="/request-form" onClick={toggleMenu}>
+                  Request Form
+                </MenuItemLink>
+              </>
+            )}
           </HamburgerMenu>
         )}
 
@@ -99,7 +98,7 @@ const HomePage: React.FC<HomePageProps> = ({ userRole }) => {
 };
 
 const mapStateToProps = (state: RootState) => ({
-  userRoleCustomer: state.customers.customerInfo.role,
+  userRole: state.users.userInfo.role,
 });
 
 export default connect(mapStateToProps)(HomePage);

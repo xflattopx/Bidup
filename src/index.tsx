@@ -14,8 +14,10 @@ import HomePage from './components/landing_page/HomePage';
 import Profile from './components/profile/Profile';
 import Dashboard from './components/dashboard/Dashboard';
 import Login from './components/login/Login';
+import Logout from './components/login/Logout';
 import RegistrationSuccess from './components/registration/RegistrationSuccess';
 import Register from './components/registration/Register';
+import RequestSuccessful from './components/delivery_form/RequestSuccessful';
 
 
 
@@ -28,10 +30,11 @@ ReactDOM.render(
       <Routes>
         <Route path="/" element={<HomePage/>}>
           <Route path="home" element={<HomePage/>} />
-          <Route path="register" element={<Register />} />
-          <Route path="login" element={<Login onLogin={function (credentials: { username: string; password: string; }): void {
+          <Route path="register" element={<Register/>} />
+          <Route path="login" element={<Login onLogin={function (credentials: { email: string; password: string; }): Promise<{ token: string; role: string; }> {
             throw new Error('Function not implemented.');
-          } }/>} />
+          } }/>}/>
+          <Route path="logout" element={<Logout/>} />
           <Route path="queue" element={<Queue/>}/>
           <Route path="dashboard" element={<Dashboard driverId={0}/>}/>
           <Route path="profile" element={<Profile customerInfo={{
@@ -42,8 +45,9 @@ ReactDOM.render(
             throw new Error('Function not implemented.');
           } }/>}/>
         </Route>
-        <Route path="delivery-request-form" element={<DeliveryRequestForm/>}/>
+        <Route path="request-form" element={<DeliveryRequestForm/>}/>
         <Route path="registration-complete" element={<RegistrationSuccess/>}/>
+        <Route path="request-success" element={<RequestSuccessful/>}/>
      
       </Routes>
     </BrowserRouter>

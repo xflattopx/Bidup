@@ -4,7 +4,7 @@ import styled from 'styled-components';
 const textColor = '#333'; // Darker font color
 
 export const ProfileContainer = styled.div`
-  max-width: 800px;
+  max-width: 1100px; /* Adjusted width for a bit wider profile container */
   margin: 20px auto;
   padding: 20px;
   border: 1px solid #ccc;
@@ -31,7 +31,7 @@ export const ProfileTable = styled.table`
 
 export const ProfileTableHeader = styled.th`
   border: 1px solid #ddd;
-  padding: 8px;
+  padding: 12px;
   text-align: left;
   background-color: #f2f2f2;
   color: ${textColor}; // Set font color
@@ -39,7 +39,7 @@ export const ProfileTableHeader = styled.th`
 
 export const ProfileTableCell = styled.td`
   border: 1px solid #ddd;
-  padding: 8px;
+  padding: 12px;
   text-align: left;
   color: ${textColor}; // Set font color
 `;
@@ -47,7 +47,7 @@ export const ProfileTableCell = styled.td`
 export const CancelButton = styled.button<{ success?: boolean }>`
   background-color: ${props => (props.success ? 'green' : '#4caf50')};
   color: white;
-  padding: 5px 10px;
+  padding: 8px 16px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
