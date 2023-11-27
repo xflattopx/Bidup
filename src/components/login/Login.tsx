@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import { Container, LoginFormContainer, Form, Label, Input, Button, ErrorMessage, Title,SignupParagraph } from './styles';
-import { useNavigate, Link } from 'react-router-dom'; // Import Link from react-router-dom
+import { Container, LoginFormContainer, Form, Label, Input, Button, ErrorMessage, Title, SignupParagraph } from './styles';
+import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
-import { RootState } from '../../redux/reducers/rootReducer';
 import LoadingSpinner from '../loading_spinner/LoadingSpinner';
 
 interface LoginProps {
@@ -14,9 +13,14 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
   const dispatch = useDispatch();
   const [loginData, setLoginData] = useState({ email: '', password: '' });
   const [loading, setLoading] = useState(false);
-  const [loggedIn, setLoggedIn] = useState(false); // Use state to track login status
-  const [loginError, setLoginError] = useState<string | null>(null); // State for login error
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [loginError, setLoginError] = useState<string | null>(null);
   const navigate = useNavigate();
+
+  const apiUrl = process.env.NODE_ENV === 'development'
+    ? 'http://localhost:4200'
+    : 'https://bidup-api-3gltjz2saq-ue.a.run.app';
+  
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -32,7 +36,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
     try {
       setLoading(true);
 
-      const response = await axios.post('http://localhost:4200/auth/get-user', loginData);
+      const response = await axios.post(`${apiUrl}/auth/get-user`, loginData);
 
       if (response.status === 200) {
         const { token, role, first_name, last_name, email, user_id } = response.data;
@@ -88,7 +92,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
       }
     } catch (error) {
       console.error('Error during login:', error);
-      setLoginError('Invalid email or password. Please try again.'); // Set login error message
+      setLoginError('Invalid email or password. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -126,11 +130,9 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
               {loading ? 'Logging in...' : 'Login'}
             </Button>
 
-            {/* Display the login error message if it exists */}
             {loginError && <ErrorMessage>{loginError}</ErrorMessage>}
           </Form>
 
-          {/* Add the "don't have an account? Sign up" link */}
           <SignupParagraph>
             Don't have an account? <Link to="/register">Sign up</Link>
           </SignupParagraph>

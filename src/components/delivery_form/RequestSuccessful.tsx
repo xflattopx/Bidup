@@ -9,6 +9,9 @@ import { useNavigate } from 'react-router-dom';
 
 
 const RequestSuccessful: React.FC = () => {
+    const apiUrl = process.env.NODE_ENV === 'development'
+    ? 'http://localhost:4200'
+    : 'https://bidup-api-3gltjz2saq-ue.a.run.app';
   const navigate = useNavigate();
 
   useEffect(() => {

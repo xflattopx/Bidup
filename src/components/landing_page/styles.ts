@@ -1,11 +1,11 @@
 // styles.ts
 
-import styled from 'styled-components';
-import {Link} from 'react-router-dom';
+import styled, {keyframes} from 'styled-components';
+import { Link } from 'react-router-dom';
 
 export const Container = styled.div`
   text-align: center;
-  background-color: #f2f2f2;
+  background-color: #333; /* Dark background color */
   padding: 20px;
   min-height: 100vh;
 `;
@@ -19,8 +19,8 @@ export const PageContent = styled.div`
 `;
 
 export const Navbar = styled.nav`
-  background-color: #1a1a1a;
-  padding: 10px;
+  background-color: rgba(26, 26, 26, 0.9); /* Semi-transparent black background */
+  padding: 20px;
   width: 100%;
   display: flex;
   justify-content: space-between;
@@ -30,6 +30,8 @@ export const Navbar = styled.nav`
   z-index: 2;
   transition: background-color 0.3s ease;
 `;
+
+
 
 export const NavList = styled.ul`
   list-style-type: none;
@@ -51,7 +53,7 @@ export const NavLink = styled(Link)`
   padding: 10px;
   &:hover {
     border-bottom: 2px solid #ffcc00;
-    background-color: #333; /* Highlight color on hover */
+    background-color: #1a1a1a; /* Dark background color on hover */
     transition: background-color 0.3s ease;
   }
   transition: color 0.3s ease;
@@ -73,9 +75,29 @@ export const BidupLabel = styled.div`
   transition: color 0.3s ease;
 `;
 
+// export const CenterContent = styled.div`
+//   flex-grow: 2;
+//   padding: 20px;
+//   font-size: 1.5em;
+//   color: #ffcc00;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   height: 100%;
+//   transition: background-color 0.3s ease;
+//   width: 100%;
+//   margin-top: 60px; /* Adjusted to accommodate the Navbar */
+// `;
+
+// export const Dropdown = styled.div`
+//   position: absolute;
+//   top: 60px;
+//   left: 0;
+//   transition: left 0.3s ease;
+// `;
 export const CenterContent = styled.div`
   flex-grow: 2;
-  padding: 20px;
+  padding: 80px 20px 20px; /* Adjusted top padding to accommodate the Navbar */
   font-size: 1.5em;
   color: #ffcc00;
   display: flex;
@@ -83,20 +105,34 @@ export const CenterContent = styled.div`
   justify-content: center;
   height: 100%;
   transition: background-color 0.3s ease;
-  width: 100%; /* Take up the full width of the container */
-  margin-top: 100px; /* Adjust this value to lower or raise the CenterContent */
+  width: 100%;
+  margin-top: 60px; /* Adjusted to accommodate the Navbar */
 `;
 
 export const Dropdown = styled.div`
-  position: absolute;
-  top: 60px;
+  position: fixed;
+  top: 80px; /* Adjusted to provide more space */
   left: 0;
   transition: left 0.3s ease;
 `;
 
+export const HamburgerMenu = styled.div<{ show: boolean }>`
+  display: ${props => (props.show ? 'flex' : 'none')};
+  flex-direction: column;
+  align-items: flex-start;
+  position: absolute;
+  top: 80px; /* Adjusted to provide more space */
+  left: 0;
+  background-color: #1a1a1a;
+  z-index: 1;
+  padding: 10px;
+  border-radius: 4px;
+  transition: display 0.3s ease;
+`;
+
 export const DropdownContent = styled.div<{ show: boolean }>`
   display: ${props => (props.show ? 'block' : 'none')};
-  position: absolute;
+  position: fixed;
   background-color: #1a1a1a;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
   z-index: 1;
@@ -106,19 +142,19 @@ export const DropdownContent = styled.div<{ show: boolean }>`
   transition: display 0.3s ease;
 `;
 
-export const HamburgerMenu = styled.div<{ show: boolean }>`
-  display: ${props => (props.show ? 'flex' : 'none')};
-  flex-direction: column;
-  align-items: flex-start;
-  position: absolute;
-  top: 60px;
-  left: 0;
-  background-color: #1a1a1a;
-  z-index: 1;
-  padding: 10px;
-  border-radius: 4px;
-  transition: display 0.3s ease;
-`;
+// export const HamburgerMenu = styled.div<{ show: boolean }>`
+//   display: ${props => (props.show ? 'flex' : 'none')};
+//   flex-direction: column;
+//   align-items: flex-start;
+//   position: absolute;
+//   top: 60px;
+//   left: 0;
+//   background-color: #1a1a1a;
+//   z-index: 1;
+//   padding: 10px;
+//   border-radius: 4px;
+//   transition: display 0.3s ease;
+// `;
 
 export const MenuItemLink = styled(Link)`
   color: white;
@@ -129,4 +165,75 @@ export const MenuItemLink = styled(Link)`
     background-color: #333; /* Highlight color on hover */
   }
   transition: color 0.3s ease;
+`;
+
+
+export const Cursor = styled.span`
+  color: #ffcc00; /* Cursor color */
+  animation: blink 0.8s infinite;
+
+  @keyframes blink {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0;
+    }
+  }
+`;
+
+export const ContentContainer = styled.div`
+  text-align: left;
+  padding: 20px;
+  font-family: monospace; /* Change the font-family to monospace for a command line style */
+`;
+
+
+const pulsate = keyframes`
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+`;
+
+// export const Title = styled.h1`
+//   color: #ffcc00;
+//   font-size: 32px;
+//   margin-bottom: 20px;
+//   text-align: center;
+//   animation: ${pulsate} 2s infinite; /* Add pulsating animation to the title */
+// `;
+export const Description = styled.p`
+  color: white;
+  font-size: 16px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+`;
+
+const flicker = keyframes`
+  0%, 100% {
+    opacity: 0;
+  }
+  20%, 80% {
+    opacity: 0.2;
+  }
+  40%, 60% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+`;
+
+export const Title = styled.h1<{ isTyping: boolean }>`
+  color: #ffcc00;
+  font-size: 32px;
+  margin-bottom: 20px;
+  text-align: center;
+  animation: ${({ isTyping }) => (isTyping ? flicker : 'none')} 2s forwards;
 `;

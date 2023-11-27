@@ -1,30 +1,48 @@
 // styles.ts
 
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { Link } from 'react-router-dom';
 
 export const Container = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100vh; /* Set the height to 100% of the viewport height */
+  text-align: center;
+  background-color: #333;
+  padding: 20px;
+  min-height: 100vh;
+  font-family: 'Arial', sans-serif;
 `;
 
 export const LoginFormContainer = styled.div`
   max-width: 400px;
   width: 100%;
-  background-color: #f4f4f4;
-  padding: 15px; /* Adjust the top and bottom padding as needed */
+  background-color: #333;
+  padding: 15px;
   border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  text-align: center; /* Center the content horizontally */
+  text-align: center;
+`;
+
+const flicker = keyframes`
+  0%, 100% {
+    opacity: 0;
+  }
+  20%, 80% {
+    opacity: 0.2;
+  }
+  40%, 60% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
 `;
 
 export const Title = styled.h2`
-  font-size: 2.5em; /* Increase the font size for the title */
+  font-size: 32px;
   margin-bottom: 20px;
-  color: #1a1a1a;
+  color: #ffcc00;
+  animation: ${flicker} 2s forwards;
 `;
+
+
 
 export const Form = styled.form`
   display: flex;
@@ -46,21 +64,23 @@ export const Input = styled.input`
   margin-top: 5px;
   margin-bottom: 15px;
   width: 80%;
-  border: 1px solid #ccc;
+  border: none; /* Set border to none to make it invisible */
   border-radius: 4px;
 `;
 
 export const Button = styled.button`
-  background-color: #1a1a1a;
-  color: white;
-  padding: 10px;
-  cursor: pointer;
-  border: none;
-  border-radius: 4px;
-  width: 100%;
-  &:hover {
-    background-color: #333;
-  }
+background-color: #1a1a1a;
+color: white;
+padding: 10px;
+cursor: pointer;
+border: none;
+border-radius: 4px;
+width: 100%;
+transition: background-color 0.3s; /* Add a smooth transition effect */
+
+&:hover {
+  background-color: #ffd700; /* Change the background color to gold on hover */
+}
 `;
 
 export const ErrorMessage = styled.p`
@@ -69,13 +89,12 @@ export const ErrorMessage = styled.p`
 `;
 
 export const SignupParagraph = styled.p`
-  color: #333; /* Set the color as needed */
-  margin-top: 10px; /* Adjust the top margin as needed */
+  color: white;
+  margin-top: 10px;
 
-  /* Style the link within the paragraph */
   a {
-    color: #1a1a1a; /* Set the link color */
-    text-decoration: underline; /* Add underline to the link */
-    margin-left: 5px; /* Add some spacing to the left of the link */
+    color: #ffcc00;
+    text-decoration: underline;
+    margin-left: 5px;
   }
 `;
