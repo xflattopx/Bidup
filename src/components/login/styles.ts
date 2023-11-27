@@ -35,11 +35,23 @@ const flicker = keyframes`
   }
 `;
 
+const glow = keyframes`
+  0% {
+    text-shadow: 0 0 10px #ffcc00;
+  }
+  50% {
+    text-shadow: 0 0 20px #ffcc00;
+  }
+  100% {
+    text-shadow: 0 0 10px #ffcc00;
+  }
+`;
+
 export const Title = styled.h2`
   font-size: 32px;
   margin-bottom: 20px;
   color: #ffcc00;
-  animation: ${flicker} 2s forwards;
+  animation: ${glow} 2s forwards 
 `;
 
 

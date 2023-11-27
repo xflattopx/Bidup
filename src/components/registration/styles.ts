@@ -20,25 +20,26 @@ export const RegistrationContainer = styled.div`
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 `;
 
-export const Title = styled.h2`
-  font-size: 32px;
-  margin-bottom: 20px;
-  color: #ffcc00;
-  animation: ${keyframes`
-    0%, 100% {
-      opacity: 0;
-    }
-    20%, 80% {
-      opacity: 0.2;
-    }
-    40%, 60% {
-      opacity: 0.5;
-    }
-    100% {
-      opacity: 1;
-    }
-  `} 2s forwards;
+const glow = keyframes`
+  0% {
+    text-shadow: 0 0 10px #ffcc00;
+  }
+  50% {
+    text-shadow: 0 0 20px #ffcc00;
+  }
+  100% {
+    text-shadow: 0 0 10px #ffcc00;
+  }
 `;
+
+export const Title = styled.h2`
+font-size: 32px;
+margin-bottom: 20px;
+color: #ffcc00;
+animation: ${glow} 2s forwards 
+`;
+
+
 
 export const Form = styled.form`
   display: flex;
