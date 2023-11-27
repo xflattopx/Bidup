@@ -1,6 +1,6 @@
 // styles.ts
 
-import styled, {keyframes} from 'styled-components';
+import styled, {keyframes, css} from 'styled-components';
 import { Link } from 'react-router-dom';
 
 export const Container = styled.div`
@@ -75,26 +75,7 @@ export const BidupLabel = styled.div`
   transition: color 0.3s ease;
 `;
 
-// export const CenterContent = styled.div`
-//   flex-grow: 2;
-//   padding: 20px;
-//   font-size: 1.5em;
-//   color: #ffcc00;
-//   display: flex;
-//   align-items: center;
-//   justify-content: center;
-//   height: 100%;
-//   transition: background-color 0.3s ease;
-//   width: 100%;
-//   margin-top: 60px; /* Adjusted to accommodate the Navbar */
-// `;
 
-// export const Dropdown = styled.div`
-//   position: absolute;
-//   top: 60px;
-//   left: 0;
-//   transition: left 0.3s ease;
-// `;
 export const CenterContent = styled.div`
   flex-grow: 2;
   padding: 80px 20px 20px; /* Adjusted top padding to accommodate the Navbar */
@@ -142,20 +123,6 @@ export const DropdownContent = styled.div<{ show: boolean }>`
   transition: display 0.3s ease;
 `;
 
-// export const HamburgerMenu = styled.div<{ show: boolean }>`
-//   display: ${props => (props.show ? 'flex' : 'none')};
-//   flex-direction: column;
-//   align-items: flex-start;
-//   position: absolute;
-//   top: 60px;
-//   left: 0;
-//   background-color: #1a1a1a;
-//   z-index: 1;
-//   padding: 10px;
-//   border-radius: 4px;
-//   transition: display 0.3s ease;
-// `;
-
 export const MenuItemLink = styled(Link)`
   color: white;
   text-decoration: none;
@@ -201,13 +168,6 @@ const pulsate = keyframes`
   }
 `;
 
-// export const Title = styled.h1`
-//   color: #ffcc00;
-//   font-size: 32px;
-//   margin-bottom: 20px;
-//   text-align: center;
-//   animation: ${pulsate} 2s infinite; /* Add pulsating animation to the title */
-// `;
 export const Description = styled.p`
   color: white;
   font-size: 16px;
@@ -230,10 +190,23 @@ const flicker = keyframes`
   }
 `;
 
+const glow = keyframes`
+  0% {
+    text-shadow: 0 0 10px #ffcc00;
+  }
+  50% {
+    text-shadow: 0 0 20px #ffcc00;
+  }
+  100% {
+    text-shadow: 0 0 10px #ffcc00;
+  }
+`;
+
+
 export const Title = styled.h1<{ isTyping: boolean }>`
   color: #ffcc00;
   font-size: 32px;
   margin-bottom: 20px;
   text-align: center;
-  animation: ${({ isTyping }) => (isTyping ? flicker : 'none')} 2s forwards;
+  animation: ${({ isTyping }) => (isTyping ? css`${flicker} 2s forwards, ${glow} 2s infinite alternate` : 'none')};
 `;
