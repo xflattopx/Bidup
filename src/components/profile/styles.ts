@@ -30,11 +30,10 @@ export const ProfileTable = styled.table`
 `;
 
 export const ProfileTableHeader = styled.th`
-  border: 1px solid #ddd;
-  padding: 12px;
-  text-align: left;
-  background-color: #f2f2f2;
-  color: ${textColor}; // Set font color
+border: 1px solid #333;
+padding: 12px;
+background-color: #1a1a1a; /* Updated color */
+color: white;
 `;
 
 export const ProfileTableCell = styled.td`
