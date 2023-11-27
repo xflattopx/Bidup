@@ -15,6 +15,7 @@ import {
   BiddingBidButton,
   StatusCell,
   ActionCell,
+  BiddingRequestRow,
   QueueTitle,
 } from './styles';
 
@@ -163,7 +164,7 @@ const Queue: React.FC<QueueProps> = () => {
         </thead>
         <tbody>
           {queueState.queue.map((request) => (
-            <tr key={request.id} className={queueState.uniqueIds.has(request.id) ? 'new-request' : ''}>
+            <BiddingRequestRow key={request.id} className={queueState.uniqueIds.has(request.id) ? 'new-request' : ''}>
               <DeliveryQueueTableCell>{request.id}</DeliveryQueueTableCell>
               <DeliveryQueueTableCell>{request.pickup_location}</DeliveryQueueTableCell>
               <DeliveryQueueTableCell>{request.dropoff_location}</DeliveryQueueTableCell>
@@ -179,7 +180,7 @@ const Queue: React.FC<QueueProps> = () => {
                 )}
               </ActionCell>
               <StatusCell>{request.status}</StatusCell>
-            </tr>
+            </BiddingRequestRow>
           ))}
         </tbody>
       </DeliveryQueueTable>

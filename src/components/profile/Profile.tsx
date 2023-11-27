@@ -101,7 +101,7 @@ const Profile: React.FC<ProfileProps> = ({ customerInfo, onCancelRequest }) => {
   return (
     <SharedStyles.Container>
       <SharedStyles.Section>
-        <SharedStyles.SectionTitle>Customer Profile</SharedStyles.SectionTitle>
+        <SharedStyles.Title>Customer Profile</SharedStyles.Title>
       </SharedStyles.Section>
 
       {/* Personal Information */}

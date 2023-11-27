@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, {keyframes} from 'styled-components';
 
 export const QueueContainer = styled.div`
   text-align: center;
@@ -17,10 +17,10 @@ export const DeliveryQueueTable = styled.table`
 
 
 export const DeliveryQueueTableHeader = styled.th`
-  border: 1px solid #333;
-  padding: 12px;
-  background-color: #333;
-  color: white;
+border: 1px solid #333;
+padding: 12px;
+background-color: #1a1a1a; /* Updated color */
+color: white;
 `;
 
 export const DeliveryQueueTableCell = styled.td`
@@ -41,14 +41,14 @@ export const HoverTableRow = styled.tr`
 `;
 
 export const BidButton = styled.button`
-  background-color: #1a1a1a;
-  color: white;
+  background-color: white;
+  color: #1a1a1a;
   padding: 10px;
   cursor: pointer;
   border: none;
   border-radius: 4px;
   &:hover {
-    background-color: #333;
+    background-color: #ffcc00;
   }
 `;
 
@@ -57,7 +57,7 @@ export const PendingBidButton = styled(BidButton)`
 `;
 
 export const BiddingBidButton = styled(BidButton)`
-  background-color: #4CAF50; /* Set the desired lighter color for the BiddingBidButton */
+  background-color: #ffcc00; /* Set the desired lighter color for the BiddingBidButton */
   /* Additional styles for BiddingBidButton if needed */
   &:hover {
     background-color: #45a049; /* Set the hover color for the BiddingBidButton */
@@ -83,7 +83,33 @@ export const ActionCell = styled.td`
   color: white; /* Set the text color */
 `;
 
+const glow = keyframes`
+  0% {
+    text-shadow: 0 0 10px #ffcc00;
+  }
+  50% {
+    text-shadow: 0 0 20px #ffcc00;
+  }
+  100% {
+    text-shadow: 0 0 10px #ffcc00;
+  }
+`;
+
 
 export const QueueTitle = styled.h2`
-  color: black; /* Set the desired color for the title */
+font-size: 32px;
+margin-bottom: 20px;
+color: #ffcc00;
+animation: ${glow} 2s forwards 
+`;
+
+export const BiddingRequestRow = styled.tr`
+  &.bidding-request {
+    background-color: #ffc107; /* Change this color to your desired highlighting color */
+    transition: background-color 0.3s ease; /* Add a smooth transition effect */
+
+    &:hover {
+      background-color: #ff9800; /* Change this color to your desired highlighting color on hover */
+    }
+  }
 `;
