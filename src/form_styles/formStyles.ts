@@ -1,9 +1,29 @@
-import styled from 'styled-components';
+import styled, {keyframes} from 'styled-components';
 
 const textColor = '#ffd700'; // Darker font color
 const textColorDark = '#333'; // Darker font color
 const lighterTextColor = '#666'; // Lighter font color for the profile section
-const tableHeaderColor = '#000'; // Color for table headers
+const tableHeaderColor = 'white'; // Color for table headers
+const titleColor = '#ffd700';
+
+const glow = keyframes`
+  0% {
+    text-shadow: 0 0 10px #ffcc00;
+  }
+  50% {
+    text-shadow: 0 0 20px #ffcc00;
+  }
+  100% {
+    text-shadow: 0 0 10px #ffcc00;
+  }
+`;
+
+export const Title = styled.h2`
+font-size: 32px;
+margin-bottom: 20px;
+color: #ffcc00;
+animation: ${glow} 2s forwards 
+`;
 
 export const Container = styled.div`
   max-width: 1400px;
@@ -22,7 +42,7 @@ export const Section = styled.div`
 export const SectionTitle = styled.h3`
   font-size: 18px;
   margin-bottom: 10px;
-  color: ${textColor};
+  color: ${titleColor};
 `;
 
 export const Table = styled.table`
@@ -35,7 +55,7 @@ export const TableHeader = styled.th`
   border: 1px solid #ddd;
   padding: 12px;
   text-align: left;
-  background-color: #f2f2f2;
+  background-color: #1a1a1a;
   color: ${tableHeaderColor};
 `;
 
@@ -43,7 +63,8 @@ export const TableCell = styled.td`
   border: 1px solid #ddd;
   padding: 12px;
   text-align: left;
-  color: ${textColor};
+  background-color: #1a1a1a;
+  color: white;
 `;
 
 export const Button = styled.button<{ success?: boolean }>`

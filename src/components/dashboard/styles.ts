@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, {keyframes} from 'styled-components';
 
 // Define a common color for the font
 const textColor = '#333'; // Darker font color
@@ -29,18 +29,31 @@ export const DashboardTableHeader = styled.th`
 `;
 
 export const DashboardTableCell = styled.td`
-  border: 1px solid #333;
-  padding: 12px;
-  color: #1a1a1a; /* Set font color */
-  background-color: ${cellBackgroundColor}; /* Set background color */
+border: 1px solid #333;
+padding: 12px;
+background-color: #1a1a1a; /* Set the desired dark background color */
+color: white; /* Set the text color */
 `;
 
 export const EvenTableRow = styled.tr`
   background-color: ${cellBackgroundColor}; /* Set background color */
 `;
 
+const glow = keyframes`
+  0% {
+    text-shadow: 0 0 10px #ffcc00;
+  }
+  50% {
+    text-shadow: 0 0 20px #ffcc00;
+  }
+  100% {
+    text-shadow: 0 0 10px #ffcc00;
+  }
+`;
+
 export const DashboardTitle = styled.h2`
-  font-size: 2em;
-  margin-bottom: 20px;
-  color: #1a1a1a;
+font-size: 32px;
+margin-bottom: 20px;
+color: #ffcc00;
+animation: ${glow} 2s forwards 
 `;
