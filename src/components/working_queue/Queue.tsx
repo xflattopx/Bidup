@@ -1,16 +1,25 @@
-// Queue.tsx
-
 import React, { useState, useEffect } from 'react';
-import './Queue.css';
 import axios from 'axios';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import { RootState } from '../../redux/reducers/rootReducer';
-import { Dispatch } from 'redux';
-import { setDriverId } from '../../redux/actions/driverActions'
-import io from 'socket.io-client';
+//import io from 'socket.io-client';
+import {
+  QueueContainer,
+  DeliveryQueueTable,
+  DeliveryQueueTableHeader,
+  DeliveryQueueTableCell,
+  EvenTableRow,
+  HoverTableRow,
+  BidButton,
+  PendingBidButton,
+  BiddingBidButton,
+  StatusCell,
+  ActionCell,
+  QueueTitle,
+} from './styles';
 
 interface QueueProps {
-  driverId: number; 
+  driverId: number;
   setDriverId: (driverId: number) => void;
 }
 
@@ -30,15 +39,19 @@ interface QueueState {
   queue: DeliveryRequest[];
 }
 
-const Queue: React.FC = () => {
+const Queue: React.FC<QueueProps> = () => {
+  const apiUrl = process.env.NODE_ENV === 'development'
+  ? 'http://localhost:4200'
+  : 'https://bidup-api-3gltjz2saq-ue.a.run.app';
+  const userId = useSelector((state: RootState) => state.users.userId);
   const [queueState, setQueueState] = useState<QueueState>({ uniqueIds: new Set(), queue: [] });
 
   // Create a Socket.IO client instance
-  const socket = io('http://localhost:3000'); // Use your server URL
+  //const socket = io(process.env.REACT_APP_SOCKET_SERVER_URL || 'http://localhost:3000'); // Use your server URL
 
   const fetchDataAndEnqueue = async () => {
     try {
-      const response = await axios.get('http://localhost:4200/customer_request/all');
+      const response = await axios.get(`${apiUrl}/customer_request/all`);
       const newData: DeliveryRequest[] = response.data;
       setQueueState((prevState) => {
         const uniqueIdsSet = new Set(prevState.uniqueIds);
@@ -84,23 +97,30 @@ const Queue: React.FC = () => {
       if (bidAmount !== null) {
         const parsedBidAmount = parseFloat(bidAmount);
         if (!isNaN(parsedBidAmount)) {
+          // Check if the bid amount is less than the current price offer
+          const currentRequest = queueState.queue.find((request) => request.id === requestId);
+          if (currentRequest && parsedBidAmount > currentRequest.price_offer) {
+            alert('Bid amount must be Less than the current price offer.');
+            return;
+          }
+
           // Send a bid request to the backend
-          const bidResponse = await axios.post('http://localhost:4200/bid/record-bid', {
+          const bidResponse = await axios.post(`${apiUrl}/bid/record-bid`, {
             deliveryRequestId: requestId,
-            driverId: 1, // Replace with your driverId logic
+            driverId: userId, // Replace with your driverId logic
             bidPrice: parsedBidAmount,
           });
-  
+
           // Extract the bid ID from the response
           const bidId = bidResponse.data.requestId;
-  
+
           // Update the bid with the driver who placed it
-          await axios.post('http://localhost:4200/bid/update-bid', {
+          await axios.post(`${apiUrl}/bid/update-bid`, {
             bidId: bidId,
             newBidPrice: parsedBidAmount,
-            driverId: 1, // Replace with your driverId logic
+            driverId: userId, // Replace with your driverId logic
           });
-  
+
           // Update the UI to reflect that the bid was placed
           setQueueState((prevState) => ({
             uniqueIds: prevState.uniqueIds,
@@ -110,9 +130,9 @@ const Queue: React.FC = () => {
                 : request
             ),
           }));
-  
+
           // Record the winning bid
-          await axios.post('http://localhost:4200/bid/record-winning-bid', {
+          await axios.post(`${apiUrl}/bid/record-winning-bid`, {
             bidId: bidId,
           });
         } else {
@@ -124,52 +144,51 @@ const Queue: React.FC = () => {
       alert('Error placing bid. Please try again later.');
     }
   };
-  
+
   return (
-  
-    <div className="queue-container">
-      <h2>Delivery Queue</h2>
-      <table className="delivery-queue-table">
+    <QueueContainer>
+      <QueueTitle>Delivery Queue</QueueTitle>
+      <DeliveryQueueTable>
         <thead>
           <tr>
-            <th>ID</th>
-            <th>Pickup Location</th>
-            <th>Drop-off Location</th>
-            <th>Description</th>
-            <th>Preferred Delivery Time</th>
-            <th>Price Offer</th>
-            <th>Action</th>
-            <th>Status</th>
+            <DeliveryQueueTableHeader>ID</DeliveryQueueTableHeader>
+            <DeliveryQueueTableHeader>Pickup Location</DeliveryQueueTableHeader>
+            <DeliveryQueueTableHeader>Drop-off Location</DeliveryQueueTableHeader>
+            <DeliveryQueueTableHeader>Description</DeliveryQueueTableHeader>
+            <DeliveryQueueTableHeader>Preferred Delivery Time</DeliveryQueueTableHeader>
+            <DeliveryQueueTableHeader>Price Offer</DeliveryQueueTableHeader>
+            <DeliveryQueueTableHeader>Action</DeliveryQueueTableHeader>
+            <DeliveryQueueTableHeader>Status</DeliveryQueueTableHeader>
           </tr>
         </thead>
-        <tbody>    
+        <tbody>
           {queueState.queue.map((request) => (
-            <tr key={request.id}>
-              <td>{request.id}</td>
-              <td>{request.pickup_location}</td>
-              <td>{request.dropoff_location}</td>
-              <td>{request.description}</td>
-              <td>{request.preferred_delivery_time}</td>
-              <td>${request.price_offer}</td>
-              <td>{request.status}</td>
-              <td>
-              {request.status === 'Bidding' && (
-                  <button onClick={() => handleBidButtonClick(request.id)}>Bid</button>
+            <tr key={request.id} className={queueState.uniqueIds.has(request.id) ? 'new-request' : ''}>
+              <DeliveryQueueTableCell>{request.id}</DeliveryQueueTableCell>
+              <DeliveryQueueTableCell>{request.pickup_location}</DeliveryQueueTableCell>
+              <DeliveryQueueTableCell>{request.dropoff_location}</DeliveryQueueTableCell>
+              <DeliveryQueueTableCell>{request.description}</DeliveryQueueTableCell>
+              <DeliveryQueueTableCell>{request.preferred_delivery_time}</DeliveryQueueTableCell>
+              <DeliveryQueueTableCell>${request.price_offer}</DeliveryQueueTableCell>
+              <ActionCell>
+                {request.status === 'Bidding' && (
+                  <BiddingBidButton onClick={() => handleBidButtonClick(request.id)}>Bid</BiddingBidButton>
                 )}
                 {request.status === 'Pending' && (
-                  <button onClick={() => handleBidButtonClick(request.id)}>Bid</button>
+                  <PendingBidButton onClick={() => handleBidButtonClick(request.id)}>Bid</PendingBidButton>
                 )}
-              </td>
+              </ActionCell>
+              <StatusCell>{request.status}</StatusCell>
             </tr>
           ))}
         </tbody>
-      </table>
-    </div>
+      </DeliveryQueueTable>
+    </QueueContainer>
   );
 };
 
 const mapStateToProps = (state: RootState) => ({
-  driverId: state.drivers.driverId,
+  driverId: state.users.userId,
 });
 
 export default connect(mapStateToProps)(Queue);

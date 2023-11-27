@@ -1,31 +1,160 @@
-// Register.tsx
-
-import React, { useState } from 'react';
-import { connect } from 'react-redux';
-import './Register.css';
+import React, { useState, useEffect } from 'react';
+import { connect, useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import styled, { keyframes } from 'styled-components';
 import { RootState } from '../../redux/reducers/rootReducer';
-import { updateCustomerInfo } from '../../redux/actions/customerActions';
+import axios from 'axios';
+import LoadingSpinner from '../loading_spinner/LoadingSpinner';
 
-interface RegisterProps {
-  // Add any state variables you need here
-  firstName: string;
-  lastName: string;
-  email: string;
-  role: string;
-  updateCustomerInfo: (info: any) => void;
+const Container = styled.div`
+  text-align: center;
+  background-color: #333;
+  padding: 20px;
+  min-height: 100vh;
+  font-family: 'Arial', sans-serif;
+`;
+
+const RegistrationContainer = styled.div`
+  max-width: 400px;
+  margin: 0 auto;
+  background-color: #333;
+  padding: 20px;
+  border-radius: 8px;
+  
+`;
+
+const glow = keyframes`
+  0% {
+    text-shadow: 0 0 10px #ffcc00;
+  }
+  50% {
+    text-shadow: 0 0 20px #ffcc00;
+  }
+  100% {
+    text-shadow: 0 0 10px #ffcc00;
+  }
+`;
+
+const Title = styled.h2`
+  font-size: 32px;
+  margin-bottom: 20px;
+  color: #ffcc00;
+  animation: ${glow} 2s forwards;
+`;
+
+const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const Label = styled.label`
+margin-bottom: 10px;
+display: flex;
+flex-direction: column;
+text-align: left;
+color: #fff; /* Set a color that contrasts well with the background */
+width: 100%;
+`;
+
+const Select = styled.select`
+  padding: 10px;
+  margin-top: 5px;
+  margin-bottom: 15px;
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+`;
+
+const Button = styled.button`
+background-color: #1a1a1a;
+color: white;
+padding: 10px;
+cursor: pointer;
+border: none;
+border-radius: 4px;
+width: 100%;
+transition: background-color 0.3s; /* Add a smooth transition effect */
+
+&:hover {
+  background-color: #ffd700; /* Change the background color to gold on hover */
+}
+`;
+
+const ErrorMessage = styled.p`
+  color: red;
+  margin-top: 5px;
+`;
+
+const SuccessMessage = styled.p`
+  color: green;
+  margin-top: 5px;
+`;
+
+const LabelRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+`;
+
+const InputRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  flex-wrap: wrap;
+`;
+
+export const Input = styled.input`
+  padding: 10px;
+  margin-top: 5px;
+  margin-bottom: 15px;
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+`;
+
+export const InputHalf = styled(Input)`
+  padding: 12px;
+  margin-top: 8px;
+  margin-bottom: 16px;
+  width: 95%;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+`;
+
+interface RegistrationProps {
+  registered: boolean;
+  registrationMessage: string;
 }
 
-const Register: React.FC<RegisterProps> = ({ firstName, lastName, email, role, updateCustomerInfo }) => {
+const Register: React.FC<RegistrationProps> = function ({
+  registered, registrationMessage
+}) {
   const [formState, setFormState] = useState({
     firstName: '',
     lastName: '',
     email: '',
     password: '',
     confirmPassword: '',
-    role: 'customer',
+    role: 'Customer',
   });
-
+  const apiUrl = process.env.NODE_ENV === 'development'
+    ? 'http://localhost:4200'
+    : 'https://bidup-api-3gltjz2saq-ue.a.run.app';
+  const dispatch = useDispatch();
   const [passwordError, setPasswordError] = useState('');
+  let navigate = useNavigate();
+  useEffect(() => {
+
+    if (registered) {
+      console.log('in useeffect');
+      const timer = setTimeout(() => {
+        navigate('/registration-complete');
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [registered, navigate]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -34,7 +163,6 @@ const Register: React.FC<RegisterProps> = ({ firstName, lastName, email, role, u
       [name]: value,
     }));
 
-    // Clear password error when the user types in the password fields
     if (name === 'password' || name === 'confirmPassword') {
       setPasswordError('');
     }
@@ -48,112 +176,150 @@ const Register: React.FC<RegisterProps> = ({ firstName, lastName, email, role, u
     }));
   };
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    // Password validation
     if (formState.password !== formState.confirmPassword) {
       setPasswordError("Passwords don't match");
       return;
     }
 
-    // Perform any other logic you need with the form state
-    console.log('Form State:', formState);
+    try {
+      // Simulate the asynchronous registration process
+      // Replace this with your actual registration logic
+      setTimeout(async () => {
+        // Dispatch the thunk action
+        await axios.post(`${apiUrl}/register/sign-up`, {
+          first_name: formState.firstName,
+          last_name: formState.lastName,
+          email: formState.email,
+          password: formState.password,
+          role: formState.role,
+        });
 
-    // Update customer information in the Redux store
-    updateCustomerInfo({
-      firstName: formState.firstName,
-      lastName: formState.lastName,
-      email: formState.email,
-      role: formState.role,
-    });
+        // Dispatch an action with the registration message to the /registration-success component
+        registrationMessage = `Thank you for registering, ${formState.firstName}!`;
+        registered = true;
+
+        dispatch({
+          type: 'SUCCESSFUL_REQUEST_MESSAGE',
+          payload: {
+            successfulRequest: registered,
+            successMessage: registrationMessage,
+          },
+        });
+
+        // Reset the form
+        setFormState({
+          firstName: '',
+          lastName: '',
+          email: '',
+          password: '',
+          confirmPassword: '',
+          role: 'Customer',
+        });
+      }, 500); // Simulated delay
+
+    } catch (error) {
+      console.error('Error during registration:', error);
+    }
   };
 
   return (
-    <div className="registration-container">
-      <h2>Registration</h2>
-      <form onSubmit={handleSubmit} className="registration-form">
-        <label>
-          First Name:
-          <input
-            type="text"
-            name="firstName"
-            value={formState.firstName}
-            onChange={handleInputChange}
-            required
-          />
-        </label>
+    <Container>
+      {registered === false ?
+        <RegistrationContainer>
+          <Title>Registration</Title>
 
-        <label>
-          Last Name:
-          <input
-            type="text"
-            name="lastName"
-            value={formState.lastName}
-            onChange={handleInputChange}
-            required
-          />
-        </label>
+          <Form onSubmit={handleSubmit}>
+            <InputRow>
+              <Label>
+                First Name:
+                <InputHalf
+                  type="text"
+                  name="firstName"
+                  value={formState.firstName}
+                  onChange={handleInputChange}
+                  required
+                />
+              </Label>
 
-        <label>
-          Email:
-          <input
-            type="email"
-            name="email"
-            value={formState.email}
-            onChange={handleInputChange}
-            required
-          />
-        </label>
+              <Label>
+                Last Name:
+                <InputHalf
+                  type="text"
+                  name="lastName"
+                  value={formState.lastName}
+                  onChange={handleInputChange}
+                  required
+                />
+              </Label>
+            </InputRow>
 
-        <label>
-          Password:
-          <input
-            type="password"
-            name="password"
-            value={formState.password}
-            onChange={handleInputChange}
-            required
-          />
-        </label>
+            <InputRow>
+              <Label>
+                Email:
+                <InputHalf
+                  type="email"
+                  name="email"
+                  value={formState.email}
+                  onChange={handleInputChange}
+                  required
+                />
+              </Label>
+            </InputRow>
 
-        <label>
-          Re-enter Password:
-          <input
-            type="password"
-            name="confirmPassword"
-            value={formState.confirmPassword}
-            onChange={handleInputChange}
-            required
-          />
-        </label>
+            <InputRow>
+              <Label>
+                Password:
+                <InputHalf
+                  type="password"
+                  name="password"
+                  value={formState.password}
+                  onChange={handleInputChange}
+                  required
+                />
+              </Label>
 
-        {passwordError && <p className="error-message">{passwordError}</p>}
+              <Label>
+                Re-enter Password:
+                <InputHalf
+                  type="password"
+                  name="confirmPassword"
+                  value={formState.confirmPassword}
+                  onChange={handleInputChange}
+                  required
+                />
+              </Label>
+            </InputRow>
 
-        <label>
-          Role:
-          <select name="role" value={formState.role} onChange={handleRoleChange}>
-            <option value="customer">Customer</option>
-            <option value="driver">Driver</option>
-          </select>
-        </label>
+            {passwordError && <ErrorMessage>{passwordError}</ErrorMessage>}
 
-        <button type="submit">Register</button>
-      </form>
-    </div>
+            <InputRow>
+              <Label>
+                Role:
+                <Select name="role" value={formState.role} onChange={handleRoleChange}>
+                  <option value="Customer">Customer</option>
+                  <option value="Driver">Driver</option>
+                </Select>
+              </Label>
+            </InputRow>
+
+            <Button type="submit">Register</Button>
+          </Form>
+          {/* <SuccessMessage>{registrationMessage}</SuccessMessage> */}
+        </RegistrationContainer>
+        : <LoadingSpinner />}
+    </Container>
   );
 };
 
-const mapStateToProps = (state: RootState) => ({
-  // Map any state variables you need from the Redux store
-  firstName: state.customers.customerInfo.firstName,
-  lastName: state.customers.customerInfo.lastName,
-  email: state.customers.customerInfo.email,
-  role: state.customers.customerInfo.role,
-});
+function mapStateToProps(state: RootState) {
+  console.log(state.deliveryForm);
+  return {
+    registered: state.deliveryForm.successfulRequest,
+    registrationMessage: state.deliveryForm.successMessage
+  };
+}
 
-const mapDispatchToProps = {
-  updateCustomerInfo,
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Register);
+export default connect(mapStateToProps)(Register);
