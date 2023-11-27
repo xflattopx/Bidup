@@ -20,10 +20,14 @@ const Dashboard: React.FC<DashboardProps> = ({ driverId }) => {
   const userId = useSelector((state: RootState) => state.users.userId);
   const [acceptedBids, setAcceptedBids] = useState<Bid[]>([]);
 
+  const apiUrl = process.env.NODE_ENV === 'development'
+    ? 'http://localhost:4200'
+    : 'https://bidup-api-3gltjz2saq-ue.a.run.app';
+
   useEffect(() => {
     const fetchAcceptedBids = async () => {
       try {
-        const response = await axios.get(`http://localhost:4200/dashboard/accepted-bids?userId=${userId}`);
+        const response = await axios.get(`${apiUrl}/dashboard/accepted-bids?userId=${userId}`);
         const data = response.data;
 
         // Check if the data structure is as expected
@@ -62,7 +66,7 @@ const Dashboard: React.FC<DashboardProps> = ({ driverId }) => {
 
     // Cleanup function to clear the interval when the component unmounts
     return () => clearInterval(timer);
-  }, [userId]);
+  }, [userId, apiUrl]);
 
   return (
     <S.DashboardContainer>

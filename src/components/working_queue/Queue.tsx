@@ -1,11 +1,8 @@
-// Queue.tsx
-
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { connect, useSelector } from 'react-redux';
 import { RootState } from '../../redux/reducers/rootReducer';
-import { setDriverId } from '../../redux/actions/driverActions';
-import io from 'socket.io-client';
+//import io from 'socket.io-client';
 import {
   QueueContainer,
   DeliveryQueueTable,
@@ -42,16 +39,19 @@ interface QueueState {
   queue: DeliveryRequest[];
 }
 
-const Queue: React.FC = () => {
+const Queue: React.FC<QueueProps> = () => {
+  const apiUrl = process.env.NODE_ENV === 'development'
+  ? 'http://localhost:4200'
+  : 'https://bidup-api-3gltjz2saq-ue.a.run.app';
   const userId = useSelector((state: RootState) => state.users.userId);
   const [queueState, setQueueState] = useState<QueueState>({ uniqueIds: new Set(), queue: [] });
 
   // Create a Socket.IO client instance
-  const socket = io('http://localhost:3000'); // Use your server URL
+  //const socket = io(process.env.REACT_APP_SOCKET_SERVER_URL || 'http://localhost:3000'); // Use your server URL
 
   const fetchDataAndEnqueue = async () => {
     try {
-      const response = await axios.get('http://localhost:4200/customer_request/all');
+      const response = await axios.get(`${apiUrl}/customer_request/all`);
       const newData: DeliveryRequest[] = response.data;
       setQueueState((prevState) => {
         const uniqueIdsSet = new Set(prevState.uniqueIds);
@@ -103,24 +103,24 @@ const Queue: React.FC = () => {
             alert('Bid amount must be Less than the current price offer.');
             return;
           }
-  
+
           // Send a bid request to the backend
-          const bidResponse = await axios.post('http://localhost:4200/bid/record-bid', {
+          const bidResponse = await axios.post(`${apiUrl}/bid/record-bid`, {
             deliveryRequestId: requestId,
             driverId: userId, // Replace with your driverId logic
             bidPrice: parsedBidAmount,
           });
-  
+
           // Extract the bid ID from the response
           const bidId = bidResponse.data.requestId;
-  
+
           // Update the bid with the driver who placed it
-          await axios.post('http://localhost:4200/bid/update-bid', {
+          await axios.post(`${apiUrl}/bid/update-bid`, {
             bidId: bidId,
             newBidPrice: parsedBidAmount,
             driverId: userId, // Replace with your driverId logic
           });
-  
+
           // Update the UI to reflect that the bid was placed
           setQueueState((prevState) => ({
             uniqueIds: prevState.uniqueIds,
@@ -130,9 +130,9 @@ const Queue: React.FC = () => {
                 : request
             ),
           }));
-  
+
           // Record the winning bid
-          await axios.post('http://localhost:4200/bid/record-winning-bid', {
+          await axios.post(`${apiUrl}/bid/record-winning-bid`, {
             bidId: bidId,
           });
         } else {
@@ -144,7 +144,6 @@ const Queue: React.FC = () => {
       alert('Error placing bid. Please try again later.');
     }
   };
-  
 
   return (
     <QueueContainer>
@@ -192,4 +191,4 @@ const mapStateToProps = (state: RootState) => ({
   driverId: state.users.userId,
 });
 
-export default connect(mapStateToProps, { setDriverId })(Queue);
+export default connect(mapStateToProps)(Queue);

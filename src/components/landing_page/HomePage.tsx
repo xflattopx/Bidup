@@ -1,10 +1,9 @@
-// src/components/HomePage.tsx
-
 import React, { useState, useEffect } from 'react';
-import { Outlet, Link, useNavigate } from 'react-router-dom';
+import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { RootState } from '../../redux/reducers/rootReducer';
 import Logout from '../login/Logout';
+import HomePageContent from './HomePageContent';
 import {
   Container,
   PageContent,
@@ -19,6 +18,8 @@ import {
   DropdownContent,
   HamburgerMenu,
   MenuItemLink,
+  Description,
+  Title,
 } from './styles';
 
 // Import your BidUpLogo.png image
@@ -29,23 +30,28 @@ interface HomePageProps {
 }
 
 const HomePage: React.FC<HomePageProps> = ({ userRole }) => {
+
+  const apiUrl = process.env.NODE_ENV === 'development'
+    ? 'http://localhost:4200'
+    : 'https://bidup-api-3gltjz2saq-ue.a.run.app';
   const [showMenu, setShowMenu] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+
 
   const toggleMenu = () => {
     setShowMenu(!showMenu);
   };
 
-  // Add useEffect to check for the presence and validity of the JWT token
-  // useEffect(() => {
-  //   const token = localStorage.getItem('jwtToken'); // Replace with your actual JWT token key
+  useEffect(() => {
+    const token = localStorage.getItem('jwtToken'); // Replace with your actual JWT token key
 
-  //   // Check if the user is not logged in
-  //   if (!token || isTokenExpired(token)) {
-  //     // Redirect to the login page
-  //     navigate('/login');
-  //   }
-  // }, [navigate]);
+    // Check if the user is not logged in or the token is expired
+    if (!token || isTokenExpired(token)) {
+      // Redirect to the login page
+      //navigate('/login');
+    }
+  }, [navigate]);
 
   // Helper function to check if a JWT token is expired
   const isTokenExpired = (token: string) => {
@@ -56,15 +62,17 @@ const HomePage: React.FC<HomePageProps> = ({ userRole }) => {
     return decodedToken.exp ? Date.now() >= decodedToken.exp * 1000 : false;
   };
 
+
   return (
     <Container className="home-page-container">
       <PageContent>
         <Navbar className="navbar">
           {userRole && <HamburgerIcon onClick={toggleMenu}>☰</HamburgerIcon>}
           <BidupLabel>
-            <img src={bidUpLogo} alt="BidUp Logo" height="30" />
+            <Link to="/">
+              <img src={bidUpLogo} alt="BidUp Logo" height="30" />
+            </Link>
           </BidupLabel>
-          {/* <BidupLabel>Bidup</BidupLabel> */}
           <NavList className="nav-list">
             {!userRole && (
               <>
@@ -114,7 +122,8 @@ const HomePage: React.FC<HomePageProps> = ({ userRole }) => {
         )}
 
         <CenterContent>
-          <Outlet />
+          {location.pathname === '/' ? <HomePageContent /> : <Outlet />}
+
         </CenterContent>
       </PageContent>
     </Container>

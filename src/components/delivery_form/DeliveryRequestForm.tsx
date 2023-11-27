@@ -1,16 +1,13 @@
-// src/components/DeliveryRequestForm.tsx
-
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { submitDeliveryRequest } from '../../redux/actions/deliveryRequestActions';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import * as Styled from './styles';
 import { RootState } from '../../redux/reducers/rootReducer';
 import LoadingSpinner from '../loading_spinner/LoadingSpinner';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 
 // Import the logo image
-import BidUpLogo from './/BidUpLogo.png';
+import BidUpLogo from './BidUpLogo.png';
 
 interface DeliveryRequestFormProps {
   // Add any additional props if needed
@@ -32,6 +29,10 @@ const DeliveryRequestForm: React.FC<DeliveryRequestFormProps> = () => {
     customerId: userId,
   });
 
+  const apiUrl = process.env.NODE_ENV === 'development'
+    ? 'http://localhost:4200'
+    : 'https://bidup-api-3gltjz2saq-ue.a.run.app';
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormState((prevFormState: any) => ({
@@ -46,8 +47,10 @@ const DeliveryRequestForm: React.FC<DeliveryRequestFormProps> = () => {
     try {
       setLoading(true);
 
-      //dispatch(await submitDeliveryRequest(formState));
-      axios.post('http://localhost:4200/customer_request', formState);
+      // Dispatching the action is commented out for now, as the axios.post call is used directly
+      // dispatch(await submitDeliveryRequest(formState));
+
+      axios.post(`${apiUrl}/customer_request`, formState);
 
       setFormState({
         pickupLocation: '',
@@ -75,7 +78,6 @@ const DeliveryRequestForm: React.FC<DeliveryRequestFormProps> = () => {
         <Styled.LogoImage src={BidUpLogo} alt="BidUp Logo" />
       </Styled.LogoContainer>
 
-      {/* <Styled.Title>Delivery Request Form</Styled.Title> */}
       {loading ? (
         <LoadingSpinner />
       ) : (

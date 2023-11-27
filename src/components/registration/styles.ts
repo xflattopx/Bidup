@@ -1,29 +1,100 @@
 // styles.ts
 
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
+import { Link } from 'react-router-dom';
 
 export const Container = styled.div`
   text-align: center;
+  background-color: #333;
   padding: 20px;
+  min-height: 100vh;
   font-family: 'Arial', sans-serif;
 `;
 
-export const SuccessContainer = styled.div`
+export const RegistrationContainer = styled.div`
   max-width: 400px;
   margin: 0 auto;
-  background-color: #f4f4f4;
+  background-color: #333;
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 `;
 
 export const Title = styled.h2`
-  font-size: 2em;
+  font-size: 32px;
   margin-bottom: 20px;
-  color: #1a1a1a;
+  color: #ffcc00;
+  animation: ${keyframes`
+    0%, 100% {
+      opacity: 0;
+    }
+    20%, 80% {
+      opacity: 0.2;
+    }
+    40%, 60% {
+      opacity: 0.5;
+    }
+    100% {
+      opacity: 1;
+    }
+  `} 2s forwards;
+`;
+
+export const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+export const Label = styled.label`
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  color: #333;
+  width: 100%;
+`;
+
+export const Input = styled.input`
+  padding: 10px;
+  margin-top: 5px;
+  margin-bottom: 15px;
+  width: 80%;
+  border: none; /* Set border to none to make it invisible */
+  border-radius: 4px;
+`;
+
+export const Button = styled.button`
+  background-color: #1a1a1a;
+  color: white;
+  padding: 10px;
+  cursor: pointer;
+  border: none;
+  border-radius: 4px;
+  width: 100%;
+  &:hover {
+    background-color: #333;
+  }
+`;
+
+export const ErrorMessage = styled.p`
+  color: red;
+  margin-top: 5px;
+`;
+
+export const SignupParagraph = styled.p`
+  color: white;
+  margin-top: 10px;
+
+  a {
+    color: #ffcc00;
+    text-decoration: underline;
+    margin-left: 5px;
+  }
 `;
 
 export const SuccessMessage = styled.p`
   color: green;
   margin-top: 5px;
 `;
+

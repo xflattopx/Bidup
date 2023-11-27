@@ -1,33 +1,46 @@
-// Register.tsx
-
 import React, { useState, useEffect } from 'react';
 import { connect, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { RootState } from '../../redux/reducers/rootReducer';
 import axios from 'axios';
 import LoadingSpinner from '../loading_spinner/LoadingSpinner';
 
-
 const Container = styled.div`
   text-align: center;
+  background-color: #333;
   padding: 20px;
+  min-height: 100vh;
   font-family: 'Arial', sans-serif;
 `;
 
 const RegistrationContainer = styled.div`
   max-width: 400px;
   margin: 0 auto;
-  background-color: #f4f4f4;
+  background-color: #333;
   padding: 20px;
   border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  
 `;
 
 const Title = styled.h2`
-  font-size: 2em;
+  font-size: 32px;
   margin-bottom: 20px;
-  color: #1a1a1a;
+  color: #ffcc00;
+  animation: ${keyframes`
+    0%, 100% {
+      opacity: 0;
+    }
+    20%, 80% {
+      opacity: 0.2;
+    }
+    40%, 60% {
+      opacity: 0.5;
+    }
+    100% {
+      opacity: 1;
+    }
+  `} 2s forwards;
 `;
 
 const Form = styled.form`
@@ -37,12 +50,12 @@ const Form = styled.form`
 `;
 
 const Label = styled.label`
-  margin-bottom: 10px;
-  display: flex;
-  flex-direction: column;
-  text-align: left;
-  color: #333;
-  width: 100%;
+margin-bottom: 10px;
+display: flex;
+flex-direction: column;
+text-align: left;
+color: #fff; /* Set a color that contrasts well with the background */
+width: 100%;
 `;
 
 const Select = styled.select`
@@ -55,16 +68,18 @@ const Select = styled.select`
 `;
 
 const Button = styled.button`
-  background-color: #1a1a1a;
-  color: white;
-  padding: 10px;
-  cursor: pointer;
-  border: none;
-  border-radius: 4px;
-  width: 100%;
-  &:hover {
-    background-color: #333;
-  }
+background-color: #1a1a1a;
+color: white;
+padding: 10px;
+cursor: pointer;
+border: none;
+border-radius: 4px;
+width: 100%;
+transition: background-color 0.3s; /* Add a smooth transition effect */
+
+&:hover {
+  background-color: #ffd700; /* Change the background color to gold on hover */
+}
 `;
 
 const ErrorMessage = styled.p`
@@ -94,7 +109,7 @@ export const Input = styled.input`
   padding: 10px;
   margin-top: 5px;
   margin-bottom: 15px;
-  width: 100%; /* Make the input span the entire width of the container */
+  width: 100%;
   border: 1px solid #ccc;
   border-radius: 4px;
 `;
@@ -103,22 +118,16 @@ export const InputHalf = styled(Input)`
   padding: 12px;
   margin-top: 8px;
   margin-bottom: 16px;
-  width: 95%; /* Adjust the width as needed */
+  width: 95%;
   border: 1px solid #ccc;
   border-radius: 4px;
-  box-sizing: border-box; /* Include padding and border in the element's total width and height */
+  box-sizing: border-box;
 `;
 
 interface RegistrationProps {
-  // firstName: string;
-  // lastName: string;
-  // email: string;
-  // role: string;
   registered: boolean;
   registrationMessage: string;
 }
-
-
 
 const Register: React.FC<RegistrationProps> = function ({
   registered, registrationMessage
@@ -131,6 +140,9 @@ const Register: React.FC<RegistrationProps> = function ({
     confirmPassword: '',
     role: 'Customer',
   });
+  const apiUrl = process.env.NODE_ENV === 'development'
+    ? 'http://localhost:4200'
+    : 'https://bidup-api-3gltjz2saq-ue.a.run.app';
   const dispatch = useDispatch();
   const [passwordError, setPasswordError] = useState('');
   let navigate = useNavigate();
@@ -143,7 +155,7 @@ const Register: React.FC<RegistrationProps> = function ({
       }, 3000);
       return () => clearTimeout(timer);
     }
-  }, [registered, LoadingSpinner, navigate]);
+  }, [registered, navigate]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -178,7 +190,7 @@ const Register: React.FC<RegistrationProps> = function ({
       // Replace this with your actual registration logic
       setTimeout(async () => {
         // Dispatch the thunk action
-        await axios.post('http://localhost:4200/register/sign-up', {
+        await axios.post(`${apiUrl}/register/sign-up`, {
           first_name: formState.firstName,
           last_name: formState.lastName,
           email: formState.email,
@@ -189,14 +201,14 @@ const Register: React.FC<RegistrationProps> = function ({
         // Dispatch an action with the registration message to the /registration-success component
         registrationMessage = `Thank you for registering, ${formState.firstName}!`;
         registered = true;
-       
+
         dispatch({
           type: 'SUCCESSFUL_REQUEST_MESSAGE',
           payload: {
-            successfulRequest : registered,
+            successfulRequest: registered,
             successMessage: registrationMessage,
           },
-        })
+        });
 
         // Reset the form
         setFormState({
@@ -216,102 +228,99 @@ const Register: React.FC<RegistrationProps> = function ({
 
   return (
     <Container>
-      <RegistrationContainer>
-        <Title>Registration</Title>
-        { registered === false ?
-        <Form onSubmit={handleSubmit}>
-          <InputRow>
-            <Label>
-              First Name:
-              <InputHalf
-                type="text"
-                name="firstName"
-                value={formState.firstName}
-                onChange={handleInputChange}
-                required
-              />
-            </Label>
-  
-            <Label>
-              Last Name:
-              <InputHalf
-                type="text"
-                name="lastName"
-                value={formState.lastName}
-                onChange={handleInputChange}
-                required
-              />
-            </Label>
-          </InputRow>
-  
-          <InputRow>
-            <Label>
-              Email:
-              <InputHalf
-                type="email"
-                name="email"
-                value={formState.email}
-                onChange={handleInputChange}
-                required
-              />
-            </Label>
-          </InputRow>
-  
-          <InputRow>
-            <Label>
-              Password:
-              <InputHalf
-                type="password"
-                name="password"
-                value={formState.password}
-                onChange={handleInputChange}
-                required
-              />
-            </Label>
-  
-            <Label>
-              Re-enter Password:
-              <InputHalf
-                type="password"
-                name="confirmPassword"
-                value={formState.confirmPassword}
-                onChange={handleInputChange}
-                required
-              />
-            </Label>
-          </InputRow>
-  
-          {passwordError && <ErrorMessage>{passwordError}</ErrorMessage>}
-  
-          <InputRow>
-            <Label>
-              Role:
-              <Select name="role" value={formState.role} onChange={handleRoleChange}>
-                <option value="Customer">Customer</option>
-                <option value="Driver">Driver</option>
-              </Select>
-            </Label>
-          </InputRow>
-  
-          <Button type="submit">Register</Button>
-        </Form> : <LoadingSpinner/>}
-        {/* <SuccessMessage>{registrationMessage}</SuccessMessage> */}
-      </RegistrationContainer>
-    </Container>
-  )};
-  
+      {registered === false ?
+        <RegistrationContainer>
+          <Title>Registration</Title>
 
-function mapStateToProps(state: RootState)  {
-  console.log(state.deliveryForm)
-  return {
-  registered: state.deliveryForm.successfulRequest,
-  registrationMessage: state.deliveryForm.successMessage
-  };
+          <Form onSubmit={handleSubmit}>
+            <InputRow>
+              <Label>
+                First Name:
+                <InputHalf
+                  type="text"
+                  name="firstName"
+                  value={formState.firstName}
+                  onChange={handleInputChange}
+                  required
+                />
+              </Label>
+
+              <Label>
+                Last Name:
+                <InputHalf
+                  type="text"
+                  name="lastName"
+                  value={formState.lastName}
+                  onChange={handleInputChange}
+                  required
+                />
+              </Label>
+            </InputRow>
+
+            <InputRow>
+              <Label>
+                Email:
+                <InputHalf
+                  type="email"
+                  name="email"
+                  value={formState.email}
+                  onChange={handleInputChange}
+                  required
+                />
+              </Label>
+            </InputRow>
+
+            <InputRow>
+              <Label>
+                Password:
+                <InputHalf
+                  type="password"
+                  name="password"
+                  value={formState.password}
+                  onChange={handleInputChange}
+                  required
+                />
+              </Label>
+
+              <Label>
+                Re-enter Password:
+                <InputHalf
+                  type="password"
+                  name="confirmPassword"
+                  value={formState.confirmPassword}
+                  onChange={handleInputChange}
+                  required
+                />
+              </Label>
+            </InputRow>
+
+            {passwordError && <ErrorMessage>{passwordError}</ErrorMessage>}
+
+            <InputRow>
+              <Label>
+                Role:
+                <Select name="role" value={formState.role} onChange={handleRoleChange}>
+                  <option value="Customer">Customer</option>
+                  <option value="Driver">Driver</option>
+                </Select>
+              </Label>
+            </InputRow>
+
+            <Button type="submit">Register</Button>
+          </Form>
+          {/* <SuccessMessage>{registrationMessage}</SuccessMessage> */}
+        </RegistrationContainer>
+        : <LoadingSpinner />}
+    </Container>
+  );
 };
 
-
-export default connect(mapStateToProps)(Register);
-function useSelector(arg0: (state: RootState) => number) {
-  throw new Error('Function not implemented.');
+function mapStateToProps(state: RootState) {
+  console.log(state.deliveryForm);
+  return {
+    registered: state.deliveryForm.successfulRequest,
+    registrationMessage: state.deliveryForm.successMessage
+  };
 }
 
+export default connect(mapStateToProps)(Register);

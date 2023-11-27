@@ -20,7 +20,7 @@ import Register from './components/registration/Register';
 import RequestSuccessful from './components/delivery_form/RequestSuccessful';
 import LoadingSpinner from './components/loading_spinner/LoadingSpinner';
 
-
+//'https://bidup-405619.ue.r.appspot.com'
 
 // Create the Redux store with the root reducer
 const store = createStore(rootReducer);
@@ -36,7 +36,9 @@ ReactDOM.render(
             throw new Error('Function not implemented.');
           } }/>}/>
           <Route path="logout" element={<Logout/>} />
-          <Route path="queue" element={<Queue/>}/>
+          <Route path="queue" element={<Queue setDriverId={function (driverId: number): void {
+            throw new Error('Function not implemented.');
+          } }/>}/>
           <Route path="dashboard" element={<Dashboard driverId={0}/>}/>
           <Route path="profile" element={<Profile customerInfo={{
             firstName: '',

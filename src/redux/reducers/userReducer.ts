@@ -1,5 +1,3 @@
-import { SUCCESSFUL_USER_REGISTRATION, INSERT_USER_INFO, REGISTRATION_MESSAGE } from "../actions/userActions";
-
 interface UserState {
   userId: number;
   userInfo: {
@@ -73,23 +71,6 @@ const userRegistrationReducer = (state = initialState, action: any): UserState =
           },
           userId: 0,
         };
-    case SUCCESSFUL_USER_REGISTRATION:
-      return {
-        ...state,
-          userInfo: {
-            ...state.userInfo,
-            isRegistered: action.payload.isRegistered
-          }
-      };
-    case REGISTRATION_MESSAGE:
-      console.log(action.payload)
-      return {
-        ...state,
-          userInfo: {
-            ...state.userInfo,
-            registrationMessage: action.payload
-          }
-      };
     default:
       return state;
 
