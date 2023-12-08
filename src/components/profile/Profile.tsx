@@ -9,11 +9,11 @@ import * as ProfileStyles from './styles';
 
 interface RequestHistory {
   id: number;
-  pickupLocation: string;
-  dropoffLocation: string;
+  pickup_location: string;
+  dropoff_location: string;
   description: string;
-  preferredDeliveryTime: string;
-  priceOffer: number;
+  preferred_delivery_time: string;
+  price_offer: number;
   status: string;
 }
 
@@ -146,11 +146,11 @@ const Profile: React.FC<ProfileProps> = ({ customerInfo, onCancelRequest }) => {
             {requestHistory.map((request) => (
               <tr key={request.id}>
                 <SharedStyles.TableCell>{request.id}</SharedStyles.TableCell>
-                <SharedStyles.TableCell>{request.pickupLocation}</SharedStyles.TableCell>
-                <SharedStyles.TableCell>{request.dropoffLocation}</SharedStyles.TableCell>
+                <SharedStyles.TableCell>{request.pickup_location}</SharedStyles.TableCell>
+                <SharedStyles.TableCell>{request.dropoff_location}</SharedStyles.TableCell>
                 <SharedStyles.TableCell>{request.description}</SharedStyles.TableCell>
-                <SharedStyles.TableCell>{request.preferredDeliveryTime}</SharedStyles.TableCell>
-                <SharedStyles.TableCell>${request.priceOffer}</SharedStyles.TableCell>
+                <SharedStyles.TableCell>{request.preferred_delivery_time}</SharedStyles.TableCell>
+                <SharedStyles.TableCell>${request.price_offer}</SharedStyles.TableCell>
                 <SharedStyles.TableCell>{request.status}</SharedStyles.TableCell>
                 <SharedStyles.TableCell>
                   {request.status === 'Pending' && (

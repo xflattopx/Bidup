@@ -24,49 +24,40 @@ const Dashboard: React.FC<DashboardProps> = ({ driverId }) => {
     ? 'http://localhost:4200'
     : 'https://bidup-api-3gltjz2saq-ue.a.run.app';
 
-  useEffect(() => {
-    const fetchAcceptedBids = async () => {
-      try {
-        const response = await axios.get(`${apiUrl}/dashboard/accepted-bids?userId=${userId}`);
-        const data = response.data;
-
-        // Check if the data structure is as expected
-        console.log('Data received:', data);
-
-        // Assuming data[0].rows is an array of objects
-        if (Array.isArray(data) && data.length > 0 && data[0].rows) {
-          // Iterate through every index and store the data in acceptedBids
-          const bidsData = data[0].rows.map((row: any) => ({
-            delivery_request_id: row.delivery_request_id,
-            pickup_location: row.pickup_location,
-            dropoff_location: row.dropoff_location,
-            description: row.description,
-            price_offer: row.price_offer,
-          }));
-
-          // Set acceptedBids with the mapped data
-          setAcceptedBids(bidsData);
-
-          console.log('Setting acceptedBids:', bidsData);
-        } else {
-          console.error('Invalid data structure:', data);
+    useEffect(() => {
+      const fetchAcceptedBids = async () => {
+        try {
+          const response = await axios.get(`${apiUrl}/dashboard/accepted-bids?userId=${userId}`);
+          const data = response.data;
+    
+          // Check if the data structure is as expected
+          console.log('Data received:', data);
+    
+          if (Array.isArray(data) && data.length > 0) {
+            // Since data is already an array of objects in the expected format,
+            // you can directly set it to acceptedBids
+            setAcceptedBids(data);
+            console.log('Setting acceptedBids:', data);
+          } else {
+            console.error('Invalid data structure:', data);
+          }
+        } catch (error) {
+          console.error('Error fetching accepted bids:', error);
         }
-      } catch (error) {
-        console.error('Error fetching accepted bids:', error);
-      }
-    };
-
-    // Fetch accepted bids initially
-    fetchAcceptedBids();
-
-    // Set up a timer to fetch accepted bids every 10 seconds
-    const timer = setInterval(() => {
+      };
+    
+      // Fetch accepted bids initially
       fetchAcceptedBids();
-    }, 10000);
-
-    // Cleanup function to clear the interval when the component unmounts
-    return () => clearInterval(timer);
-  }, [userId, apiUrl]);
+    
+      // Set up a timer to fetch accepted bids every 10 seconds
+      const timer = setInterval(() => {
+        fetchAcceptedBids();
+      }, 10000);
+    
+      // Cleanup function to clear the interval when the component unmounts
+      return () => clearInterval(timer);
+    }, [userId, apiUrl]);
+    
 
   return (
     <S.DashboardContainer>
