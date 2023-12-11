@@ -44,12 +44,6 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
         
 
         localStorage.setItem('jwtToken', token);
-        dispatch({
-          type: 'STORE_JWT_TOKEN',
-          payload: {
-            jwtToken: localStorage.getItem('jwtToken'),
-          }
-        })
         setLoggedIn(true);
 
         setLoginData({ email: '', password: '' });

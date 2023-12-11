@@ -77,16 +77,6 @@ const userRegistrationReducer = (state = initialState, action: any): UserState =
           },
           userId: 0,
         };
-      case 'STORE_JWT_TOKEN':
-        return {
-          ...state,
-          
-          tokenInfo: {
-            
-            ...state.tokenInfo,
-            jwtToken: action.payload.jwtToken,
-          }
-        }
     default:
       return state;
 
