@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { connect, useSelector } from 'react-redux';
 import { RootState } from '../../redux/reducers/rootReducer';
-import EmblaCarouselComponent from '../carousel/EmblaCarousel';  // Update the import path if needed
-
+import Swiper from '../carousel/Swiper';
 import {
   QueueContainer,
   DeliveryQueueTable,
@@ -18,6 +17,7 @@ import {
   ActionCell,
   BiddingRequestRow,
   QueueTitle,
+  QueueCard
 } from './styles';
 
 interface QueueProps {
@@ -95,11 +95,63 @@ const Queue: React.FC<QueueProps> = () => {
 
   const handleBidButtonClick = async (requestId: number) => {
     try {
-      // ... (unchanged code)
+      // Prompt the user for bid amount
+      const bidAmount = prompt('Enter your bid amount:');
+      if (bidAmount !== null) {
+        const parsedBidAmount = parseFloat(bidAmount);
+        if (!isNaN(parsedBidAmount)) {
+          // Check if the bid amount is less than the current price offer
+          const currentRequest = queueState.queue.find((request) => request.id === requestId);
+          if (currentRequest && parsedBidAmount > currentRequest.price_offer) {
+            alert('Bid amount must be Less than the current price offer.');
+            return;
+          }
+
+          // Send a bid request to the backend
+          const bidResponse = await axios.post(`${apiUrl}/bid/record-bid`, {
+            deliveryRequestId: requestId,
+            driverId: userId, // Replace with your driverId logic
+            bidPrice: parsedBidAmount,
+          });
+
+          // Extract the bid ID from the response
+          const bidId = bidResponse.data.requestId;
+
+          // Update the bid with the driver who placed it
+          await axios.post(`${apiUrl}/bid/update-bid`, {
+            bidId: bidId,
+            newBidPrice: parsedBidAmount,
+            driverId: userId, // Replace with your driverId logic
+          });
+
+          // Update the UI to reflect that the bid was placed
+          setQueueState((prevState) => ({
+            uniqueIds: prevState.uniqueIds,
+            queue: prevState.queue.map((request) =>
+              request.id === requestId
+                ? { ...request, status: 'Bidding', price_offer: parsedBidAmount }
+                : request
+            ),
+          }));
+
+          // Record the winning bid
+          await axios.post(`${apiUrl}/bid/record-winning-bid`, {
+            bidId: bidId,
+          });
+        } else {
+          alert('Invalid bid amount. Please enter a valid number.');
+        }
+      }
     } catch (error) {
       console.error('Error placing bid:', error);
       alert('Error placing bid. Please try again later.');
     }
+  };
+
+  const onBidClick = (id: number) => {
+    // Implement the logic you want when a bid button is clicked
+    console.log(`Bid button clicked for item with ID ${id}`);
+    handleBidButtonClick(id);
   };
 
   const [isScrolled, setIsScrolled] = useState(false);
@@ -121,17 +173,24 @@ const Queue: React.FC<QueueProps> = () => {
     <>
       <QueueContainer>
         <QueueTitle>Delivery Queue</QueueTitle>
-        
-        {/* {queueState.queue.length > 0 && (
-           <EmblaCarouselComponent requests={queueState.queue} />
-          // <EmblaCarouselComponent requests={queue} />
-        )} */}
+
+  
+        <QueueCard>
+          <Swiper items={queueState.queue.map(request => ({
+            id: request.id,
+            pickup_location: request.pickup_location,
+            dropoff_location: request.dropoff_location,
+            description: request.description,
+            preferred_delivery_time: request.preferred_delivery_time,
+            price_offer: request.price_offer,
+            status: request.status,
+          }))} onBidClick={onBidClick}  />
+        </QueueCard>
 
 
 
 
-
-        <DeliveryQueueTable>
+        {/* <DeliveryQueueTable>
           <thead>
             <tr>
               <DeliveryQueueTableHeader>ID</DeliveryQueueTableHeader>
@@ -165,8 +224,12 @@ const Queue: React.FC<QueueProps> = () => {
               </BiddingRequestRow>
             ))}
           </tbody>
-        </DeliveryQueueTable>
+        </DeliveryQueueTable> */}
+
+
       </QueueContainer>
+
+
     </>
   );
 };

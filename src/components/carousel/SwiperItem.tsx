@@ -2,12 +2,14 @@
 import React from 'react';
 import { SwiperItemType } from './types';
 import './swiperItem.css';
+import { BiddingBidButton, PendingBidButton } from '../working_queue/styles'; // Import the styled components
 
 interface Props {
   item: SwiperItemType;
+  onBidClick: (id: number) => void; // Callback function to handle bid click
 }
 
-function SwiperItem({ item }: Props) {
+function SwiperItem({ item, onBidClick }: Props) {
   // Destructure the properties from the item
   const { id, pickup_location, dropoff_location, description, preferred_delivery_time, price_offer, status } = item;
 
@@ -36,6 +38,12 @@ function SwiperItem({ item }: Props) {
         <p>Preferred Delivery Time: {preferred_delivery_time}</p>
         <p>Price Offer: ${price_offer}</p>
         <p>Status: {status}</p>
+        {status === 'Bidding' && (
+          <BiddingBidButton onClick={() => onBidClick(id)}>Bid</BiddingBidButton>
+        )}
+        {status === 'Pending' && (
+          <PendingBidButton onClick={() => onBidClick(id)}>Bid</PendingBidButton>
+        )}
       </div>
     </li>
   );

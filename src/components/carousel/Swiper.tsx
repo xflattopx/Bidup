@@ -8,9 +8,10 @@ import { getTouchEventData } from './dom';
 
 export type Props = {
   items: Array<SwiperItemType>;
+  onBidClick: (id: number) => void; // Callback function for handling bid click
 };
 
-function Swiper({ items }: Props) {
+function Swiper({ items, onBidClick }: Props) {
   const currentOffsetXRef = useRef(0);
   const startXRef = useRef(0);
   const [offsetX, setOffsetX, offsetXRef] = useStateRef(0);
@@ -49,9 +50,8 @@ function Swiper({ items }: Props) {
     <SwiperContainer>
       <SwiperList
         style={{ transform: `translate3d(${offsetX}px, 0, 0)` }}
-        //onTouchStart={onTouchStart}
+        // onTouchStart={onTouchStart}
         onMouseDown={onMouseDown}
-        
       >
         {items.map((item, index) => (
           <SwiperItem
@@ -64,6 +64,7 @@ function Swiper({ items }: Props) {
               price_offer: item.price_offer,
               status: item.status,
             }}
+            onBidClick={onBidClick} // Pass the callback function to SwiperItem
             key={index}
             {...item}
           />

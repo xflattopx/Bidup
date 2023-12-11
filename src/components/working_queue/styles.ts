@@ -47,6 +47,31 @@ export const DeliveryQueueTableHeader = styled.th`
     font-size: 14px;
   }
 `;
+export const QueueCard = styled.div`
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin: 10px;
+  padding: 16px;
+  transition: box-shadow 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  }
+
+  h2 {
+    font-size: 18px;
+    margin-bottom: 8px;
+    color: #333;
+  }
+
+  p {
+    margin-bottom: 6px;
+    color: #666;
+  }
+
+  /* Additional styling based on your design preferences */
+`;
 
 export const DeliveryQueueTableCell = styled.td`
   border: 1px solid #333;

@@ -113,6 +113,7 @@ flex-grow: 2;
   width: 100%;
   margin-top: 60px; /* Adjusted to accommodate the Navbar */
   overflow: auto; /* Add overflow property to handle overflow */
+  
 @media (max-width: ${breakpoints.desktop}) {
   flex-grow: 2;
   padding: 80px 20px 20px; /* Adjusted top padding to accommodate the Navbar */
