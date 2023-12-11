@@ -26,27 +26,10 @@ import LoadingSpinner from './components/loading_spinner/LoadingSpinner';
 
 const store = createStore(rootReducer);
 
-const AppInitializer = () => {
-  const dispatch = useDispatch();
-  console.log(localStorage.getItem('jwtToken'))
-  useEffect(() => {
-    dispatch({
-      type: 'STORE_JWT_TOKEN',
-      payload: {
-        jwtToken: localStorage.getItem('jwtToken'),
-      }
-    })
-  }, [dispatch]);
-
-  console.log()
-
-  return null;
-};
 ReactDOM.render(
 
   <Provider store={store}>
     <BrowserRouter>
-      <AppInitializer />
       <Routes>
         <Route path="/" element={<HomePage />}>
           <Route path="home" element={<HomePage />} />
