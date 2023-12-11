@@ -8,6 +8,9 @@ interface UserState {
     isRegistered: boolean,
     registrationMessage: string;
   };
+  tokenInfo: {
+    jwtToken: string;
+  }
   requestHistory: {
     id: number;
     pickupLocation: string;
@@ -31,6 +34,9 @@ const initialState: UserState = {
     role: '',
     isRegistered: false,
     registrationMessage: ''
+  },
+  tokenInfo: {
+    jwtToken: '',
   },
   requestHistory: [],
   submittedRequests: [], // Add this line
@@ -71,6 +77,16 @@ const userRegistrationReducer = (state = initialState, action: any): UserState =
           },
           userId: 0,
         };
+      case 'STORE_JWT_TOKEN':
+        return {
+          ...state,
+          
+          tokenInfo: {
+            
+            ...state.tokenInfo,
+            jwtToken: action.payload.jwtToken,
+          }
+        }
     default:
       return state;
 
