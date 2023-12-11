@@ -19,7 +19,6 @@ import RegistrationSuccess from './components/registration/RegistrationSuccess';
 import Register from './components/registration/Register';
 import RequestSuccessful from './components/delivery_form/RequestSuccessful';
 import LoadingSpinner from './components/loading_spinner/LoadingSpinner';
-import ProtectedRoute from 'hocs/ProtectedRoute';
 
 //'https://bidup-405619.ue.r.appspot.com'
 
