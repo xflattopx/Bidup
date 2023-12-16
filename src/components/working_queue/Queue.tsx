@@ -52,7 +52,7 @@ const Queue: React.FC<QueueProps> = () => {
 
   const fetchDataAndEnqueue = async () => {
     try {
-      const response = await axios.get(`${apiUrl}/customer_request/all`);
+      const response = await axios.get(`${apiUrl}/service/`);
       const newData: DeliveryRequest[] = response.data;
       setQueueState((prevState) => {
         const uniqueIdsSet = new Set(prevState.uniqueIds);
@@ -106,7 +106,7 @@ const Queue: React.FC<QueueProps> = () => {
           }
 
           // Send a bid request to the backend
-          const bidResponse = await axios.post(`${apiUrl}/bid/record-bid`, {
+          const bidResponse = await axios.post(`${apiUrl}/bid/`, {
             deliveryRequestId: requestId,
             driverId: userId, // Replace with your driverId logic
             bidPrice: parsedBidAmount,
@@ -116,7 +116,7 @@ const Queue: React.FC<QueueProps> = () => {
           const bidId = bidResponse.data.requestId;
 
           // Update the bid with the driver who placed it
-          await axios.post(`${apiUrl}/bid/update-bid`, {
+          await axios.put(`${apiUrl}/bid/`, {
             bidId: bidId,
             newBidPrice: parsedBidAmount,
             driverId: userId, // Replace with your driverId logic

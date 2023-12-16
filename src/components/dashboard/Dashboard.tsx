@@ -27,7 +27,7 @@ const Dashboard: React.FC<DashboardProps> = ({ driverId }) => {
     useEffect(() => {
       const fetchAcceptedBids = async () => {
         try {
-          const response = await axios.get(`${apiUrl}/dashboard/accepted-bids?userId=${userId}`);
+          const response = await axios.get(`${apiUrl}/bid/accepted-bids?userId=${userId}`);
           const data = response.data;
     
           // Check if the data structure is as expected
