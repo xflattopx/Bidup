@@ -130,6 +130,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
       {loggedIn === false ? (
         <LogInRoot>
           <Frame>
+          <form onSubmit={handleSubmit}>
             <FrameInner>
               <FrameParent>
                 <WelcomeBackWrapper>
@@ -195,6 +196,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
                 </InstanceParent>
               </FrameParent>
             </FrameInner>
+            </form>
           </Frame>
           <Frame1>
             <Biduplogo3Icon alt="" src="/BidUpLogo.svg" />
