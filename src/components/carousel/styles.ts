@@ -16,7 +16,7 @@ export const SwiperList = styled.ul`
     min-width: 100%;
     cursor: grab;
     touch-action: pan-y;
-    gap: 24px; /* Increased gap between cards */
+    gap: 16px; /* Increased gap between cards */
 `;
 
 export const SwiperItem = styled.li`

@@ -50,7 +50,7 @@ function Swiper({ items, onBidClick }: Props) {
     <SwiperContainer>
       <SwiperList
         style={{ transform: `translate3d(${offsetX}px, 0, 0)` }}
-        // onTouchStart={onTouchStart}
+        //</SwiperContainer>onTouchStart={onTouchStart}
         onMouseDown={onMouseDown}
       >
         {items.map((item, index) => (

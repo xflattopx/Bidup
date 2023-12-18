@@ -108,20 +108,10 @@ const Queue: React.FC<QueueProps> = () => {
           }
 
           // Send a bid request to the backend
-          const bidResponse = await axios.post(`${apiUrl}/bid/record-bid`, {
+          await axios.post(`${apiUrl}/bid/`, {
             deliveryRequestId: requestId,
             driverId: userId, // Replace with your driverId logic
             bidPrice: parsedBidAmount,
-          });
-
-          // Extract the bid ID from the response
-          const bidId = bidResponse.data.requestId;
-
-          // Update the bid with the driver who placed it
-          await axios.post(`${apiUrl}/bid/update-bid`, {
-            bidId: bidId,
-            newBidPrice: parsedBidAmount,
-            driverId: userId, // Replace with your driverId logic
           });
 
           // Update the UI to reflect that the bid was placed
@@ -134,10 +124,6 @@ const Queue: React.FC<QueueProps> = () => {
             ),
           }));
 
-          // Record the winning bid
-          await axios.post(`${apiUrl}/bid/record-winning-bid`, {
-            bidId: bidId,
-          });
         } else {
           alert('Invalid bid amount. Please enter a valid number.');
         }
@@ -147,6 +133,7 @@ const Queue: React.FC<QueueProps> = () => {
       alert('Error placing bid. Please try again later.');
     }
   };
+
 
   const onBidClick = (id: number) => {
     // Implement the logic you want when a bid button is clicked
