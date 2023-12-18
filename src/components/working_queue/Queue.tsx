@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { connect, useSelector } from 'react-redux';
 import { RootState } from '../../redux/reducers/rootReducer';
-//import io from 'socket.io-client';
+import Swiper from '../carousel/Swiper';
 import {
   QueueContainer,
   DeliveryQueueTable,
@@ -17,6 +17,7 @@ import {
   ActionCell,
   BiddingRequestRow,
   QueueTitle,
+  QueueCard
 } from './styles';
 
 interface QueueProps {
@@ -41,14 +42,17 @@ interface QueueState {
 }
 
 const Queue: React.FC<QueueProps> = () => {
-  const apiUrl = process.env.NODE_ENV === 'development'
-  ? 'http://localhost:4200'
-  : 'https://bidup-api-3gltjz2saq-ue.a.run.app';
+  const apiUrl =
+    process.env.NODE_ENV === 'development'
+      ? 'http://localhost:4200'
+      : 'https://bidup-api-3gltjz2saq-ue.a.run.app';
   const userId = useSelector((state: RootState) => state.users.userId);
-  const [queueState, setQueueState] = useState<QueueState>({ uniqueIds: new Set(), queue: [] });
+  const [queueState, setQueueState] = useState<QueueState>({
+    uniqueIds: new Set(),
+    queue: [],
+  });
 
-  // Create a Socket.IO client instance
-  //const socket = io(process.env.REACT_APP_SOCKET_SERVER_URL || 'http://localhost:3000'); // Use your server URL
+  const [queue, setQueue] = useState<DeliveryRequest[]>([]);
 
   const fetchDataAndEnqueue = async () => {
     try {
@@ -73,7 +77,6 @@ const Queue: React.FC<QueueProps> = () => {
     }
   };
 
-  // useEffect to fetch data on component mount
   useEffect(() => {
     fetchDataAndEnqueue();
 
@@ -83,7 +86,6 @@ const Queue: React.FC<QueueProps> = () => {
     };
   }, []); // Empty dependency array to run once on mount
 
-  // useEffect to trigger fetchDataAndEnqueue every 10 seconds
   useEffect(() => {
     const intervalId = setInterval(fetchDataAndEnqueue, 10000);
 
@@ -106,20 +108,10 @@ const Queue: React.FC<QueueProps> = () => {
           }
 
           // Send a bid request to the backend
-          const bidResponse = await axios.post(`${apiUrl}/bid/record-bid`, {
+          await axios.post(`${apiUrl}/bid/`, {
             deliveryRequestId: requestId,
             driverId: userId, // Replace with your driverId logic
             bidPrice: parsedBidAmount,
-          });
-
-          // Extract the bid ID from the response
-          const bidId = bidResponse.data.requestId;
-
-          // Update the bid with the driver who placed it
-          await axios.post(`${apiUrl}/bid/update-bid`, {
-            bidId: bidId,
-            newBidPrice: parsedBidAmount,
-            driverId: userId, // Replace with your driverId logic
           });
 
           // Update the UI to reflect that the bid was placed
@@ -132,10 +124,6 @@ const Queue: React.FC<QueueProps> = () => {
             ),
           }));
 
-          // Record the winning bid
-          await axios.post(`${apiUrl}/bid/record-winning-bid`, {
-            bidId: bidId,
-          });
         } else {
           alert('Invalid bid amount. Please enter a valid number.');
         }
@@ -146,45 +134,90 @@ const Queue: React.FC<QueueProps> = () => {
     }
   };
 
+
+  const onBidClick = (id: number) => {
+    // Implement the logic you want when a bid button is clicked
+    console.log(`Bid button clicked for item with ID ${id}`);
+    handleBidButtonClick(id);
+  };
+
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  const handleScroll = () => {
+    const scrollTop = window.scrollY;
+    setIsScrolled(scrollTop > 0);
+  };
+
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
   return (
-    <QueueContainer>
-      <QueueTitle>Delivery Queue</QueueTitle>
-      <DeliveryQueueTable>
-        <thead>
-          <tr>
-            <DeliveryQueueTableHeader>ID</DeliveryQueueTableHeader>
-            <DeliveryQueueTableHeader>Pickup Location</DeliveryQueueTableHeader>
-            <DeliveryQueueTableHeader>Drop-off Location</DeliveryQueueTableHeader>
-            <DeliveryQueueTableHeader>Description</DeliveryQueueTableHeader>
-            <DeliveryQueueTableHeader>Preferred Delivery Time</DeliveryQueueTableHeader>
-            <DeliveryQueueTableHeader>Price Offer</DeliveryQueueTableHeader>
-            <DeliveryQueueTableHeader>Action</DeliveryQueueTableHeader>
-            <DeliveryQueueTableHeader>Status</DeliveryQueueTableHeader>
-          </tr>
-        </thead>
-        <tbody>
-          {queueState.queue.map((request) => (
-            <BiddingRequestRow key={request.id} className={queueState.uniqueIds.has(request.id) ? 'new-request' : ''}>
-              <DeliveryQueueTableCell>{request.id}</DeliveryQueueTableCell>
-              <DeliveryQueueTableCell>{request.pickup_location}</DeliveryQueueTableCell>
-              <DeliveryQueueTableCell>{request.dropoff_location}</DeliveryQueueTableCell>
-              <DeliveryQueueTableCell>{request.description}</DeliveryQueueTableCell>
-              <DeliveryQueueTableCell>{request.preferred_delivery_time}</DeliveryQueueTableCell>
-              <DeliveryQueueTableCell>${request.price_offer}</DeliveryQueueTableCell>
-              <ActionCell>
-                {request.status === 'Bidding' && (
-                  <BiddingBidButton onClick={() => handleBidButtonClick(request.id)}>Bid</BiddingBidButton>
-                )}
-                {request.status === 'Pending' && (
-                  <PendingBidButton onClick={() => handleBidButtonClick(request.id)}>Bid</PendingBidButton>
-                )}
-              </ActionCell>
-              <StatusCell>{request.status}</StatusCell>
-            </BiddingRequestRow>
-          ))}
-        </tbody>
-      </DeliveryQueueTable>
-    </QueueContainer>
+    <>
+      <QueueContainer>
+        <QueueTitle>Delivery Queue</QueueTitle>
+
+  
+        <QueueCard>
+          <Swiper items={queueState.queue.map(request => ({
+            id: request.id,
+            pickup_location: request.pickup_location,
+            dropoff_location: request.dropoff_location,
+            description: request.description,
+            preferred_delivery_time: request.preferred_delivery_time,
+            price_offer: request.price_offer,
+            status: request.status,
+          }))} onBidClick={onBidClick}  />
+        </QueueCard>
+
+
+
+
+        {/* <DeliveryQueueTable>
+          <thead>
+            <tr>
+              <DeliveryQueueTableHeader>ID</DeliveryQueueTableHeader>
+              <DeliveryQueueTableHeader>Pickup Location</DeliveryQueueTableHeader>
+              <DeliveryQueueTableHeader>Drop-off Location</DeliveryQueueTableHeader>
+              <DeliveryQueueTableHeader>Description</DeliveryQueueTableHeader>
+              <DeliveryQueueTableHeader>Preferred Delivery Time</DeliveryQueueTableHeader>
+              <DeliveryQueueTableHeader>Price Offer</DeliveryQueueTableHeader>
+              <DeliveryQueueTableHeader>Action</DeliveryQueueTableHeader>
+              <DeliveryQueueTableHeader>Status</DeliveryQueueTableHeader>
+            </tr>
+          </thead>
+          <tbody>
+            {queueState.queue.map((request) => (
+              <BiddingRequestRow key={request.id} className={queueState.uniqueIds.has(request.id) ? 'new-request' : ''}>
+                <DeliveryQueueTableCell>{request.id}</DeliveryQueueTableCell>
+                <DeliveryQueueTableCell>{request.pickup_location}</DeliveryQueueTableCell>
+                <DeliveryQueueTableCell>{request.dropoff_location}</DeliveryQueueTableCell>
+                <DeliveryQueueTableCell>{request.description}</DeliveryQueueTableCell>
+                <DeliveryQueueTableCell>{request.preferred_delivery_time}</DeliveryQueueTableCell>
+                <DeliveryQueueTableCell>${request.price_offer}</DeliveryQueueTableCell>
+                <ActionCell>
+                  {request.status === 'Bidding' && (
+                    <BiddingBidButton onClick={() => handleBidButtonClick(request.id)}>Bid</BiddingBidButton>
+                  )}
+                  {request.status === 'Pending' && (
+                    <PendingBidButton onClick={() => handleBidButtonClick(request.id)}>Bid</PendingBidButton>
+                  )}
+                </ActionCell>
+                <StatusCell>{request.status}</StatusCell>
+              </BiddingRequestRow>
+            ))}
+          </tbody>
+        </DeliveryQueueTable> */}
+
+
+      </QueueContainer>
+
+
+    </>
   );
 };
 

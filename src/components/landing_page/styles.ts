@@ -1,22 +1,30 @@
 // styles.ts
 
-import styled, {keyframes, css} from 'styled-components';
+import styled, { keyframes, css } from 'styled-components';
 import { Link } from 'react-router-dom';
+
+// Define breakpoints
+const breakpoints = {
+  mobile: '480px',
+  tablet: '768px',
+  desktop: '1024px',
+};
 
 export const Container = styled.div`
   text-align: center;
   background-color: #333; /* Dark background color */
   padding: 20px;
   min-height: 100vh;
+  overflow: auto;
 `;
 
-export const PageContent = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  max-width: 800px;
-  margin: 0 auto; /* Center the content */
-`;
+// export const PageContent = styled.div`
+//   display: flex;
+//   flex-direction: column;
+//   align-items: center;
+//   max-width: 800px;
+//   margin: 0 auto; /* Center the content */
+// `;
 
 export const Navbar = styled.nav`
   background-color: rgba(26, 26, 26, 0.9); /* Semi-transparent black background */
@@ -29,9 +37,24 @@ export const Navbar = styled.nav`
   top: 0;
   z-index: 2;
   transition: background-color 0.3s ease;
+
+  @media (max-width: ${breakpoints.mobile}) {
+    padding: 10px; /* Adjust padding for mobile */
+  }
 `;
 
+export const NestedContainer = styled.div`
+  max-width: 1200px; /* Adjust the maximum width as needed */
+  margin: 0 auto;
+  margin-top: 20px;
+  padding: 20px;
+`;
 
+export const PageContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
 
 export const NavList = styled.ul`
   list-style-type: none;
@@ -51,11 +74,13 @@ export const NavLink = styled(Link)`
   color: white;
   font-weight: bold;
   padding: 10px;
+
   &:hover {
     border-bottom: 2px solid #ffcc00;
     background-color: #1a1a1a; /* Dark background color on hover */
     transition: background-color 0.3s ease;
   }
+
   transition: color 0.3s ease;
 `;
 
@@ -75,8 +100,21 @@ export const BidupLabel = styled.div`
   transition: color 0.3s ease;
 `;
 
-
 export const CenterContent = styled.div`
+flex-grow: 2;
+  padding: 80px 20px 20px; /* Adjusted top padding to accommodate the Navbar */
+  font-size: 1.5em;
+  color: #ffcc00;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  transition: background-color 0.3s ease;
+  width: 100%;
+  margin-top: 60px; /* Adjusted to accommodate the Navbar */
+  overflow: auto; /* Add overflow property to handle overflow */
+  
+@media (max-width: ${breakpoints.desktop}) {
   flex-grow: 2;
   padding: 80px 20px 20px; /* Adjusted top padding to accommodate the Navbar */
   font-size: 1.5em;
@@ -88,7 +126,44 @@ export const CenterContent = styled.div`
   transition: background-color 0.3s ease;
   width: 100%;
   margin-top: 60px; /* Adjusted to accommodate the Navbar */
+  overflow: auto; /* Add overflow property to handle overflow */
+}
+
+  @media (max-width: ${breakpoints.tablet}) {
+    flex-grow: 2;
+    padding: 80px 20px 20px; /* Adjusted top padding to accommodate the Navbar */
+    font-size: 1.5em;
+    color: #ffcc00;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    transition: background-color 0.3s ease;
+    width: 100%;
+    margin-top: 60px; /* Adjusted to accommodate the Navbar */
+    overflow: auto; /* Add overflow property to handle overflow */
+    padding: 60px 10px 20px; /* Adjust padding for tablets */
+  }
+
+  @media (max-width: ${breakpoints.mobile}) {
+    flex-grow: 2;
+    padding: 80px 20px 20px; /* Adjusted top padding to accommodate the Navbar */
+    font-size: 1.5em;
+    color: #ffcc00;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    transition: background-color 0.3s ease;
+    width: 100%;
+    margin-top: 60px; /* Adjusted to accommodate the Navbar */
+    overflow: auto; /* Add overflow property to handle overflow */
+    padding: 40px 10px 20px; /* Adjust padding for mobile */
+    align-items: left;
+  }
 `;
+
+
 
 export const Dropdown = styled.div`
   position: fixed;
@@ -127,13 +202,14 @@ export const MenuItemLink = styled(Link)`
   color: white;
   text-decoration: none;
   padding: 10px;
+
   &:hover {
     border-bottom: 1px solid #ffcc00;
     background-color: #333; /* Highlight color on hover */
   }
+
   transition: color 0.3s ease;
 `;
-
 
 export const Cursor = styled.span`
   color: #ffcc00; /* Cursor color */
@@ -154,7 +230,6 @@ export const ContentContainer = styled.div`
   padding: 20px;
   font-family: monospace; /* Change the font-family to monospace for a command line style */
 `;
-
 
 const pulsate = keyframes`
   0% {
@@ -202,11 +277,13 @@ const glow = keyframes`
   }
 `;
 
-
 export const Title = styled.h1<{ isTyping: boolean }>`
   color: #ffcc00;
   font-size: 32px;
   margin-bottom: 20px;
   text-align: center;
-  animation: ${({ isTyping }) => (isTyping ? css`${flicker} 2s forwards, ${glow} 2s infinite alternate` : 'none')};
+  animation: ${({ isTyping }) =>
+    isTyping ? css`${flicker} 2s forwards, ${glow} 2s infinite alternate` : 'none'};
 `;
+
+/* New styling */

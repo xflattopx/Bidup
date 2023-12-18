@@ -1,33 +1,88 @@
-import styled, {keyframes} from 'styled-components';
+import styled, { keyframes } from 'styled-components';
+
+const glow = keyframes`
+  0% {
+    text-shadow: 0 0 10px #ffcc00;
+  }
+  50% {
+    text-shadow: 0 0 20px #ffcc00;
+  }
+  100% {
+    text-shadow: 0 0 10px #ffcc00;
+  }
+`;
 
 export const QueueContainer = styled.div`
   text-align: center;
   padding: 20px;
   font-family: 'Arial', sans-serif;
-  max-width: 80%;
+  max-width: 100%;
+  overflow-x: auto; /* Add this line to enable horizontal scrolling */
   margin: 20px auto;
+
+  @media (max-width: 768px) {
+    padding: 15px;
+  }
 `;
 
 export const DeliveryQueueTable = styled.table`
   width: 100%;
   border-collapse: collapse;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  margin: 20px auto 0 -170px; /* Adjust the top margin, horizontal centering, and left offset */
+  margin: 20px auto 0;
+
+  @media (max-width: 768px) {
+    margin: 10px auto 0;
+  }
 `;
 
-
 export const DeliveryQueueTableHeader = styled.th`
-border: 1px solid #333;
-padding: 12px;
-background-color: #1a1a1a; /* Updated color */
-color: white;
+  border: 1px solid #333;
+  padding: 12px;
+  background-color: #1a1a1a;
+  color: white;
+
+  @media (max-width: 768px) {
+    padding: 10px;
+    font-size: 14px;
+  }
+`;
+export const QueueCard = styled.div`
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin: 10px;
+  padding: 16px;
+  transition: box-shadow 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  }
+
+  h2 {
+    font-size: 18px;
+    margin-bottom: 8px;
+    color: #333;
+  }
+
+  p {
+    margin-bottom: 6px;
+    color: #666;
+  }
+
+  /* Additional styling based on your design preferences */
 `;
 
 export const DeliveryQueueTableCell = styled.td`
   border: 1px solid #333;
   padding: 12px;
-  background-color: #1a1a1a; /* Set the desired dark background color */
-  color: white; /* Set the text color */
+  background-color: #1a1a1a;
+  color: white;
+
+  @media (max-width: 768px) {
+    padding: 10px;
+    font-size: 14px;
+  }
 `;
 
 export const EvenTableRow = styled.tr`
@@ -50,6 +105,11 @@ export const BidButton = styled.button`
   &:hover {
     background-color: #ffcc00;
   }
+
+  @media (max-width: 768px) {
+    padding: 8px;
+    font-size: 14px;
+  }
 `;
 
 export const PendingBidButton = styled(BidButton)`
@@ -57,59 +117,65 @@ export const PendingBidButton = styled(BidButton)`
 `;
 
 export const BiddingBidButton = styled(BidButton)`
-  background-color: #ffcc00; /* Set the desired lighter color for the BiddingBidButton */
-  /* Additional styles for BiddingBidButton if needed */
+  background-color: #ffcc00;
   &:hover {
-    background-color: #45a049; /* Set the hover color for the BiddingBidButton */
+    background-color: #45a049;
   }
 `;
 
 export const StatusCell = styled.td`
-background-color: #1a1a1a;
-color: white;
-padding: 10px;
-cursor: pointer;
-border: none;
-border-radius: 4px;
-&:hover {
-  background-color: #333;
-}
+  background-color: #1a1a1a;
+  color: white;
+  padding: 10px;
+  cursor: pointer;
+  border: none;
+  border-radius: 4px;
+  &:hover {
+    background-color: #333;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 14px;
+  }
 `;
 
 export const ActionCell = styled.td`
   border: 1px solid #333;
   padding: 12px;
-  background-color: #1a1a1a; /* Set the desired dark background color */
-  color: white; /* Set the text color */
+  background-color: #1a1a1a;
+  color: white;
 `;
 
-const glow = keyframes`
-  0% {
-    text-shadow: 0 0 10px #ffcc00;
-  }
-  50% {
-    text-shadow: 0 0 20px #ffcc00;
-  }
-  100% {
-    text-shadow: 0 0 10px #ffcc00;
-  }
-`;
+export const QueueTitle = styled.h1`
+  font-size: 32px;
+  margin-bottom: 20px;
+  color: #ffcc00;
+  animation: ${glow} 2s forwards;
 
+  @media (max-width: 768px) {
+    font-size: 28px;
+    margin-bottom: 15px;
+  }
 
-export const QueueTitle = styled.h2`
-font-size: 32px;
-margin-bottom: 20px;
-color: #ffcc00;
-animation: ${glow} 2s forwards 
+  &.scrolled {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1;
+    background-color: #fff;
+    padding: 10px 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
 `;
 
 export const BiddingRequestRow = styled.tr`
   &.bidding-request {
-    background-color: #ffc107; /* Change this color to your desired highlighting color */
-    transition: background-color 0.3s ease; /* Add a smooth transition effect */
+    background-color: #ffc107;
+    transition: background-color 0.3s ease;
 
     &:hover {
-      background-color: #ff9800; /* Change this color to your desired highlighting color on hover */
+      background-color: #ff9800;
     }
   }
 `;
