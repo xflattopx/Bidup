@@ -1,5 +1,30 @@
 import React, { useState } from 'react';
-import { Container, LoginFormContainer, Form, Label, Input, Button, ErrorMessage, Title, SignupParagraph } from './styles';
+import {
+  Form, InputTextField, LoginButton, ErrorMessage, SignupParagraph,
+  WelcomeBack,
+  WelcomeBackWrapper,
+  EnterYourCredentials,
+  NameWrapper,
+  FrameChild,
+  FrameGroup,
+  NameFrame,
+  FrameWrapper,
+  FrameContainer,
+  FrameDiv,
+  RememberFor30,
+  RectangleParent,
+  InstanceParent,
+  ForgotPassword,
+  FrameParent,
+  FrameInner,
+  Frame,
+  Biduplogo3Icon,
+  EmpowerYourselfWith,
+  Frame1,
+  LogInRoot,
+  InputCheckBox,
+  LoginText,
+} from './styles';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
@@ -20,7 +45,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
   const apiUrl = process.env.NODE_ENV === 'development'
     ? 'http://localhost:4200'
     : 'https://bidup-api-3gltjz2saq-ue.a.run.app';
-  
+
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -40,6 +65,8 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
 
       if (response.status === 200) {
         const { token, role, first_name, last_name, email, user_id } = response.data;
+
+
 
         localStorage.setItem('jwtToken', token);
         setLoggedIn(true);
@@ -99,11 +126,102 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
   };
 
   return (
-    <Container>
+    <>
       {loggedIn === false ? (
-        <LoginFormContainer>
-          <Title>Login</Title>
-          <Form onSubmit={handleSubmit} className="login-form">
+        <LogInRoot>
+          <Frame>
+          <form onSubmit={handleSubmit}>
+            <FrameInner>
+              <FrameParent>
+                <WelcomeBackWrapper>
+                  <WelcomeBack>Welcome back!</WelcomeBack>
+                </WelcomeBackWrapper>
+                <EnterYourCredentials>
+                  Enter your Credentials to access your account
+                </EnterYourCredentials>
+                <FrameGroup>
+                  <NameWrapper>
+                    <WelcomeBack>Name</WelcomeBack>
+                  </NameWrapper>
+                  <FrameChild />
+                </FrameGroup>
+                <FrameContainer>
+                  <NameWrapper>
+                    <WelcomeBack>Email address</WelcomeBack>
+                  </NameWrapper>
+                  <FrameWrapper>
+                    <NameFrame>
+                      <InputTextField
+                        type="text"
+                        name="email"
+                        placeholder="Enter your email"
+                        value={loginData.email}
+                        onChange={handleInputChange}
+                        required>
+                      </InputTextField>
+                    </NameFrame>
+                  </FrameWrapper>
+                </FrameContainer>
+                <FrameDiv>
+                  <NameWrapper>
+                    <WelcomeBack>Password</WelcomeBack>
+                    <ForgotPassword>forgot password</ForgotPassword>
+                  </NameWrapper>
+                  <FrameWrapper>
+                    <NameFrame>
+                      <InputTextField
+                        type="password"
+                        name="password"
+                        placeholder="Name"
+                        value={loginData.password}
+                        onChange={handleInputChange}
+                        required
+                      />
+                    </NameFrame>
+                  </FrameWrapper>
+                </FrameDiv>
+                <RectangleParent>
+                  <RememberFor30>
+                    <InputCheckBox type="checkbox"></InputCheckBox>
+                    Remember for 30 days</RememberFor30>
+                </RectangleParent>
+                <InstanceParent>
+                  <LoginButton type="submit" disabled={loading}>
+                    {loading ? <LoginText>Logging in...</LoginText> : <LoginText>Login</LoginText>}
+                  </LoginButton>
+                  {loginError && <ErrorMessage>{loginError}</ErrorMessage>}
+                  <SignupParagraph>
+                    Don't have an account? <Link to="/register">Sign up</Link>
+                  </SignupParagraph>
+                </InstanceParent>
+              </FrameParent>
+            </FrameInner>
+            </form>
+          </Frame>
+          <Frame1>
+            <Biduplogo3Icon alt="" src="/BidUpLogo.svg" />
+            <EmpowerYourselfWith>
+              Empower yourself with BidUp! Take control of your service costs like
+              never before. Say goodbye to fixed algorithms dictating prices. With
+              BidUp, you set the price, and drivers bid down to win your task. Your
+              requests, your prices, your rules. BidUp puts the power back in your
+              hands.
+            </EmpowerYourselfWith>
+          </Frame1>
+        </LogInRoot>
+      ) : (
+        <LoadingSpinner />
+      )}
+    </>
+  );
+};
+
+export default Login;
+
+
+/*Graveyard
+
+ <Form onSubmit={handleSubmit} className="login-form">
             <Label>
               Email:
               <Input
@@ -136,12 +254,5 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
           <SignupParagraph>
             Don't have an account? <Link to="/register">Sign up</Link>
           </SignupParagraph>
-        </LoginFormContainer>
-      ) : (
-        <LoadingSpinner />
-      )}
-    </Container>
-  );
-};
 
-export default Login;
+          */

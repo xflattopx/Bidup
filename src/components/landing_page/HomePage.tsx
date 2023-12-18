@@ -4,8 +4,10 @@ import { connect } from 'react-redux';
 import { RootState } from '../../redux/reducers/rootReducer';
 import Logout from '../login/Logout';
 import HomePageContent from './HomePageContent';
+import DeliveryRequestForm from '../delivery_form/DeliveryRequestForm';
 import {
   Container,
+  NestedContainer,
   PageContent,
   Navbar,
   NavList,
@@ -24,13 +26,13 @@ import {
 
 // Import your BidUpLogo.png image
 import bidUpLogo from './BidUpLogo.png';
+//import DeliveryRequestForm from 'components/delivery_form/DeliveryRequestForm';
 
 interface HomePageProps {
   userRole?: string;
 }
 
 const HomePage: React.FC<HomePageProps> = ({ userRole }) => {
-
   const apiUrl = process.env.NODE_ENV === 'development'
     ? 'http://localhost:4200'
     : 'https://bidup-api-3gltjz2saq-ue.a.run.app';
@@ -38,34 +40,27 @@ const HomePage: React.FC<HomePageProps> = ({ userRole }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
-
   const toggleMenu = () => {
     setShowMenu(!showMenu);
   };
 
   useEffect(() => {
-    const token = localStorage.getItem('jwtToken'); // Replace with your actual JWT token key
+    const token = localStorage.getItem('jwtToken');
 
-    // Check if the user is not logged in or the token is expired
     if (!token || isTokenExpired(token)) {
       // Redirect to the login page
-      //navigate('/login');
+      // navigate('/login');
     }
   }, [navigate]);
 
-  // Helper function to check if a JWT token is expired
   const isTokenExpired = (token: string) => {
-    // Implement your logic to check the token expiration here
-    // For example, you can use a library like jwt-decode to decode and check the expiration
-    // Here's a simplified example assuming the token has an 'exp' claim
-    const decodedToken: { exp?: number } = {}; // Decode the token (use your decoding logic)
+    const decodedToken: { exp?: number } = {};
     return decodedToken.exp ? Date.now() >= decodedToken.exp * 1000 : false;
   };
 
-
   return (
     <Container className="home-page-container">
-      <PageContent>
+      <PageContent className="page-content">
         <Navbar className="navbar">
           {userRole && <HamburgerIcon onClick={toggleMenu}>☰</HamburgerIcon>}
           <BidupLabel>
@@ -120,10 +115,12 @@ const HomePage: React.FC<HomePageProps> = ({ userRole }) => {
             )}
           </HamburgerMenu>
         )}
-
+      
         <CenterContent>
-          {location.pathname === '/' ? <HomePageContent /> : <Outlet />}
-
+   
+          {location.pathname === '/' && <HomePageContent />}
+          {location.pathname !== '/' && <Outlet />} 
+        
         </CenterContent>
       </PageContent>
     </Container>

@@ -20,51 +20,51 @@ const Dashboard: React.FC<DashboardProps> = ({ driverId }) => {
   const userId = useSelector((state: RootState) => state.users.userId);
   const [acceptedBids, setAcceptedBids] = useState<Bid[]>([]);
 
-  const apiUrl = process.env.NODE_ENV === 'development'
-    ? 'http://localhost:4200'
-    : 'https://bidup-api-3gltjz2saq-ue.a.run.app';
+  const apiUrl =
+    process.env.NODE_ENV === 'development'
+      ? 'http://localhost:4200'
+      : 'https://bidup-api-3gltjz2saq-ue.a.run.app';
 
-    useEffect(() => {
-      const fetchAcceptedBids = async () => {
-        try {
-          const response = await axios.get(`${apiUrl}/bid/accepted-bids?userId=${userId}`);
-          const data = response.data;
-    
-          // Check if the data structure is as expected
-          console.log('Data received:', data);
-    
-          if (Array.isArray(data) && data.length > 0) {
-            // Since data is already an array of objects in the expected format,
-            // you can directly set it to acceptedBids
-            setAcceptedBids(data);
-            console.log('Setting acceptedBids:', data);
-          } else {
-            console.error('Invalid data structure:', data);
-          }
-        } catch (error) {
-          console.error('Error fetching accepted bids:', error);
+  useEffect(() => {
+    const fetchAcceptedBids = async () => {
+      try {
+        const response = await axios.get(`${apiUrl}/dashboard/accepted-bids?userId=${userId}`);
+        const data = response.data;
+
+        // Check if the data structure is as expected
+        console.log('Data received:', data);
+
+        if (Array.isArray(data) && data.length > 0) {
+          // Since data is already an array of objects in the expected format,
+          // you can directly set it to acceptedBids
+          setAcceptedBids(data);
+          console.log('Setting acceptedBids:', data);
+        } else {
+          console.error('Invalid data structure:', data);
         }
-      };
-    
-      // Fetch accepted bids initially
+      } catch (error) {
+        console.error('Error fetching accepted bids:', error);
+      }
+    };
+
+    // Fetch accepted bids initially
+    fetchAcceptedBids();
+
+    // Set up a timer to fetch accepted bids every 10 seconds
+    const timer = setInterval(() => {
       fetchAcceptedBids();
-    
-      // Set up a timer to fetch accepted bids every 10 seconds
-      const timer = setInterval(() => {
-        fetchAcceptedBids();
-      }, 10000);
-    
-      // Cleanup function to clear the interval when the component unmounts
-      return () => clearInterval(timer);
-    }, [userId, apiUrl]);
-    
+    }, 10000);
+
+    // Cleanup function to clear the interval when the component unmounts
+    return () => clearInterval(timer);
+  }, [userId, apiUrl]);
 
   return (
     <S.DashboardContainer>
-      <S.DashboardTitle>Driver Dashboard</S.DashboardTitle>
+      <S.ResponsiveDashboardTitle>Driver Dashboard</S.ResponsiveDashboardTitle>
 
       <S.DashboardSection>
-        <S.DashboardTable>
+        <S.ResponsiveDashboardTable>
           <thead>
             <tr>
               <S.DashboardTableHeader>Request ID</S.DashboardTableHeader>
@@ -75,17 +75,17 @@ const Dashboard: React.FC<DashboardProps> = ({ driverId }) => {
             </tr>
           </thead>
           <tbody>
-            {acceptedBids.map((bid) => (
+            {acceptedBids.map((bid, index) => (
               <S.EvenTableRow key={bid.delivery_request_id}>
-                <S.DashboardTableCell>{bid.delivery_request_id}</S.DashboardTableCell>
-                <S.DashboardTableCell>{bid.pickup_location}</S.DashboardTableCell>
-                <S.DashboardTableCell>{bid.dropoff_location}</S.DashboardTableCell>
-                <S.DashboardTableCell>{bid.description}</S.DashboardTableCell>
-                <S.DashboardTableCell>${bid.price_offer}</S.DashboardTableCell>
+                <S.ResponsiveDashboardTableCell>{bid.delivery_request_id}</S.ResponsiveDashboardTableCell>
+                <S.ResponsiveDashboardTableCell>{bid.pickup_location}</S.ResponsiveDashboardTableCell>
+                <S.ResponsiveDashboardTableCell>{bid.dropoff_location}</S.ResponsiveDashboardTableCell>
+                <S.ResponsiveDashboardTableCell>{bid.description}</S.ResponsiveDashboardTableCell>
+                <S.ResponsiveDashboardTableCell>${bid.price_offer}</S.ResponsiveDashboardTableCell>
               </S.EvenTableRow>
             ))}
           </tbody>
-        </S.DashboardTable>
+        </S.ResponsiveDashboardTable>
       </S.DashboardSection>
     </S.DashboardContainer>
   );
