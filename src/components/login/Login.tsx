@@ -61,7 +61,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
     try {
       setLoading(true);
 
-      const response = await axios.post(`${apiUrl}/auth/get-user`, loginData);
+      const response = await axios.post(`${apiUrl}/user/sign-in`, loginData);
 
       if (response.status === 200) {
         const { token, role, first_name, last_name, email, user_id } = response.data;
