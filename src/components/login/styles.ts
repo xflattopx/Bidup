@@ -1,6 +1,6 @@
 // styles.ts
 
-import styled, { keyframes } from 'styled-components';
+import styled, { keyframes, createGlobalStyle } from 'styled-components';
 import { Link } from 'react-router-dom';
 const breakpoints = {
   mobile: '480px',
@@ -204,20 +204,12 @@ export const FrameInner = styled.div`
   justify-content: space-between;
 `;
 
-export const Frame = styled.div`
-  width: 416px;
-  overflow: hidden;
-  flex-shrink: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-end;
-`;
+
 
 export const Biduplogo3Icon = styled.img`
   position: relative;
-  width: 272px;
-  height: 272px;
+  width: 604px;
+  height: 604.012px;
   overflow: hidden;
   flex-shrink: 0;
   object-fit: cover;
@@ -227,6 +219,68 @@ export const EmpowerYourselfWith = styled.div`
   align-self: stretch;
   position: relative;
   font-weight: 500;
+`;
+
+// export const Frame = styled.div`
+//   width: 416px;
+//   overflow: hidden;
+//   flex-shrink: 0;
+//   display: flex;
+//   flex-direction: column;
+//   align-items: center;
+//   justify-content: flex-end;
+// `;
+
+// export const Frame1 = styled.div`
+//   width: 538px;
+//   overflow: hidden;
+//   flex-shrink: 0;
+//   display: flex;
+//   flex-direction: column;
+//   align-items: center;
+//   justify-content: flex-start;
+//   gap: 34px;
+//   text-align: center;
+//   font-size: 20px;
+// `;
+
+// export const LogInRoot = styled.div`
+//   background-color: var(--color-white);
+//   width: 1536px;
+//   overflow: hidden;
+//   display: flex;
+//   flex-direction: row;
+//   align-items: flex-start;
+//   justify-content: space-between;
+//   padding: 176px 126px;
+//   box-sizing: border-box;
+//   text-align: left;
+//   font-size: var(--font-size-sm);
+//   color: var(--color-black);
+//   font-family: var(--font-poppins);
+// `;
+
+export const LogInRoot = styled.div`
+  background-color: var(--color-white);
+  width: 100%;
+  height: 100vh;
+  overflow-y: hidden;
+  overflow: hidden;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 176px 126px;
+  box-sizing: border-box;
+  text-align: left;
+  font-size: var(--font-size-sm);
+  color: var(--color-black);
+  font-family: var(--font-poppins);
+
+  @media screen and (max-width: ${breakpoints.desktop}) {
+    flex-direction: column;
+    align-items: center;
+  }
 `;
 
 export const Frame1 = styled.div`
@@ -240,23 +294,40 @@ export const Frame1 = styled.div`
   gap: 34px;
   text-align: center;
   font-size: 20px;
+
+  @media screen and (max-width: ${breakpoints.desktop}) {
+    margin-top: 20px; /* Adjust the spacing as needed */
+    align-self: center;
+  }
+
+  @media screen and (max-width: ${breakpoints.tablet}) {
+    display: none;
+  }
 `;
 
-export const LogInRoot = styled.div`
-  background-color: var(--color-white);
-  width: 1536px;
-  overflow: hidden;
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  justify-content: space-between;
-  padding: 176px 126px;
-  box-sizing: border-box;
-  text-align: left;
-  font-size: var(--font-size-sm);
-  color: var(--color-black);
-  font-family: var(--font-poppins);
+export const GlobalStyle = createGlobalStyle`
+  html, body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+  }
 `;
+
+export const Frame = styled.div`
+  width: 416px;
+  overflow: hidden;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+
+  @media screen and (max-width: ${breakpoints.desktop}) {
+    margin-bottom: 20px; /* Adjust the spacing as needed */
+  }
+
+`;
+
 
 
 
