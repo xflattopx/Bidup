@@ -6,22 +6,6 @@ import Logout from '../login/Logout';
 import HomePageContent from './HomePageContent';
 import DeliveryRequestForm from '../delivery_form/DeliveryRequestForm';
 import {
-  Container,
-  NestedContainer,
-  PageContent,
-  Navbar,
-  NavList,
-  NavItem,
-  NavLink,
-  HamburgerIcon,
-  BidupLabel,
-  CenterContent,
-  Dropdown,
-  DropdownContent,
-  HamburgerMenu,
-  MenuItemLink,
-  Description,
-  Title,
 } from './styles';
 
 // Import your BidUpLogo.png image
@@ -59,71 +43,17 @@ const HomePage: React.FC<HomePageProps> = ({ userRole }) => {
   };
 
   return (
-    <Container className="home-page-container">
-      <PageContent className="page-content">
-        <Navbar className="navbar">
-          {userRole && <HamburgerIcon onClick={toggleMenu}>☰</HamburgerIcon>}
-          <BidupLabel>
-            <Link to="/">
-              <img src={bidUpLogo} alt="BidUp Logo" height="30" />
-            </Link>
-          </BidupLabel>
-          <NavList className="nav-list">
-            {!userRole && (
-              <>
-                <NavItem className="nav-item">
-                  <NavLink to="/register" className="nav-link">
-                    Register
-                  </NavLink>
-                </NavItem>
-                <NavItem className="nav-item">
-                  <NavLink to="/login" className="nav-link">
-                    Login
-                  </NavLink>
-                </NavItem>
-              </>
-            )}
-            {userRole && (
-              <NavItem className="nav-item">
-                <Logout />
-              </NavItem>
-            )}
-          </NavList>
-        </Navbar>
-        {showMenu && userRole && (
-          <HamburgerMenu show={showMenu}>
-            {userRole === 'Driver' && (
-              <>
-                <MenuItemLink to="/queue" onClick={toggleMenu}>
-                  Queue
-                </MenuItemLink>
-                <MenuItemLink to="/dashboard" onClick={toggleMenu}>
-                  Dashboard
-                </MenuItemLink>
-              </>
-            )}
-
-            {userRole === 'Customer' && (
-              <>
-                <MenuItemLink to="/profile" onClick={toggleMenu}>
-                  Profile
-                </MenuItemLink>
-                <MenuItemLink to="/request-form" onClick={toggleMenu}>
-                  Request Form
-                </MenuItemLink>
-              </>
-            )}
-          </HamburgerMenu>
-        )}
-      
-        <CenterContent>
-   
-          {location.pathname === '/' && <HomePageContent />}
-          {location.pathname !== '/' && <Outlet />} 
-        
-        </CenterContent>
-      </PageContent>
-    </Container>
+    <div>
+      <div className="hamburger-menu">
+        <Link to="/queue">Queue </Link>
+        <Link to="/dashboard">Dashboard </Link>
+        <Link to="/profile">Profile </Link>
+        <Link to="/request-form">Request Form </Link>
+        <Link to="/login">Login </Link>
+        <Link to="/register">Register </Link>
+        <Outlet/>
+      </div>
+    </div>
   );
 };
 
