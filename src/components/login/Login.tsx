@@ -132,7 +132,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
       {loggedIn === false ? (
         <LogInRoot>
           <Frame>
-          <form>
+          <form onSubmit={handleSubmit}>
             <FrameInner>
               <FrameParent>
                 <WelcomeBackWrapper>
