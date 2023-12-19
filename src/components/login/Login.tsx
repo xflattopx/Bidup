@@ -24,6 +24,7 @@ import {
   LogInRoot,
   InputCheckBox,
   LoginText,
+  GlobalStyle,
 } from './styles';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
@@ -126,11 +127,12 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
   };
 
   return (
-    <>
+   
+    <div>
       {loggedIn === false ? (
         <LogInRoot>
           <Frame>
-          <form onSubmit={handleSubmit}>
+          <form>
             <FrameInner>
               <FrameParent>
                 <WelcomeBackWrapper>
@@ -186,7 +188,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
                     Remember for 30 days</RememberFor30>
                 </RectangleParent>
                 <InstanceParent>
-                  <LoginButton type="submit" disabled={loading}>
+                  <LoginButton type="submit"  disabled={loading}>
                     {loading ? <LoginText>Logging in...</LoginText> : <LoginText>Login</LoginText>}
                   </LoginButton>
                   {loginError && <ErrorMessage>{loginError}</ErrorMessage>}
@@ -200,19 +202,12 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
           </Frame>
           <Frame1>
             <Biduplogo3Icon alt="" src="/BidUpLogo.svg" />
-            <EmpowerYourselfWith>
-              Empower yourself with BidUp! Take control of your service costs like
-              never before. Say goodbye to fixed algorithms dictating prices. With
-              BidUp, you set the price, and drivers bid down to win your task. Your
-              requests, your prices, your rules. BidUp puts the power back in your
-              hands.
-            </EmpowerYourselfWith>
           </Frame1>
         </LogInRoot>
       ) : (
         <LoadingSpinner />
       )}
-    </>
+      </div>
   );
 };
 
