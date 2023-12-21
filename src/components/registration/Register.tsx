@@ -5,123 +5,52 @@ import styled, { keyframes } from 'styled-components';
 import { RootState } from '../../redux/reducers/rootReducer';
 import axios from 'axios';
 import LoadingSpinner from '../loading_spinner/LoadingSpinner';
+import {
+  Select,
+  GetStartedNow,
+  GetStartedNowWrapper,
+  EnterYourCredentials,
+  FirstNameWrapper,
+  EnterYourNameWrapper,
+  FrameWrapper,
+  FrameGroup,
+  FrameDiv,
+  FrameContainer,
+  FrameParent1,
+  FrameParent2,
+  FrameParent3,
+  FrameChild,
+  OrWrapper,
+  LineParent,
+  TermsPolicy,
+  IAgreeToContainer,
+  FrameItem,
+  IAgreeToTheTermsPolicyParent,
+  HaveAnAccount,
+  SignIn,
+  HaveAnAccountContainer,
+  HaveAnAccountSignInWrapper,
+  Name8,
+  NameWrapper6,
+  FrameWrapper4,
+  FrameParent4,
+  Login1,
+  InstanceParent,
+  Icons8Google1,
+  Icons8Google1Parent,
+  FrameWrapper5,
+  Icons8AppleLogo1Parent,
+  FrameWrapper6,
+  FrameParent,
+  SignUpInner,
+  Biduplogo1Icon,
+  SignUpRoot,
+  FormInput,
+  FrameGroupLastName,
+  FrameParentSelect,
+  SignUpButton,
+} from "./styles";
 
-const Container = styled.div`
-  text-align: center;
-  background-color: #333;
-  padding: 20px;
-  min-height: 100vh;
-  font-family: 'Arial', sans-serif;
-`;
-
-const RegistrationContainer = styled.div`
-  max-width: 400px;
-  margin: 0 auto;
-  background-color: #333;
-  padding: 20px;
-  border-radius: 8px;
-  
-`;
-
-const glow = keyframes`
-  0% {
-    text-shadow: 0 0 10px #ffcc00;
-  }
-  50% {
-    text-shadow: 0 0 20px #ffcc00;
-  }
-  100% {
-    text-shadow: 0 0 10px #ffcc00;
-  }
-`;
-
-const Title = styled.h2`
-  font-size: 32px;
-  margin-bottom: 20px;
-  color: #ffcc00;
-  animation: ${glow} 2s forwards;
-`;
-
-const Form = styled.form`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`;
-
-const Label = styled.label`
-margin-bottom: 10px;
-display: flex;
-flex-direction: column;
-text-align: left;
-color: #fff; /* Set a color that contrasts well with the background */
-width: 100%;
-`;
-
-const Select = styled.select`
-  padding: 10px;
-  margin-top: 5px;
-  margin-bottom: 15px;
-  width: 100%;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-`;
-
-const Button = styled.button`
-background-color: #1a1a1a;
-color: white;
-padding: 10px;
-cursor: pointer;
-border: none;
-border-radius: 4px;
-width: 100%;
-transition: background-color 0.3s; /* Add a smooth transition effect */
-
-&:hover {
-  background-color: #ffd700; /* Change the background color to gold on hover */
-}
-`;
-
-const ErrorMessage = styled.p`
-  color: red;
-  margin-top: 5px;
-`;
-
-const SuccessMessage = styled.p`
-  color: green;
-  margin-top: 5px;
-`;
-
-const LabelRow = styled.div`
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-`;
-
-const InputRow = styled.div`
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  flex-wrap: wrap;
-`;
-
-export const Input = styled.input`
-  padding: 10px;
-  margin-top: 5px;
-  margin-bottom: 15px;
-  width: 100%;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-`;
-
-export const InputHalf = styled(Input)`
-  padding: 12px;
-  margin-top: 8px;
-  margin-bottom: 16px;
-  width: 95%;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  box-sizing: border-box;
-`;
 
 interface RegistrationProps {
   registered: boolean;
@@ -224,9 +153,180 @@ const Register: React.FC<RegistrationProps> = function ({
       console.error('Error during registration:', error);
     }
   };
-
   return (
-    <Container>
+    <SignUpRoot>
+      <form onSubmit={handleSubmit}>
+      <SignUpInner>
+        <FrameParent>
+          <GetStartedNowWrapper>
+            <GetStartedNow>Get Started Now</GetStartedNow>
+          </GetStartedNowWrapper>
+          <EnterYourCredentials>
+            Enter your Credentials to access your account
+          </EnterYourCredentials>
+        
+          <FrameGroup>
+            <FirstNameWrapper>
+              <GetStartedNow>First Name</GetStartedNow>
+            </FirstNameWrapper>
+            <FrameWrapper>
+              <EnterYourNameWrapper>
+                <FormInput
+                  type="text"
+                  name="firstName"
+                  placeholder='Enter your first name'
+                  value={formState.firstName}
+                  onChange={handleInputChange}
+                  required
+                />
+              </EnterYourNameWrapper>
+            </FrameWrapper>
+          </FrameGroup>
+
+        
+
+          <FrameContainer>
+            <FirstNameWrapper>
+              <GetStartedNow>Last Name</GetStartedNow>
+            </FirstNameWrapper>
+            <FrameWrapper>
+              <EnterYourNameWrapper>
+                <FormInput
+                  type="text"
+                  name="lastName"
+                  placeholder='Enter your last name'
+                  value={formState.lastName}
+                  onChange={handleInputChange}
+                  required
+                />
+              </EnterYourNameWrapper>
+            </FrameWrapper>
+
+          </FrameContainer>
+          <FrameParent1>
+            <FirstNameWrapper>
+              <GetStartedNow>Email</GetStartedNow>
+            </FirstNameWrapper>
+            <FrameWrapper>
+              <EnterYourNameWrapper>
+                <FormInput
+                  type="text"
+                  name="email"
+                  placeholder='Enter your email'
+                  value={formState.email}
+                  onChange={handleInputChange}
+                  required
+                />
+              </EnterYourNameWrapper>
+            </FrameWrapper>
+          </FrameParent1>
+          <FrameParent2>
+            <FirstNameWrapper>
+              <GetStartedNow>Password</GetStartedNow>
+            </FirstNameWrapper>
+            <FrameDiv>
+              <EnterYourNameWrapper>
+                 <FormInput
+                  type="password"
+                  name="password"
+                  placeholder='Name'
+                  value={formState.password}
+                  onChange={handleInputChange}
+                  required
+                />
+              </EnterYourNameWrapper>
+            </FrameDiv>
+          </FrameParent2>
+          <FrameParent3>
+            <FirstNameWrapper>
+              <GetStartedNow>Re-enter Password</GetStartedNow>
+            </FirstNameWrapper>
+            <FrameDiv>
+              <EnterYourNameWrapper>
+                <FormInput
+                  type="password"
+                  name="confirmPassword"
+                  placeholder='Name'
+                  value={formState.confirmPassword}
+                  onChange={handleInputChange}
+                  required
+                />
+              </EnterYourNameWrapper>
+            </FrameDiv>
+          </FrameParent3>
+          <FrameParentSelect>
+            <FirstNameWrapper>Role:</FirstNameWrapper>
+            <FrameDiv>
+                <Select
+                  name="role" 
+                  value={formState.role} 
+                  onChange={handleRoleChange}>
+                  <option value="Customer">Customer</option>
+                  <option value="Driver">Driver</option>
+                </Select>
+            </FrameDiv>
+          </FrameParentSelect>
+          <LineParent>
+            <FrameChild />
+            <OrWrapper>
+              <GetStartedNow>Or</GetStartedNow>
+            </OrWrapper>
+          </LineParent>
+          {/* <IAgreeToTheTermsPolicyParent>
+            <IAgreeToContainer>
+              {`I agree to the T`}
+              <TermsPolicy>{`terms & policy`}</TermsPolicy>
+            </IAgreeToContainer>
+            <FrameItem />
+          </IAgreeToTheTermsPolicyParent> */}
+          <HaveAnAccountSignInWrapper>
+            <HaveAnAccountContainer>
+              <HaveAnAccount>{`Have an account?  `}</HaveAnAccount>
+              <SignIn>Sign In</SignIn>
+            </HaveAnAccountContainer>
+          </HaveAnAccountSignInWrapper>
+          <InstanceParent>
+            <FrameParent4>
+              <NameWrapper6>
+                <Name8>Name</Name8>
+              </NameWrapper6>
+              <FrameWrapper4>
+                <EnterYourNameWrapper>
+                  <Name8>Name</Name8>
+                </EnterYourNameWrapper>
+              </FrameWrapper4>
+            </FrameParent4>
+            <SignUpButton>Sign Up</SignUpButton>
+          </InstanceParent>
+          <FrameWrapper5>
+            <Icons8Google1Parent>
+              <Icons8Google1 alt="" src="/icons8google-1@2x.png" />
+              <GetStartedNow>Sign in with Google</GetStartedNow>
+            </Icons8Google1Parent>
+          </FrameWrapper5>
+        </FrameParent>
+      </SignUpInner>
+      <Biduplogo1Icon alt="" src="/BidUpLogo.svg" />
+      </form>
+    </SignUpRoot>
+  )
+
+
+};
+
+function mapStateToProps(state: RootState) {
+  console.log(state.deliveryForm);
+  return {
+    registered: state.deliveryForm.successfulRequest,
+    registrationMessage: state.deliveryForm.successMessage
+  };
+}
+
+export default connect(mapStateToProps)(Register);
+
+/** Graveyard
+ </SignUpInner>return (
+    {/* <Container>
       {registered === false ?
         <RegistrationContainer>
           <Title>Registration</Title>
@@ -306,20 +406,12 @@ const Register: React.FC<RegistrationProps> = function ({
             </InputRow>
 
             <Button type="submit">Register</Button>
-          </Form>
-          {/* <SuccessMessage>{registrationMessage}</SuccessMessage> */}
-        </RegistrationContainer>
-        : <LoadingSpinner />}
-    </Container>
-  );
-};
+          </Form> */
+          //}
+        //{
+          /* <SuccessMessage>{registrationMessage}</SuccessMessage> */ //}
+// </RegistrationContainer>
+//     : <LoadingSpinner />}
+//   </Container>
+//  );
 
-function mapStateToProps(state: RootState) {
-  console.log(state.deliveryForm);
-  return {
-    registered: state.deliveryForm.successfulRequest,
-    registrationMessage: state.deliveryForm.successMessage
-  };
-}
-
-export default connect(mapStateToProps)(Register);
