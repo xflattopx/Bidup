@@ -50,7 +50,7 @@ const DeliveryRequestForm: React.FC<DeliveryRequestFormProps> = () => {
       // Dispatching the action is commented out for now, as the axios.post call is used directly
       // dispatch(await submitDeliveryRequest(formState));
 
-      axios.post(`${apiUrl}/customer_request`, formState);
+      axios.post(`${apiUrl}/service/`, formState);
 
       setFormState({
         pickupLocation: '',
