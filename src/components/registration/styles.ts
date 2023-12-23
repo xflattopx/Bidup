@@ -427,6 +427,10 @@ export const Biduplogo1Icon = styled.img`
   height: 604px;
   overflow: hidden;
   object-fit: cover;
+
+  @media (max-width: 1024px) {
+    display: none; // Hide the component for resolutions less than or equal to 1024px
+  }
 `;
 
 export const SignUpRoot = styled.div`

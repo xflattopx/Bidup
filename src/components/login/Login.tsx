@@ -30,6 +30,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
 import LoadingSpinner from '../loading_spinner/LoadingSpinner';
+import Button from '@mui/material/Button/Button';
 
 interface LoginProps {
   onLogin: (credentials: { email: string; password: string }) => Promise<{ token: string; role: string }>;
@@ -188,9 +189,10 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
                     Remember for 30 days</RememberFor30>
                 </RectangleParent>
                 <InstanceParent>
-                  <LoginButton type="submit"  disabled={loading}>
+                  {/* <LoginButton type="submit"  disabled={loading}>
                     {loading ? <LoginText>Logging in...</LoginText> : <LoginText>Login</LoginText>}
-                  </LoginButton>
+                  </LoginButton> */}
+                   <Button variant='contained' color='primary' size='large' type="submit" sx={{width: '100%'}}>Login</Button>
                   {loginError && <ErrorMessage>{loginError}</ErrorMessage>}
                   <SignupParagraph>
                     Don't have an account? <Link to="/register">Sign up</Link>

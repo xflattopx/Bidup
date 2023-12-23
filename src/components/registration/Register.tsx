@@ -50,6 +50,7 @@ import {
   FrameParentSelect,
   SignUpButton,
 } from "./styles";
+import Button from '@mui/material/Button/Button';
 
 
 interface RegistrationProps {
@@ -296,7 +297,8 @@ const Register: React.FC<RegistrationProps> = function ({
                 </EnterYourNameWrapper>
               </FrameWrapper4>
             </FrameParent4>
-            <SignUpButton>Sign Up</SignUpButton>
+            <Button variant='contained' color='primary' size='large' type="submit" sx={{width: '100%'}}>Sign Up</Button>
+            {/* <SignUpButton>Sign Up</SignUpButton> */}
           </InstanceParent>
           <FrameWrapper5>
             <Icons8Google1Parent>
@@ -315,7 +317,6 @@ const Register: React.FC<RegistrationProps> = function ({
 };
 
 function mapStateToProps(state: RootState) {
-  console.log(state.deliveryForm);
   return {
     registered: state.deliveryForm.successfulRequest,
     registrationMessage: state.deliveryForm.successMessage

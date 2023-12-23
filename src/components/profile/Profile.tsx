@@ -51,7 +51,8 @@ const Profile: React.FC<ProfileProps> = ({ customerInfo, onCancelRequest }) => {
     console.log(customerId);
     // Fetch customer personal details
     axios
-      .get(`${apiUrl}/user/?customerId=${customerId}`)
+      .get(`${apiUrl}/bid/?customerId=${customerId}`)
+
       .then((response) => {
         // Assuming response.data is an object with properties like 'first_name', 'last_name', 'email'
         setCustomerProfile(response.data.customerProfile);
@@ -64,6 +65,7 @@ const Profile: React.FC<ProfileProps> = ({ customerInfo, onCancelRequest }) => {
 
     // Fetch request history details
     axios
+
       .get(`${apiUrl}/service/request-history?customerId=${customerId}`)
       .then((response) => {
         // Assuming response.data is an array of objects with properties like 'id', 'pickupLocation', etc.
