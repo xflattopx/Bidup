@@ -52,6 +52,7 @@ const Profile: React.FC<ProfileProps> = ({ customerInfo, onCancelRequest }) => {
     // Fetch customer personal details
     axios
       .get(`${apiUrl}/bid/?customerId=${customerId}`)
+
       .then((response) => {
         // Assuming response.data is an object with properties like 'first_name', 'last_name', 'email'
         setCustomerProfile(response.data.customerProfile);
@@ -64,7 +65,8 @@ const Profile: React.FC<ProfileProps> = ({ customerInfo, onCancelRequest }) => {
 
     // Fetch request history details
     axios
-      .get(`${apiUrl}/bid/?customerId=${customerId}`)
+
+      .get(`${apiUrl}/service/request-history?customerId=${customerId}`)
       .then((response) => {
         // Assuming response.data is an array of objects with properties like 'id', 'pickupLocation', etc.
         setRequestHistory(response.data.data); // Assuming the data is inside a 'data' property
@@ -81,7 +83,7 @@ const Profile: React.FC<ProfileProps> = ({ customerInfo, onCancelRequest }) => {
 
     // Make an axios call to update the request status on the server
     axios
-      .post(`${apiUrl}/service/cancel-request`, { requestId })
+      .put(`${apiUrl}/service/cancel`, { requestId })
       .then((response) => {
         console.log('Cancel request success:', response.data);
         setCancelSuccess(requestId);
