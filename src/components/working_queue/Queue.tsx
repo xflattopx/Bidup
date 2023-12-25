@@ -56,7 +56,7 @@ const Queue: React.FC<QueueProps> = () => {
 
   const fetchDataAndEnqueue = async () => {
     try {
-      const response = await axios.get(`${apiUrl}/customer_request/all`);
+      const response = await axios.get(`${apiUrl}/service/`);
       const newData: DeliveryRequest[] = response.data;
       setQueueState((prevState) => {
         const uniqueIdsSet = new Set(prevState.uniqueIds);

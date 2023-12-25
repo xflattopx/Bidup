@@ -119,7 +119,7 @@ const Register: React.FC<RegistrationProps> = function ({
       // Replace this with your actual registration logic
       setTimeout(async () => {
         // Dispatch the thunk action
-        await axios.post(`${apiUrl}/register/sign-up`, {
+        await axios.post(`${apiUrl}/user/sign-up`, {
           first_name: formState.firstName,
           last_name: formState.lastName,
           email: formState.email,
