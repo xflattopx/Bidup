@@ -19,6 +19,7 @@ import RegistrationSuccess from './components/registration/RegistrationSuccess';
 import Register from './components/registration/Register';
 import RequestSuccessful from './components/delivery_form/RequestSuccessful';
 import LoadingSpinner from './components/loading_spinner/LoadingSpinner';
+import DeliveryRequest from './components/request_form/RequestForm';
 
 //'https://bidup-405619.ue.r.appspot.com'
 
@@ -33,7 +34,7 @@ ReactDOM.render(
       <Routes>
         <Route path="/" element={<HomePage />}>
           <Route path="home" element={<HomePage />} />
-  
+          <Route path="request" element={<DeliveryRequest/>} />
           <Route path="register" element={<Register />} />
           <Route path="login" element={<Login onLogin={function (credentials: { email: string; password: string; }): Promise<{ token: string; role: string; }> {
             throw new Error('Function not implemented.');
@@ -51,8 +52,9 @@ ReactDOM.render(
             throw new Error('Function not implemented.');
           }} />} />
         </Route>
-        <Route path="request-form" element={<DeliveryRequestForm />} />
+        <Route path="requestform" element={<DeliveryRequestForm />} />
         <Route path="registration-complete" element={<RegistrationSuccess />} />
+       
         <Route path="request-success" element={<RequestSuccessful />} />
         <Route path="loading-spinner" element={<LoadingSpinner />} />
       </Routes>
