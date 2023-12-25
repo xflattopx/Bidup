@@ -44,12 +44,12 @@ const HomePage: React.FC<HomePageProps> = ({ userRole }) => {
 
   return (
     <div>
-      <div className="hamburger-menu">
+      <div>
         <Link to="/queue">Queue </Link>
         <Link to="/dashboard">Dashboard </Link>
         <Link to="/profile">Profile </Link>
-        <Link to="/request-form">Request Form </Link>
         <Link to="/login">Login </Link>
+        <Link to="/request">RequestForm</Link>
         <Link to="/register">Register </Link>
         <Outlet/>
       </div>
