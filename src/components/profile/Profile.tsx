@@ -51,7 +51,7 @@ const Profile: React.FC<ProfileProps> = ({ customerInfo, onCancelRequest }) => {
     console.log(customerId);
     // Fetch customer personal details
     axios
-      .get(`${apiUrl}/bid/?customerId=${customerId}`)
+      .get(`${apiUrl}/user/?customerId=${customerId}`)
 
       .then((response) => {
         // Assuming response.data is an object with properties like 'first_name', 'last_name', 'email'
