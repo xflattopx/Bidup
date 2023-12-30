@@ -1,33 +1,20 @@
-name: Deploy to GCP
-
 on:
   push:
-    branches:
-      - dev
+    branches: [ dev ]
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '14'
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Deploy to GCP
-        run: |
-          gcloud auth activate-service-account --key-file=<(echo "$GCLOUD_SERVICE_KEY")
-          gcloud config set project $GCLOUD_PROJECT
-          gcloud app deploy $GCLOUD_APP --quiet
+      - name: Deploy to EC2
         env:
-          GCLOUD_PROJECT: ${{ secrets.GCLOUD_PROJECT }}
-          GCLOUD_REGION: ${{ secrets.GCLOUD_REGION }}
-          GCLOUD_APP: ${{ secrets.GCLOUD_APP }}
-          GCLOUD_SERVICE_KEY: ${{ secrets.GCLOUD_SERVICE_KEY }}
+          EC2_PUBLIC_IP: your-ec2-public-ip
+          LOCAL_PORT: your-local-port
+          CONTAINER_PORT: your-container-port
+        run: |
+          # Save SSH key to a file and set the right permissions
+          echo "${{ secrets.EC2_SSH_KEY }}" > ec2_ssh_key.pem
+          chmod 600 ec2_ssh_key.pem
+
+          # Run the deployment script
+          ./path/to/deploy-to-ec2.sh ec2_ssh_key.pem
